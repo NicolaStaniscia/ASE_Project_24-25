@@ -1,0 +1,238 @@
+openapi: 3.0.0
+info:
+  title: User Account Management API
+  description: API for user-related operations, including account creation, login, and management.
+  version: 1.0.0
+servers:
+  - url: https://localhost:8080
+    description: Account Management Service
+
+paths:
+  /account_management/create_user_account:
+    post:
+      summary: Create a new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the new user.
+                password:
+                  type: string
+                  description: The password for the new user account.
+      responses:
+        '200':
+          description: Account successfully created
+        '400':
+          description: Invalid data or missing fields
+        '409':
+          description: Conflict.
+        '500':
+          description: Error communicating with the database manager service
+
+  /account_management/login:
+    post:
+      summary: Login a user and get an access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the user.
+                password:
+                  type: string
+                  description: The user's password.
+      responses:
+        '200':
+          description: Login successful, returns the access token
+        '401':
+          description: Invalid credentials
+        '500':
+          description: Error communicating with the database manager service
+
+  /account_management/logout:
+    post:
+      summary: Logout a user by invalidating their token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the user who wants to log out.
+      responses:
+        '200':
+          description: Successfully logged out, token invalidated
+        '400':
+          description: Missing username in the request
+        '401':
+          description: Unauthorized access, user not logged in
+
+  /account_management/modify_user_account:
+      patch:
+        summary: Modify user account details
+        description: Allows users to modify their account details (e.g., change password).
+        security:
+          - BearerAuth: []
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  new_password:
+                    type: string
+                required:
+                  - username
+                  - new_password
+        responses:
+          '201':
+            description: User account successfully modified
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: object
+                      additionalProperties: true
+          '400':
+            description: Bad request, missing required fields
+          '403':
+            description: Unauthorized, cannot modify another user's account
+          '500':
+            description: Server error, failed to connect to DB Manager
+
+  /account_management/delete_user_account/{username}:
+    delete:
+      summary: Delete user account
+      description: Allows a user to delete their account by providing their username.
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User account deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: object
+                    additionalProperties: true
+        '400':
+          description: Bad request, missing username
+        '403':
+          description: Unauthorized, cannot delete another user's account
+        '500':
+          description: Server error, failed to connect to DB Manager
+
+  /account_management/buy_in_game_currency:
+    post:
+      summary: Buy in-game currency
+      description: Allows users to purchase in-game currency packs.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                pack:
+                  type: integer
+                  enum: [1, 2, 3]
+              required:
+                - username
+                - pack
+      responses:
+        '200':
+          description: Currency purchase successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: object
+                    additionalProperties: true
+        '400':
+          description: Bad request, missing fields or invalid pack
+        '403':
+          description: Unauthorized, cannot purchase for another user
+        '500':
+          description: Server error, failed to connect to DB Manager
+
+  /account_management/get_currency:
+    get:
+      summary: Get user's current in-game currency
+      description: Fetches the user's current in-game currency balance.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successfully fetched currency balance
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '400':
+          description: Bad request, invalid parameters
+        '500':
+          description: Server error, failed to connect to DB Manager
+
+  /account_management/currency:
+    patch:
+      summary: Modify user's in-game currency
+      description: Modifies the user's in-game currency balance.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currency:
+                  type: integer
+              required:
+                - currency
+      responses:
+        '200':
+          description: Successfully modified currency
+        '500':
+          description: Server error
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http  # Usare 'http' per il tipo di schema
+      scheme: bearer  # Specifica che il tipo di schema è 'bearer'
+      bearerFormat: JWT  # Specifica che il formato del token è JWT
