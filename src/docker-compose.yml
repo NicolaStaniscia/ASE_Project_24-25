@@ -132,7 +132,7 @@ services:
     restart: always
     volumes:
       - ./collection/collection_db:/var/lib/mysql:rw
-      - ./init_db/init_collection-sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init_db/init_collection.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       MYSQL_ROOT_PASSWORD: Spin&Go_2425
       MYSQL_DATABASE: collection_db
