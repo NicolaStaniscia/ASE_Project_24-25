@@ -1,0 +1,497 @@
+openapi: 3.0.0
+
+info:
+  title: Collection API - Users
+  description: API 
+  version: 1.0.0
+
+servers:
+  - url: http://localhost
+    description: API gateway
+
+tags:
+  - name: See gacha collection
+    description: Visualize gacha
+  - name: Roll a gacha
+    description: Add a random gacha to your collection
+
+paths:
+  
+  /collection:
+    get:
+      tags:
+        - See gacha collection
+      summary: Recupera la collezione dell'utente
+      description: Restituisce la collezione personale dell'utente autenticato. Solo gli utenti con ruolo `user` possono accedere a questo endpoint.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Collezione recuperata con successo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    gachaId:
+                      type: integer
+                    idOwn:
+                      type: integer
+                    image:
+                      type: string
+                      format: uri
+                    name:
+                      type: string
+                    rarity:
+                      type: string
+        '403':
+          description: Accesso vietato, solo gli utenti possono accedere alla collezione
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Access forbidden: only users can own a collection"
+        '400':
+          description: Mancata configurazione dell'utente nel token JWT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not set"
+        '500':
+          description: Errore interno del server o richiesta fallita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal server error"
+
+  /collection/grouped:
+    get:
+      tags:
+        - See gacha collection
+      summary: Recupera la collezione raggruppata dell'utente
+      description: Restituisce la collezione dell'utente autenticato con gli oggetti raggruppati per ID, includendo la quantità di ciascun oggetto.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Collezione raggruppata recuperata con successo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    image:
+                      type: string
+                      format: uri
+                    name:
+                      type: string
+                    quantity:
+                      type: integer
+                    rarity:
+                      type: string
+
+        '403':
+          description: Accesso vietato, solo gli utenti possono accedere alla collezione
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Access forbidden: only users can own a collection"
+        '400':
+          description: Mancata configurazione dell'utente nel token JWT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not set"
+        '500':
+          description: Errore interno del server o richiesta fallita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal server error"
+
+  /collection/{gacha_id}:
+    get:
+      tags:
+        - See gacha collection
+      summary: Recupera le informazioni su un gacha specifico
+      description: Restituisce le informazioni dettagliate su un gacha specifico se l'utente lo possiede.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: gacha_id
+          in: path
+          required: true
+          description: ID del gacha da visualizzare
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Informazioni sul gacha recuperate con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accuracy:
+                    type: integer
+                  critical:
+                    type: number
+                    format: float
+                  damage:
+                    type: integer
+                  extractionProb:
+                    type: number
+                    format: float
+                  id:
+                    type: integer
+                  image:
+                    type: string
+                    format: uri
+                  name:
+                    type: string
+                  rarity:
+                    type: string
+                  speed:
+                    type: integer
+        '403':
+          description: Accesso vietato, solo gli utenti possono visualizzare la collezione
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Access forbidden: only users can own a collection"
+        '400':
+          description: Mancata configurazione dell'utente nel token JWT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not set"
+        '404':
+          description: Gacha non posseduto dall'utente o non trovato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Gacha not owned"
+        '500':
+          description: Errore interno del server o richiesta fallita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal server error"
+
+  /system_collection:
+    get:
+      tags:
+        - See gacha collection
+      summary: Recupera la collezione di gacha di sistema
+      description: Restituisce una lista di tutti i gacha disponibili nel sistema.
+      responses:
+        '200':
+          description: Collezione di sistema recuperata con successo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    extractionProb:
+                      type: number
+                      format: float
+                    id:
+                      type: integer
+                    image:
+                      type: string
+                      format: uri
+                    name:
+                      type: string
+                    rarity:
+                      type: string
+        '500':
+          description: Errore interno del server o richiesta fallita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal server error"
+
+  /system_collection/{gacha_id}:
+    get:
+      tags:
+        - See gacha collection
+      summary: Recupera i dettagli di un gacha specifico
+      parameters:
+        - name: gacha_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettagli del gacha recuperati con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accuracy:
+                    type: integer
+                  critical:
+                    type: number
+                    format: float
+                  damage:
+                    type: integer
+                  extractionProb:
+                    type: number
+                    format: float
+                  id:
+                    type: integer
+                  image:
+                    type: string
+                    format: uri
+                  name:
+                    type: string
+                  rarity:
+                    type: string
+                  speed:
+                    type: integer
+        '404':
+          description: Gacha non trovato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Gacha not found"
+        '500':
+          description: Errore interno del server o richiesta fallita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal server error"
+
+  /roll/standard:
+    post:
+      tags:
+        - Roll a gacha
+      summary: Esegue un "gacha roll" standard per un utente autenticato.
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: None
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              example: {}
+      responses:
+        '200':
+          description: Roll eseguito con successo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+        '400':
+          description: Richiesta non valida, ad esempio per punti insufficienti.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: You don't have enough points
+        '403':
+          description: Accesso negato, l'utente non ha il ruolo corretto.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Only users can roll a gacha
+        '500':
+          description: Errore interno del server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+
+  /roll/gold:
+    post:
+      tags:
+        - Roll a gacha
+      summary: Esegue un roll "gold" del sistema gacha.
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: None
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              example: {}
+      responses:
+        '200':
+          description: Roll effettuato con successo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+        '400':
+          description: Punti insufficienti per effettuare il roll.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "You don't have enough points"
+        '403':
+          description: L'utente non ha il ruolo necessario per accedere a questo endpoint.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Only users can roll a gacha"
+        '500':
+          description: Errore interno del server o fallimento nella comunicazione con il gestore della collezione.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /roll/platinum:
+    post:
+      tags:
+        - Roll a gacha
+      summary: Esegue un roll "platinum" del sistema gacha.
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: None
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              example: {}
+      responses:
+        '200':
+          description: Roll effettuato con successo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+        '400':
+          description: Punti insufficienti per effettuare il roll.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "You don't have enough points"
+        '403':
+          description: L'utente non ha il ruolo necessario per accedere a questo endpoint.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Only users can roll a gacha"
+        '500':
+          description: Errore interno del server o fallimento nella comunicazione con il gestore della collezione.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
