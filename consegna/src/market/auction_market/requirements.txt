@@ -1,7 +1,0 @@
-flask
-flask_sqlalchemy
-requests
-pymysql
-cryptography
-flask_apscheduler
-flask-jwt-extended 
