@@ -122,6 +122,7 @@ def logout():
 @jwt_required()  # Richiede un token JWT valido
 def modify_user_account():
     current_user = get_jwt()["username"]  # Ottieni l'utente dal token
+    role = get_jwt()["role"]  # Ottieni il ruolo dal token
     jti = get_jwt()["jti"]  # Ottieni il "jti" dal payload del token corrente, serve per eseguire il logout
     data = request.get_json()
     username = data.get('username')
@@ -131,7 +132,7 @@ def modify_user_account():
                 return jsonify({"error": "username and new_password are required"}), 400
 
     # Controlla che l'utente stia modificando il proprio account
-    if username != current_user:
+    if username != current_user or role != 'user':
         return jsonify({"error": "Unauthorized"}), 403
     else:
         db_manager_url = "https://users_db_manager:5000/modify_user"  # URL del servizio DB Manager
@@ -164,10 +165,11 @@ def delete_user_account(username):
                 return jsonify({"error": "username is required"}), 400
     
     current_user = get_jwt()["username"]  # Ottieni l'utente dal token
+    role = get_jwt()["role"]  # Ottieni il ruolo dal token
     jti = get_jwt()["jti"]  # Ottieni il "jti" dal payload del token corrente, serve per eseguire il logout
 
     # Controlla che l'utente stia modificando il proprio account
-    if username != current_user:
+    if username != current_user or role != 'user':
         return jsonify({"error": "Unauthorized"}), 403
     else:
 
@@ -192,6 +194,7 @@ def delete_user_account(username):
 @jwt_required()  # Richiede un token JWT valido
 def buy_in_game_currency():
     current_user = get_jwt()["username"]  # Ottieni l'utente dal token
+    role = get_jwt()["role"]  # Ottieni il ruolo dal token
     data = request.get_json()
     username = data.get('username')
     pack = data.get('pack')
@@ -200,7 +203,7 @@ def buy_in_game_currency():
                     return jsonify({"error": "username and pack are required"}), 400
 
     # Controlla che l'utente stia modificando il proprio account
-    if username != current_user:
+    if username != current_user or role != 'user':
         return jsonify({"error": "Unauthorized"}), 403
     else:
         db_manager_url = "https://users_db_manager:5000/increase_user_currency"  # URL del servizio DB Manager
@@ -225,8 +228,8 @@ def buy_in_game_currency():
 @app.route('/account_management/get_currency', methods=['GET'])
 @jwt_required()
 def get_currency():
-    user_id = get_jwt_identity()
 
+    user_id = get_jwt_identity()
     try:
         if not user_id:
             return make_response(jsonify(error="Forbidden"), 403)
@@ -330,6 +333,13 @@ def login_admin():
 @app.route('/account_management/admin/view_users', methods=['GET'])
 @jwt_required()  # Richiede un token valido
 def view_users():
+
+    role = get_jwt()["role"]  # Ottieni l'utente dal token
+    # Controlla che l'utente stia modificando il proprio account
+    if role != 'admin':
+        return jsonify({"error": "Unauthorized"}), 403
+
+
     # Ottieni lo username dalla query string, se presente
     username = request.args.get('username', "all")  # Usa 'default_user' se non c'è
     db_manager_url = f"https://users_db_manager:5000/get_all_users/{username}"  # URL del servizio DB Manager
@@ -347,6 +357,11 @@ def view_users():
 @app.route('/account_management/admin/modify_user', methods=['PATCH'])
 @jwt_required()  # Richiede un token JWT valido
 def modify_user():
+
+    role = get_jwt()["role"]  # Ottieni l'utente dal token
+    # Controlla che l'utente stia modificando il proprio account
+    if role != 'admin':
+        return jsonify({"error": "Unauthorized"}), 403
 
     data = request.get_json()
     username = data.get('username')
@@ -377,10 +392,15 @@ def modify_user():
     except requests.exceptions.RequestException as e:
         return jsonify({"error": "Failed to connect to DB Manager", "details": str(e)}), 500
     
-
 @app.route('/account_management/admin/check_payments_history/<username>', methods=['GET'])
 @jwt_required()  # Richiede un token valido
 def check_payments_history(username):
+
+    role = get_jwt()["role"]  # Ottieni l'utente dal token
+    # Controlla che l'utente stia modificando il proprio account
+    if role != 'admin':
+        return jsonify({"error": "Unauthorized"}), 403
+
     # Ottieni lo username dalla query string, se presente
     if not username:
         return jsonify({"error": "Username is required"}), 400
