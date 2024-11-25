@@ -1,5 +1,5 @@
 -- Gacha table creation
-CREATE TABLE Gacha(
+CREATE TABLE IF NOT EXISTS Gacha(
         id INTEGER PRIMARY KEY AUTO_INCREMENT,
         name VARCHAR(64) NOT NULL,
         extractionProb FLOAT NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE Gacha(
 );
 
 -- Owned table creation
-CREATE TABLE Owned(
+CREATE TABLE IF NOT EXISTS Owned(
         id INTEGER PRIMARY KEY AUTO_INCREMENT,
         user INTEGER NOT NULL,
         gacha INTEGER NOT NULL,
@@ -20,10 +20,11 @@ CREATE TABLE Owned(
 );
 
 -- todo: aggiusta
-LOAD DATA INFILE '/path/to/data.csv'
-INTO TABLE my_table
+/*
+LOAD DATA INFILE 'data_collection.csv'
+INTO TABLE Gacha
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
-(name, extractionProb, rarity, image, damage, speed, critical, accuracy)
+(name, extractionProb, rarity, image, damage, speed, critical, accuracy);*/
