@@ -19,7 +19,7 @@ CREATE TABLE Owned(
         FOREIGN KEY (gacha) REFERENCES Gacha(id)
 );
 
-
+-- todo: aggiusta
 LOAD DATA INFILE '/path/to/data.csv'
 INTO TABLE my_table
 FIELDS TERMINATED BY ',' 
