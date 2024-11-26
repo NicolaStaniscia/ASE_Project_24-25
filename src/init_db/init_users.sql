@@ -26,7 +26,7 @@ CREATE TABLE payments (
 );
 
 INSERT INTO users_admin (username, salt, password)
-VALUES ('admin1', 'bfe17296dc5434254a21b50d760380f9', '5c79cb4de0c0eb1f5be3581b0aeeb8a8a0bb1e0fd68597d972a365f1d3af1534');
+VALUES ('admin1', 'b6b8e7fb8dbf898fa873a633315436f2', 'f3289aa25ed8cca41d0f6eb7813ed3fcb2bcc54f45756771a7fa549728d3542d');
 
 LOAD DATA INFILE '/var/lib/mysql-files/users.csv'
 INTO TABLE users
