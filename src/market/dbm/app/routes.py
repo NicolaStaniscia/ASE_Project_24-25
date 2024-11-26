@@ -233,7 +233,7 @@ def get_auction_winner():
 # Endpoint: POST /market/auction_complete
 @db_manager.route('/market/auction_complete', methods=['POST'])
 def check_auction_winner():
-    # Recupera i dettagli di un'asta chiusa e del bid vincente.
+    # - Recupera i dettagli di un'asta chiusa e del bid vincente.
     # - Verifica che l'asta esista e sia chiusa.
     # - Recupera il bid vincente associato all'asta.
     data = request.get_json()

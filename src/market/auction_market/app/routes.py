@@ -167,14 +167,8 @@ def create_auction():
 
     if auction_end <= datetime.utcnow():
         return jsonify({'error': 'auction_end must be a future date'}), 400
-    
-    ####VERIFICA CHE L'UTENTE ESISTA NEL DB USERS (per adesso basta il controllo di jwt)
-    #user_response = requests.get(f"{current_app.config['USERS_URL']}/users/{seller_id}", verify=False)
-    #if user_response.status_code == 404:
-    #    return jsonify({'error': 'Seller not found'}), 404
 
-    ####VERIFICA CHE IL GACHA APPARTENGA ALL'UTENTE
-    # prendo la collezione intera dell'utente e verifico che ci sia
+    # Verifica che il gacha appartenga all'user, prendo la collezione intera
     # Header per la richiesta con il token JWT
     headers = {"Authorization": f"Bearer {token}"}
     try:
@@ -238,7 +232,7 @@ def place_bid():
     if bid_amount <= 0:
         return jsonify({"error": "Bid amount must be greater than zero"}), 400
     
-    #### Verifica del credito disponibile per il bidder
+    # Verifica del credito disponibile per il bidder
     headers = {"Authorization": f"Bearer {token}"}
     response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=headers,verify=False)
     if response.status_code == 404:
@@ -257,6 +251,15 @@ def place_bid():
 
         if response.status_code != 201:
             return jsonify({"error": response.json().get("error", "Unknown error")}), response.status_code
+        
+        # Fai chiamata al servizio di account_management per scalare la currency
+        new_balance = user_credit + bid_amount
+        response = requests.patch('https://account_management:5000/account_management/currency', json={
+            "currency": new_balance
+        }, headers=headers,verify=False)
+
+        if response.status_code != 200:
+            return jsonify({"error": response.json().get("error", "Failed to update user balance")}), response.status_code
         
         return jsonify(response.json()), 201
     except requests.exceptions.RequestException as e:
@@ -351,7 +354,7 @@ def complete_auction():
 # Endpoint: POST /market/auction_refund
 @auction_market.route('/market/auction_refund', methods=['POST'])
 def refund_bid():
-    # chiamato dallo scheduler job di asta chiusa, effettua i rimborsi mancanti
+    # Chiamato dal job di asta closed, farà i rimborsi mancanti
     
     data = request.get_json()
     auction_id = data.get("auction_id")

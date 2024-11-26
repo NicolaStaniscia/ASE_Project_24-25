@@ -75,7 +75,7 @@ def record_transaction():
             "final_price": final_price
         }, verify=False)
 
-        #dare i soldi a chi di dovere con account_managemetn
+        #devo dare i soldi i soldi al seller
 
         if response.status_code != 200:
             return jsonify({"error": response.json().get("error", "Unknown error")}), response.status_code
@@ -93,7 +93,7 @@ def record_transaction():
 def process_refund():
     # viene chiamato dallo scheduler per i rimborsi "attivi", aste non scadute
     # e dal dbm che elabora i rimborsi "scaduti", completandone la logica
-    # dare i soldi a chi di dovere 
+    # devo dare i soldi dei rimborsi alle offerte non vincenti
 
     data = request.get_json()
     user_id = data.get("user_id")
