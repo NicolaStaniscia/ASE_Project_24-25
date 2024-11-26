@@ -19,11 +19,12 @@ CREATE TABLE IF NOT EXISTS Owned(
         FOREIGN KEY (gacha) REFERENCES Gacha(id)
 );
 
-
-LOAD DATA INFILE '/var/lib/mysql-files/data_collection.csv'
+-- todo: aggiusta
+/*
+LOAD DATA INFILE 'data_collection.csv'
 INTO TABLE Gacha
-FIELDS TERMINATED BY ','
--- OPTIONALLY ENCLOSED BY '"'
-LINES TERMINATED BY '\n' 
-IGNORE 1 ROWS 
-(accuracy, critical, damage, extractionProb, image, name, rarity, speed);
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"' 
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(name, extractionProb, rarity, image, damage, speed, critical, accuracy);*/
