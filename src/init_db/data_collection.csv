@@ -1,37 +1,37 @@
-name,extractionProb,rarity,image,damage,speed,critical,accuracy
-Amity Accord,0.5445,Common,http://localhost/resources/common/Amity%20Accord.png,19,19,0.013483205828622311,57
-Augment,0.5445,Common,http://localhost/resources/common/Augment.png,14,30,0.03864243103590715,51
-Cadenza,0.5445,Common,http://localhost/resources/common/Cadenza.png,20,17,0.040968433639838035,59
-Celestial Spiral,0.5445,Common,http://localhost/resources/common/Celestial%20Spiral.png,30,27,0.030582009733648254,57
-Comet Flare,0.5445,Common,http://localhost/resources/common/Comet%20Flare.png,27,28,0.045415052258600985,56
-Fusion Accreation,0.5445,Common,http://localhost/resources/common/Fusion%20Accreation.png,25,12,0.022285235964196425,50
-Gauntlets 21D,0.5445,Common,http://localhost/resources/common/Gauntlets%2021D.png,12,29,0.04560532453068797,56
-Hollow Mirage,0.5445,Common,http://localhost/resources/common/Hollow%20Mirage.png,20,28,0.032496558334091,51
-Jinzhou Keeper,0.5445,Common,http://localhost/resources/common/Jinzhou%20Keeper.png,24,13,0.012864096340998245,58
-Marcato,0.5445,Common,http://localhost/resources/common/Marcato.png,27,10,0.02513917190200654,53
-Novaburst,0.5445,Common,http://localhost/resources/common/Novaburst.png,21,26,0.017614106767245084,58
-Pistol 26,0.5445,Common,http://localhost/resources/common/Pistol%2026.png,25,19,0.014828799655798237,59
-Rectifier 25,0.5445,Common,http://localhost/resources/common/Rectifier%2025.png,18,18,0.026264088696232715,56
-Relativistic Jet,0.5445,Common,http://localhost/resources/common/Relativistic%20Jet.png,27,28,0.024477321284145835,53
-Stonard,0.5445,Common,http://localhost/resources/common/Stonard.png,11,31,0.042055974958484704,56
-Thunderbolt,0.5445,Common,http://localhost/resources/common/Thunderbolt.png,20,17,0.013224090060177187,59
-Undying Flame,0.5445,Common,http://localhost/resources/common/Undying%20Flame.png,27,22,0.028315136867233276,61
-Variation,0.5445,Common,http://localhost/resources/common/Variation.png,19,10,0.010205191320624044,57
-Gauntlets of Night,0.4,Rare,http://localhost/resources/rare/Gauntlets%20of%20Night.png,43,35,0.08697056171708888,61
-Gauntlets of Voyager,0.4,Rare,http://localhost/resources/rare/Gauntlets%20of%20Voyager.png,47,51,0.0907106718967258,60
-Guardian Gauntlets,0.4,Rare,http://localhost/resources/rare/Guardian%20Gauntlets.png,40,30,0.052925191212243115,67
-Guardian Pistol,0.4,Rare,http://localhost/resources/rare/Guardian%20Pistol.png,48,38,0.07583253228609549,61
-Guardian Rectifier,0.4,Rare,http://localhost/resources/rare/Guardian%20Rectifier.png,38,31,0.08476968557648848,64
-Originite Type III,0.4,Rare,http://localhost/resources/rare/Originite%20Type%20III.png,50,47,0.06583387927226672,63
-Originite Type IV,0.4,Rare,http://localhost/resources/rare/Originite%20Type%20IV.png,32,37,0.05474837186323628,64
-Originite Type V,0.4,Rare,http://localhost/resources/rare/Originite%20Type%20V.png,49,31,0.09149524410637416,61
-Pistol of Night,0.4,Rare,http://localhost/resources/rare/Pistol%20of%20Night.png,49,31,0.07859293879368502,61
-Pistol of Voyager,0.4,Rare,http://localhost/resources/rare/Pistol%20of%20Voyager.png,34,45,0.07177654763465456,61
-Rectifier of Night,0.4,Rare,http://localhost/resources/rare/Rectifier%20of%20Night.png,44,49,0.0633192534899428,66
-Rectifier of Voyager,0.4,Rare,http://localhost/resources/rare/Rectifier%20of%20Voyager.png,40,35,0.07500405757380874,67
-Tyro Gauntlets,0.05,Super Rare,http://localhost/resources/super_rare/Tyro%20Gauntlets.png,71,52,0.116963913030454,72
-Tyro Pistol,0.05,Super Rare,http://localhost/resources/super_rare/Tyro%20Pistol.png,60,69,0.12154957107023734,82
-Tyro Rectifier,0.05,Super Rare,http://localhost/resources/super_rare/Tyro%20Rectifier.png,68,65,0.11612537907792658,74
-Ultra Gauntlets,0.005,Ultra Rare,http://localhost/resources/ultra_rare/Ultra%20Gauntlets.png,72,79,0.1537302730104312,88
-Ultra pistol,0.005,Ultra Rare,http://localhost/resources/ultra_rare/Ultra%20pistol.png,89,78,0.18298191589381502,86
-Static Mist,0.0005,Super Ultra Rare,http://localhost/resources/super_ultra_rare/Static%20Mist.png,100,96,0.2595070634327134,100
+accuracy,critical,damage,extractionProb,image,name,rarity,speed
+57,0.013483205828622311,19,0.5445,http://localhost/resources/common/Amity%20Accord.png,Amity Accord,Common,19
+51,0.03864243103590715,14,0.5445,http://localhost/resources/common/Augment.png,Augment,Common,30
+59,0.040968433639838035,20,0.5445,http://localhost/resources/common/Cadenza.png,Cadenza,Common,17
+57,0.030582009733648254,30,0.5445,http://localhost/resources/common/Celestial%20Spiral.png,Celestial Spiral,Common,27
+56,0.045415052258600985,27,0.5445,http://localhost/resources/common/Comet%20Flare.png,Comet Flare,Common,28
+50,0.022285235964196425,25,0.5445,http://localhost/resources/common/Fusion%20Accreation.png,Fusion Accreation,Common,12
+56,0.04560532453068797,12,0.5445,http://localhost/resources/common/Gauntlets%2021D.png,Gauntlets 21D,Common,29
+51,0.032496558334091,20,0.5445,http://localhost/resources/common/Hollow%20Mirage.png,Hollow Mirage,Common,28
+58,0.012864096340998245,24,0.5445,http://localhost/resources/common/Jinzhou%20Keeper.png,Jinzhou Keeper,Common,13
+53,0.02513917190200654,27,0.5445,http://localhost/resources/common/Marcato.png,Marcato,Common,10
+58,0.017614106767245084,21,0.5445,http://localhost/resources/common/Novaburst.png,Novaburst,Common,26
+59,0.014828799655798237,25,0.5445,http://localhost/resources/common/Pistol%2026.png,Pistol 26,Common,19
+56,0.026264088696232715,18,0.5445,http://localhost/resources/common/Rectifier%2025.png,Rectifier 25,Common,18
+53,0.024477321284145835,27,0.5445,http://localhost/resources/common/Relativistic%20Jet.png,Relativistic Jet,Common,28
+56,0.042055974958484704,11,0.5445,http://localhost/resources/common/Stonard.png,Stonard,Common,31
+59,0.013224090060177187,20,0.5445,http://localhost/resources/common/Thunderbolt.png,Thunderbolt,Common,17
+61,0.028315136867233276,27,0.5445,http://localhost/resources/common/Undying%20Flame.png,Undying Flame,Common,22
+57,0.010205191320624044,19,0.5445,http://localhost/resources/common/Variation.png,Variation,Common,10
+61,0.08697056171708888,43,0.4,http://localhost/resources/rare/Gauntlets%20of%20Night.png,Gauntlets of Night,Rare,35
+60,0.0907106718967258,47,0.4,http://localhost/resources/rare/Gauntlets%20of%20Voyager.png,Gauntlets of Voyager,Rare,51
+67,0.052925191212243115,40,0.4,http://localhost/resources/rare/Guardian%20Gauntlets.png,Guardian Gauntlets,Rare,30
+61,0.07583253228609549,48,0.4,http://localhost/resources/rare/Guardian%20Pistol.png,Guardian Pistol,Rare,38
+64,0.08476968557648848,38,0.4,http://localhost/resources/rare/Guardian%20Rectifier.png,Guardian Rectifier,Rare,31
+63,0.06583387927226672,50,0.4,http://localhost/resources/rare/Originite%20Type%20III.png,Originite Type III,Rare,47
+64,0.05474837186323628,32,0.4,http://localhost/resources/rare/Originite%20Type%20IV.png,Originite Type IV,Rare,37
+61,0.09149524410637416,49,0.4,http://localhost/resources/rare/Originite%20Type%20V.png,Originite Type V,Rare,31
+61,0.07859293879368502,49,0.4,http://localhost/resources/rare/Pistol%20of%20Night.png,Pistol of Night,Rare,31
+61,0.07177654763465456,34,0.4,http://localhost/resources/rare/Pistol%20of%20Voyager.png,Pistol of Voyager,Rare,45
+66,0.0633192534899428,44,0.4,http://localhost/resources/rare/Rectifier%20of%20Night.png,Rectifier of Night,Rare,49
+67,0.07500405757380874,40,0.4,http://localhost/resources/rare/Rectifier%20of%20Voyager.png,Rectifier of Voyager,Rare,35
+72,0.116963913030454,71,0.05,http://localhost/resources/super_rare/Tyro%20Gauntlets.png,Tyro Gauntlets,Super Rare,52
+82,0.12154957107023734,60,0.05,http://localhost/resources/super_rare/Tyro%20Pistol.png,Tyro Pistol,Super Rare,69
+74,0.11612537907792658,68,0.05,http://localhost/resources/super_rare/Tyro%20Rectifier.png,Tyro Rectifier,Super Rare,65
+88,0.1537302730104312,72,0.005,http://localhost/resources/ultra_rare/Ultra%20Gauntlets.png,Ultra Gauntlets,Ultra Rare,79
+86,0.18298191589381502,89,0.005,http://localhost/resources/ultra_rare/Ultra%20pistol.png,Ultra pistol,Ultra Rare,78
+100,0.2595070634327134,100,0.0005,http://localhost/resources/super_ultra_rare/Static%20Mist.png,Static Mist,Super Ultra Rare,96
