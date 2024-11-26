@@ -130,6 +130,7 @@ services:
     image: mysql:latest
     container_name: collection_db
     restart: always
+    command: --local-infile=1
     volumes:
       - ./collection/collection_db:/var/lib/mysql:rw
       - ./init_db/data_collection.csv:/var/lib/mysql-files/data_collection.csv
