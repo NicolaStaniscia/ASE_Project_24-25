@@ -26,6 +26,9 @@ def add_gacha_to_collection():
         if role != 'admin':
             return make_response(jsonify(error='Access denied'), 403)
         
+        if not data or ('user_id' not in data) or ('gacha_id' not in data):
+            return make_response(jsonify(error='Bad request'), 400)
+        
         # Send data (user_id, gacha_id)
         response = requests.post('https://collection_db_manager:5010/edit/user_collection', json=data, verify=False)
         if response.status_code == 200:
@@ -47,6 +50,9 @@ def add_gacha_to_collection_win():
     data = request.get_json()
 
     try:
+        if not data or ('user_id' not in data) or ('gacha_id' not in data):
+            return make_response(jsonify(error='Bad request'), 400)
+        
         # Send data (user_id, gacha_id)
         response = requests.post('https://collection_db_manager:5010/edit/user_collection', json=data, verify=False)
         if response.status_code == 200:
@@ -71,12 +77,16 @@ def edit_gacha_of_collection():
     # Retrieve role of user
     jwt_payload = get_jwt()
     role = jwt_payload.get('role', 'unknown')
+    fields = ['user_id', 'gacha_id']
 
     try:
         if role != 'admin':
             return make_response(jsonify(error='Access denied'), 403)
         
-        # data = (id, user_id, gacha_id, in_auction)
+        if not data or ('id' not in data) or not any(field in data for field in fields):
+            return make_response(jsonify(error='Bad request'), 400)
+        
+        # data = (id, user_id, gacha_id)
         response = requests.patch('https://collection_db_manager:5010/edit/user_collection', json=data, verify=False)
         if response.status_code == 200:
             return make_response(jsonify(success=response.json()['result']), 200)
@@ -103,6 +113,9 @@ def remove_gacha_from_collection(id_own):
         if role != 'admin':
             return make_response(jsonify(error='Access denied'), 403)
         
+        if not id_own:
+            return make_response(jsonify(error='Bad request'), 400)
+        
         # data (id, user_id, gacha_id)
         response = requests.delete(f'https://collection_db_manager:5010/edit/user_collection/{id_own}', verify=False)
         if response.status_code == 200:
@@ -127,10 +140,14 @@ def edit_system_gacha():
     # Retrieve role of user
     jwt_payload = get_jwt()
     role = jwt_payload.get('role', 'unknown')
+    required_fields = ['name', 'extractionProb', 'rarity', 'image', 'damage', 'speed', 'critical', 'accuracy']
 
     try:
         if role != 'admin':
             return make_response(jsonify(error='Access denied'), 403)
+        
+        if not data or not all(field in data for field in required_fields):
+            return make_response(jsonify(error='Bad request'), 400)
         
         # data[n] (name, extractionProb, rarity, image, damage, speed, critical, accuracy)
         insert_response = requests.post('https://collection_db_manager:5010/edit_gacha', json=data, verify=False)
@@ -156,10 +173,14 @@ def edit_gacha_info():
     # Retrieve role of user
     jwt_payload = get_jwt()
     role = jwt_payload.get('role', 'unknown')
+    required_fields = ['name', 'extractionProb', 'rarity', 'image', 'damage', 'speed', 'critical', 'accuracy']
 
     try:
         if role != 'admin':
             return make_response(jsonify(error='Access denied'), 403)
+        
+        if not data or ('id' not in data) or not any(field in data for field in required_fields):
+            return make_response(jsonify(error='Bad request'), 400)
         
         # data (id, name, extractionProb, image, class, damage, speed, critical, accuracy)
         response = requests.patch('https://collection_db_manager:5010/edit_gacha', json=data, verify=False)
