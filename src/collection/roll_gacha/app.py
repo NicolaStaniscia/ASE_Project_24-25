@@ -116,7 +116,7 @@ def roll_standard():
         
         # Edit currency 
         new_balance = bullet_p - standard_price
-        data_update = {'currency':new_balance}
+        data_update = {'currency': new_balance}
         update_resp = requests.patch('https://account_management:5000/account_management/currency', json=data_update, headers=new_header, verify=False)
         if update_resp.status_code != 200:
             return make_response(jsonify(update_resp.json()), update_resp.status_code)
