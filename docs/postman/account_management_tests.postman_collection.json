@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "3fec0374-f3e0-469d-89a4-4cee913d5c7a",
+		"_postman_id": "0eeeb524-d6d6-48cd-a9ff-9e9cd9b617e1",
 		"name": "account_management_tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "39569006"
+		"_exporter_id": "39662462"
 	},
 	"item": [
 		{
@@ -385,6 +385,364 @@
 					"path": [
 						"account_management",
 						"modify_user_account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/account_management/get_currency 200 OK",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"user_id = Math.floor(Math.random() * 10) + 1;\r",
+							"pm.environment.set('user_id', user_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response is 200\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Requests header contains Authorization\", function() {\r",
+							"    pm.request.to.have.header('Authorization');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains points\", function() {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('points');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Points is an array\", function() {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.points).to.be.an('array');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "JwtGACHA2425",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:8080/account_management/get_currency",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account_management",
+						"get_currency"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/account_management/currency 200 OK",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"user_id = Math.floor(Math.random() * 10) + 1;\r",
+							"currency = 500 + Math.floor(Math.random() * 600);\r",
+							"\r",
+							"pm.environment.set('user_id', user_id);\r",
+							"pm.environment.set('currency', currency);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response is 200\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Request header contains Authorization\", function() {\r",
+							"    pm.request.to.have.header('Authorization');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Request body contains currency\", function() {\r",
+							"    const body = pm.request.body.raw;\r",
+							"    const jsonBody = JSON.parse(body);\r",
+							"    pm.expect(jsonBody).to.have.property('currency');\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Response contains field\", function() {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('success');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body matches expected result\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    var expectedResponse = \"Currency updated\";\r",
+							"    pm.expect(jsonData.success).to.eql(expectedResponse);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "JwtGACHA2425",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"currency\": {{currency}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8080/account_management/currency",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account_management",
+						"currency"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/account_management/get_username 200 OK",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"admin_id = 1;\r",
+							"pm.environment.set('admin_id', admin_id);\r",
+							"\r",
+							"// IDs\r",
+							"const ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\r",
+							"\r",
+							"pm.environment.set('ids', JSON.stringify(ids));\r",
+							"\r",
+							"console.log(ids);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Request header contains Authorization\", function() {\r",
+							"    pm.request.to.have.header('Authorization');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has field\", function() {\r",
+							"    pm.expect(pm.response.json()).to.have.property('success');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Success is an array\", function() {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.success).to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Each value contains fields\", function() {\r",
+							"    const jsonData = pm.response.json().success;\r",
+							"    jsonData.forEach((item) => {\r",
+							"        pm.expect(item).to.have.property('id');\r",
+							"        pm.expect(item).to.have.property('username');\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "JwtGACHA2425",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ids\": {{ids}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8081/account_management/get_username",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"account_management",
+						"get_username"
 					]
 				}
 			},
