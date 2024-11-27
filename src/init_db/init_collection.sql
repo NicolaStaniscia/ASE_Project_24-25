@@ -26,3 +26,10 @@ FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS
 (accuracy, critical, damage, extractionProb, image, name, rarity, speed);
+
+LOAD DATA INFILE '/var/lib/mysql-files/owned_collection.csv'
+INTO TABLE Owned
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(gacha, user);

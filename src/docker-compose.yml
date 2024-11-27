@@ -133,6 +133,7 @@ services:
     volumes:
       - ./collection/collection_db:/var/lib/mysql:rw
       - ./init_db/data_collection.csv:/var/lib/mysql-files/data_collection.csv
+      - ./init_db/owned_collection.csv:/var/lib/mysql-files/owned_collection.csv
       - ./init_db/init_collection.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       MYSQL_ROOT_PASSWORD: Spin&Go_2425
