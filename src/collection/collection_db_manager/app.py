@@ -169,9 +169,9 @@ class MyApp(Flask):
             if 'image' in data:
                 column.append('image = %s')
                 values.append(data['image'])
-            if 'class' in data:
-                column.append('class = %s')
-                values.append(data['class'])
+            if 'rarity' in data:
+                column.append('rarity = %s')
+                values.append(data['rarity'])
             if 'damage' in data:
                 column.append('damage = %s')
                 values.append(data['damage'])
