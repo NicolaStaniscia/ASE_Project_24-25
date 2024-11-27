@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY app.py .
 COPY requirements.txt .
+COPY https .
 
 RUN python3 -m pip install -r requirements.txt
 
