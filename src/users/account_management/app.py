@@ -269,22 +269,30 @@ def set_currency():
 #ADMIN SERVICES
 
 # Used for admin collection operations
-@app.route('/account_management/get_username/<int:user_id>', methods=['GET'])
-def get_username(user_id):
+@app.route('/account_management/get_username', methods=['GET'])
+@jwt_required()
+def get_username():
+    jwtPayload = get_jwt()
+    role = jwtPayload.get('role', 'unknown')
+    data = request.get_json()
+
     try:
-        if not user_id:
+        if role != 'admin':
             return make_response(jsonify(error='Forbidden'), 403)
+        
+        if not data or ('ids' not in data):
+            return make_response(jsonify(error='Data missing'), 400)
 
-        response = requests.get(f'https://users_db_manager:5000/username/{user_id}', verify=False)
-        if response.status_code == 200:
-            return make_response(jsonify(success=response.json()['message']), 200)
+        response = requests.get('https://users_db_manager:5000/usernames', json=data, verify=False)
+        if response.status_code != 200:
+            return make_response(jsonify(response.json()), response.status_code)
+        
+        return make_response(jsonify(success=response.json()), 200)
 
-        return make_response(jsonify(response.json()), response.status_code)
-     
     except requests.exceptions.RequestException as e:
-        return make_response(jsonify(error='Request failed'), 500)
+        return make_response(jsonify(error=f'Request failed: {str(e)}'), 500)
     except Exception as e:
-        return make_response(jsonify(error='Internal server error'), 500)
+        return make_response(jsonify(error=f'Internal server error: {str(e)}'), 500)
 
 @app.route('/account_management/admin/login', methods=['POST'])
 def login_admin():

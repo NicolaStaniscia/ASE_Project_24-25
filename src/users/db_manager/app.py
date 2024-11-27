@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, make_response
 import mysql.connector
 from mysql.connector import Error
 import hashlib
+import json
 
 app = Flask(__name__)
 
@@ -305,8 +306,11 @@ def decrease_currency():
 #ADMIN SERVICE
 
 # Used by see_gacha_collection microservice
-@app.route('/username/<int:user_id>', methods=['GET'])
-def get_username_by_id(user_id):
+@app.route('/usernames', methods=['GET'])
+def usernames():
+    data = request.get_json()
+    ids = data.get('ids', [])
+    print(ids)
 
     try:
         connection = get_db_connection()
@@ -317,11 +321,23 @@ def get_username_by_id(user_id):
         query = "SELECT username FROM users WHERE id = %s"
         cursor = connection.cursor()
 
-        # Execute query
-        cursor.execute(query, (user_id,))
-        result = cursor.fetchone()
+        # List
+        usernames = []
 
-        return make_response(jsonify(message=result), 200)
+        # Execute query
+        for user_id in ids:
+            cursor.execute(query, (user_id,))
+            result = cursor.fetchone()
+            usernames.append(
+                {"id": user_id, "username": result[0]}
+            )
+
+        if not usernames: return make_response(jsonify(error='No users'), 400)
+
+        # Create a json array
+        jsonArray = json.dumps(usernames, indent=4)
+
+        return make_response(jsonify(usernames), 200)
         
     except Exception as e:
         return make_response(jsonify(error=str(e)), 500)
@@ -329,6 +345,7 @@ def get_username_by_id(user_id):
     finally:
         if cursor: cursor.close()
         if connection: connection.close()
+
 
 @app.route('/get_all_users/<username>', methods=['GET'])
 def get_all_users(username):

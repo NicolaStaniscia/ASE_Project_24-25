@@ -135,6 +135,8 @@ def check_all_user_collections():
     # Retrieve token and role
     jwt_payload = get_jwt()
     role = jwt_payload.get('role', 'unknown')
+    auth_headers = request.headers.get('Authorization')
+    new_header = {'Authorization': auth_headers}
 
     try:
         if role != 'admin':
@@ -144,30 +146,30 @@ def check_all_user_collections():
         if response_users.status_code != 200:
             return make_response(jsonify(error='Failed to retrieve users'), response_users.status_code)
         
+        # IDs
         users = [item['user'] for item in response_users.json()]
+        users_ids = {"ids": users}
 
         # Retrieve all usernames
-        users_info = []
-        for user in users:
-            username_resp = requests.get(f'https://account_management:5000/account_management/get_username/{user}', verify=False)
-            if username_resp.status_code != 200:
-                raise requests.exceptions.RequestException('Something gone wrong')
-            
-            users_info.append((user, username_resp.json()['message']))
+        users_response = requests.get('https://account_management:5000/account_management/get_username', json=users_ids, headers=new_header, verify=False)
+        if users_response.status_code != 200:
+            return make_response(jsonify(users_response.json()), users_response.status_code)
+        
+        # return make_response(jsonify(users_response.json()['success']), 200)
 
         # Retrieve all gachas for each user
         user_list = []
-        for (user_id, username) in users_info:
+        for user in users_response.json()['success']:
             # Make a request for each user
-            response_gacha = requests.get(f'https://collection_db_manager:5010/user_collection/{user}', verify=False)
+            response_gacha = requests.get(f'https://collection_db_manager:5010/user_collection/{user['id']}', verify=False)
             if response_gacha.status_code != 200:
                 return make_response(jsonify(error='Failed to retrieve users collection'), response_gacha.status_code)
             
             # Retrieve gachas of the current user 
             user_gachas = response_gacha.json()
             user_data = {
-                'user_id': user_id,
-                'username': username,
+                'user_id': user['id'],
+                'username': user['username'],
                 'gachas': user_gachas if user_gachas else []
             }
             user_list.append(user_data)
