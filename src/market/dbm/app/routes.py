@@ -34,6 +34,24 @@ def get_specific_auction_dbm():
         return jsonify({"auction": auction_details}), 200
     except Exception as e:
         return jsonify({"error": f"Error fetching auction: {str(e)}"}), 500
+
+@db_manager.route('/admin/market/specific_gacha_auction', methods=['GET'])
+def get_specific_gacha_auction_dbm():
+    data = request.get_json()
+    gacha_id = data.get("gacha_id")
+
+    # Recupera i dettagli di un'asta specifica dal database.
+    try:
+        # Query per ottenere i dettagli dell'asta
+        auction = db.session.query(Auctions).filter_by(gacha_id=gacha_id, status='active').first()
+
+        if not auction:
+            return jsonify({"active_auction": False}), 200
+
+        # Se l'asta esiste, ritorna True
+        return jsonify({"active_auction": True}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error checking active auction: {str(e)}"}), 500
     
 # Endpoint: PATCH /admin/market/specific_auction
 @db_manager.route('/admin/market/specific_auction', methods=['PATCH'])

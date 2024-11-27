@@ -17,7 +17,7 @@ def is_admin():
 
 # Funzione d'appoggio per verifica autenticazione JWT
 def is_user_authenticated(user_id):
-    return get_jwt_identity() == user_id
+    return get_jwt_identity() == str(user_id)
 
 # Funzione per recuperare le aste attive, condivisa tra user e admin
 def fetch_active_auctions():
@@ -144,7 +144,8 @@ def get_market_history():
 @auction_market.route('/market', methods=['POST'])
 @jwt_required()
 def create_auction():
-    token = get_jwt()
+    auth_headers = request.headers.get('Authorization')
+    new_header = {'Authorization':auth_headers}
     data = request.get_json()
 
     # Recupero dei campi POST
@@ -168,20 +169,42 @@ def create_auction():
     if auction_end <= datetime.utcnow():
         return jsonify({'error': 'auction_end must be a future date'}), 400
 
+    # Verifica che il gacha non sia già in asta attiva
+    try:
+        # Chiamata al DBM per verificare se esiste un'asta attiva per il gacha_id
+        dbm_response = requests.get(
+            dbm_url("/admin/market/specific_gacha_auction"),
+            json={"gacha_id": gacha_id},
+            timeout=5,
+            verify=False
+        )
+
+        if dbm_response.status_code != 200:
+            return jsonify({'error': 'Failed to check active auction status'}), dbm_response.status_code
+
+        active_auction_info = dbm_response.json()
+        if active_auction_info.get("active_auction"):
+            return jsonify({'error': 'Gacha is already listed in an active auction'}), 409
+
+    except requests.RequestException as e:
+        return jsonify({'error': f"Error communicating with DBM: {str(e)}"}), 500
+
+    
     # Verifica che il gacha appartenga all'user, prendo la collezione intera
     # Header per la richiesta con il token JWT
-    headers = {"Authorization": f"Bearer {token}"}
     try:
         collection_response = requests.get(
-            f"{current_app.config['COLLECTION_URL']}/collection",
-            headers=headers,
+            f"{current_app.config['COLLECTION_SEE_URL']}/collection",
+            headers=new_header,
+            timeout=5,
             verify=False
         )
         if collection_response.status_code != 200:
             return jsonify({'error': 'Error retrieving user collection'}), collection_response.status_code
+        
 
         collection = collection_response.json()
-        if not any(item['gachaId'] == gacha_id for item in collection):
+        if not any(item['idOwn'] == gacha_id for item in collection):
             return jsonify({'error': 'Gacha not found in user collection'}), 404
 
     except requests.RequestException as e:
@@ -207,7 +230,8 @@ def create_auction():
 @auction_market.route('/market/bid', methods=['POST'])
 @jwt_required()
 def place_bid():
-    token = get_jwt()
+    auth_headers = request.headers.get('Authorization')
+    new_header = {'Authorization':auth_headers}
     data = request.get_json()
     auction_id = data.get('auction_id')
     bidder_id = data.get('bidder_id')
@@ -232,9 +256,9 @@ def place_bid():
     if bid_amount <= 0:
         return jsonify({"error": "Bid amount must be greater than zero"}), 400
     
-    # Verifica del credito disponibile per il bidder
-    headers = {"Authorization": f"Bearer {token}"}
-    response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=headers,verify=False)
+    # Verifica del credito disponibile per il bidder (CONTROLLA SE SERVE L'USERD ID NELL'HEADER)
+    
+    response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=new_header,verify=False)
     if response.status_code == 404:
         return jsonify({"error": "Not found"}), 404
     user_credit = response.json()['points'][0]
@@ -253,10 +277,10 @@ def place_bid():
             return jsonify({"error": response.json().get("error", "Unknown error")}), response.status_code
         
         # Fai chiamata al servizio di account_management per scalare la currency
-        new_balance = user_credit + bid_amount
+        new_balance = user_credit - bid_amount
         response = requests.patch('https://account_management:5000/account_management/currency', json={
             "currency": new_balance
-        }, headers=headers,verify=False)
+        }, headers=new_header,verify=False)
 
         if response.status_code != 200:
             return jsonify({"error": response.json().get("error", "Failed to update user balance")}), response.status_code
@@ -359,9 +383,16 @@ def refund_bid():
     data = request.get_json()
     auction_id = data.get("auction_id")
 
-    auction = Auctions.query.filter_by(id=auction_id, status='closed').first()
-    if not auction:
-        return jsonify({"error": "Auction not found or not closed"}), 404
+    # Trovare l'asta specifica
+    try:
+        response = requests.get(dbm_url("/admin/market/specific_auction"), json={"auction_id":auction_id},timeout=5, verify=False)
+        response_data = response.json()
+        if response_data["auction"]["status"] != "closed" or response.status_code == 404:
+            return jsonify({"error": "Auction not found or not closed"}), 404
+        if response.status_code != 200:
+            return jsonify({"error": "Failed to fetch auction details"}), response.status_code
+    except requests.RequestException as e:
+        return jsonify({"error": f"Error communicating with DBM: {str(e)}"}), 500
 
     # Chiama il db-manager per processare i rimborsi
     response = requests.post(dbm_url("/market/auction_refund"), json={"auction_id":auction_id},timeout=5, verify=False)

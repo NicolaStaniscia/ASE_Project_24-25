@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, current_app
 from .models import db,UserTransactionHistory
 import requests
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
 
 
 trading_history = Blueprint('trading_history', __name__)
@@ -27,6 +27,7 @@ def get_transaction_history():
     except ValueError:
         return jsonify({"error": "Invalid User ID format"}), 400
 
+    #### CORREGGERE CON CHIAMATA AL DBM
     transaction_history = UserTransactionHistory.query.filter_by(user_id=user_id).all()
     if not transaction_history:
         return jsonify({"transactions": [], "message": "No transactions found for this user"}), 200
@@ -67,6 +68,10 @@ def record_transaction():
         return jsonify({"error": "Invalid input format or negative price"}), 400
 
     try:
+        token = create_access_token(
+            identity=str(seller_id)
+        )
+        
         # Chiamata al db-manager per registrare la transazione
         response = requests.post(dbm_url("/market/transaction"), json={
             "auction_id": auction_id,
@@ -75,7 +80,20 @@ def record_transaction():
             "final_price": final_price
         }, verify=False)
 
-        #devo dare i soldi i soldi al seller
+        # Recupera il credito del venditore
+        headers = {"Authorization": f"Bearer {token}"}
+        response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=headers,verify=False)
+        if response.status_code == 404:
+            return jsonify({"error": "Not found"}), 404
+        
+        user_credit = response.json()['points'][0]
+
+        # Calcolo il nuovo saldo
+        new_balance = user_credit + final_price
+        # Aggiorna il saldo
+        response = requests.patch('https://account_management:5000/account_management/currency', json={
+            "currency": new_balance
+        }, headers=headers,verify=False)
 
         if response.status_code != 200:
             return jsonify({"error": response.json().get("error", "Unknown error")}), response.status_code
@@ -93,7 +111,6 @@ def record_transaction():
 def process_refund():
     # viene chiamato dallo scheduler per i rimborsi "attivi", aste non scadute
     # e dal dbm che elabora i rimborsi "scaduti", completandone la logica
-    # devo dare i soldi dei rimborsi alle offerte non vincenti
 
     data = request.get_json()
     user_id = data.get("user_id")
@@ -112,6 +129,7 @@ def process_refund():
     except ValueError:
         return jsonify({"error": "Invalid input format or negative amount"}), 400
 
+    #### CORREGGERE CON CHIAMATA AL DBM
     existing_refund = UserTransactionHistory.query.filter_by(
         user_id=user_id, auction_id=auction_id, transaction_type="refund"
     ).first()
@@ -119,6 +137,35 @@ def process_refund():
         return jsonify({"error": "Refund already processed"}), 409
     
     try:
+        token = create_access_token(
+            identity=str(user_id)
+        )
+        
+        # Effettua il rimborso aggiornando il saldo dell'utente
+        headers = {"Authorization": f"Bearer {token}"}
+        response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=headers, verify=False)
+
+        if response.status_code == 404:
+            return jsonify({"error": "User not found"}), 404
+
+        user_credit = response.json()['points'][0]
+
+        # Calcola il nuovo saldo
+        new_balance = user_credit + amount
+
+        # Aggiorna il saldo dell'utente
+        response = requests.patch(f"{current_app.config['USERS_URL']}/account_management/currency", json={
+            "currency": new_balance
+        }, headers=headers, verify=False)
+
+        if response.status_code != 200:
+            return jsonify({"error": response.json().get("error", "Unknown error")}), response.status_code
+
+        result = response.json()
+        if not result["success"]:
+            return jsonify({"error": result["message"]}), 500
+
+
         refund_transaction = UserTransactionHistory(
             user_id=user_id,
             auction_id=auction_id,

@@ -1,8 +1,11 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
-from flask import current_app
+from flask import current_app, jsonify
 from .models import Auctions, Bids, db
 import requests
+
+def dbm_url(path):
+    return current_app.config['DBM_URL'] + path
 
 def init_scheduler(app):
     scheduler = BackgroundScheduler()
@@ -33,6 +36,7 @@ def process_expired_auctions(app):
         now = datetime.utcnow()
 
         # Recupera aste scadute e attive
+        ##### CORREGGERE CON CHIAMATA AL DBM
         expired_auctions = Auctions.query.filter(
             Auctions.auction_end <= now,
             Auctions.status == 'active'
@@ -80,15 +84,25 @@ def process_expired_auctions(app):
 def refund_non_winning_bids(app):
     with app.app_context():
         with db.session.no_autoflush:  # Evita conflitti con altre transazioni
-            active_auctions = Auctions.query.filter(Auctions.status == 'active').all()
+            # Recupero delle aste attive
+            try:
+                response = requests.get(dbm_url("/market"), timeout=5, verify=False)
+                if response.status_code != 200:
+                    return jsonify({'error': 'Failed to fetch active auctions'}), response.status_code
+
+                active_auctions = response.json()
+            except requests.RequestException as e:
+                return jsonify({'error': f"Error communicating with DBM: {str(e)}"}), 500
 
             for auction in active_auctions:
                 # Trova l'offerta più alta per l'asta
-                highest_bid = Bids.query.filter_by(auction_id=auction.id).order_by(Bids.bid_amount.desc()).first()
+                ##### CORREGGERE CON CHIAMATA AL DBM
+                highest_bid = Bids.query.filter_by(auction_id=auction['id']).order_by(Bids.bid_amount.desc()).first()
 
+                ##### CORREGGERE CON CHIAMATA AL DBM
                 # Trova tutte le offerte perdenti non ancora rimborsate
                 losing_bids = Bids.query.filter(
-                    Bids.auction_id == auction.id,
+                    Bids.auction_id == auction['id'],
                     Bids.id != highest_bid.id if highest_bid else True,  # Ignora l'offerta vincente
                     Bids.refunded == False  # Solo offerte non ancora rimborsate
                 ).all()
