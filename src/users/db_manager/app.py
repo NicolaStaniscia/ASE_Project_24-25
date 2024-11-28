@@ -346,7 +346,6 @@ def usernames():
         if cursor: cursor.close()
         if connection: connection.close()
 
-
 @app.route('/get_all_users/<username>', methods=['GET'])
 def get_all_users(username):
     

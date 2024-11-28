@@ -91,7 +91,7 @@ def login():
             return jsonify({"access_token": access_token, "status": "Login completed successfully"}), 200
         
         elif response.status_code == 401:#invalid credentials
-            return jsonify({"status": "Invalid credentials"}), 401
+            return jsonify({"error": "Invalid credentials"}), 401
         else:
             return jsonify({"error": "Database Error"}), 500
         
