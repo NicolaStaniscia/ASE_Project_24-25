@@ -146,8 +146,14 @@ def edit_system_gacha():
         if role != 'admin':
             return make_response(jsonify(error='Access denied'), 403)
         
-        if not data or not all(field in data for field in required_fields):
-            return make_response(jsonify(error='Bad request'), 400)
+        if isinstance(data, list):
+            for item in data:
+                if not isinstance(item, dict) or not all(field in item for field in required_fields):
+                    return make_response(jsonify(error='Bad request'), 400)
+                
+        elif isinstance(data, dict):
+            if not all(field in data for field in required_fields):
+                return make_response(jsonify(error='Bad request'), 400)
         
         # data[n] (name, extractionProb, rarity, image, damage, speed, critical, accuracy)
         insert_response = requests.post('https://collection_db_manager:5010/edit_gacha', json=data, verify=False)
