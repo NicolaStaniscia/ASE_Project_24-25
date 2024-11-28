@@ -145,12 +145,12 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:5007/collection/grouped",
+					"raw": "https://localhost:5000/collection/grouped",
 					"protocol": "https",
 					"host": [
 						"localhost"
 					],
-					"port": "5007",
+					"port": "5000",
 					"path": [
 						"collection",
 						"grouped"
@@ -279,12 +279,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:5007/collection",
+					"raw": "https://localhost:5000/collection",
 					"protocol": "https",
 					"host": [
 						"localhost"
 					],
-					"port": "5007",
+					"port": "5000",
 					"path": [
 						"collection"
 					]
@@ -300,7 +300,7 @@
 					"script": {
 						"exec": [
 							"// Generate gacha_id\r",
-							"gacha_id = 16;\r",
+							"gacha_id = 5;\r",
 							"\r",
 							"// Generate info for jwt token\r",
 							"user_id = Math.floor(Math.random() * 10) + 1;\r",
@@ -424,12 +424,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:5007/collection/{{gacha_id}}",
+					"raw": "https://localhost:5000/collection/{{gacha_id}}",
 					"protocol": "https",
 					"host": [
 						"localhost"
 					],
-					"port": "5007",
+					"port": "5000",
 					"path": [
 						"collection",
 						"{{gacha_id}}"
@@ -561,12 +561,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:5007/admin/collections",
+					"raw": "https://localhost:5000/admin/collections",
 					"protocol": "https",
 					"host": [
 						"localhost"
 					],
-					"port": "5007",
+					"port": "5000",
 					"path": [
 						"admin",
 						"collections"
@@ -688,12 +688,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:5007/admin/collections/{{user_id}}",
+					"raw": "https://localhost:5000/admin/collections/{{user_id}}",
 					"protocol": "https",
 					"host": [
 						"localhost"
 					],
-					"port": "5007",
+					"port": "5000",
 					"path": [
 						"admin",
 						"collections",
@@ -757,12 +757,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:5007/system_collection",
+					"raw": "https://localhost:5000/system_collection",
 					"protocol": "https",
 					"host": [
 						"localhost"
 					],
-					"port": "5007",
+					"port": "5000",
 					"path": [
 						"system_collection"
 					]
@@ -777,7 +777,7 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"gacha_id = 37 // Math.floor(Math.random() * 36) + 1;\r",
+							"gacha_id = 5\r",
 							"\r",
 							"pm.environment.set('gacha_id', gacha_id);"
 						],
@@ -845,12 +845,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:5007/system_collection/{{gacha_id}}",
+					"raw": "https://localhost:5000/system_collection/{{gacha_id}}",
 					"protocol": "https",
 					"host": [
 						"localhost"
 					],
-					"port": "5007",
+					"port": "5000",
 					"path": [
 						"system_collection",
 						"{{gacha_id}}"
