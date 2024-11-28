@@ -146,6 +146,9 @@ def edit_system_gacha():
         if role != 'admin':
             return make_response(jsonify(error='Access denied'), 403)
         
+        if not data:
+            return make_response(jsonify(error='Bad request'), 400)
+        
         if isinstance(data, list):
             for item in data:
                 if not isinstance(item, dict) or not all(field in item for field in required_fields):
