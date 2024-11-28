@@ -26,8 +26,6 @@ def get_user_collection():
            
         # Retrieve user_id from jwt token 
         user_id = get_jwt_identity()
-        if not user_id:
-            return make_response(jsonify(error='User not set'), 400)
         
         # Send a request
         response = requests.get(f"https://collection_db_manager:5010/user_collection/{user_id}", verify=False)
@@ -43,7 +41,7 @@ def get_user_collection():
         return make_response(jsonify(error=f"Request failed: {str(e)}"), 500)
     
     except Exception as e:
-        return make_response(jsonify(error="Internal server error"), 500)
+        return make_response(jsonify(error=f"Internal server error: {str(e)}"), 500)
     
 
 # * Retrieve info about an owned gacha of the user
@@ -59,8 +57,6 @@ def see_gacha_info(gacha_id):
         
         # Retrieve user_id from jwt token 
         user_id = get_jwt_identity()
-        if not user_id:
-            return make_response(jsonify(error='User not set'), 400)
 
         # Check if user owns the requested gacha
         response = requests.get(f"https://collection_db_manager:5010/user_collection/{user_id}", verify=False)
@@ -86,7 +82,7 @@ def see_gacha_info(gacha_id):
         return make_response(jsonify(error=f"Request failed: {str(e)}"), 500)
     
     except Exception as e:
-        return make_response(jsonify(error="Internal server error"), 500)
+        return make_response(jsonify(error=f"Internal server error: {str(e)}"), 500)
 
 
 # ! COMMON ENDPOINTS
@@ -105,7 +101,7 @@ def get_system_collection():
         return make_response(jsonify(error=f"Request failed: {str(e)}"), 500)
     
     except Exception as e:
-        return make_response(jsonify(error="Internal server error"), 500)
+        return make_response(jsonify(error=f"Internal server error: {str(e)}"), 500)
     
 
 # * See the info of a system gacha
@@ -123,7 +119,7 @@ def get_info_about_system_gacha(gacha_id):
         return make_response(jsonify(error=f"Request failed: {str(e)}"), 500)
     
     except Exception as e:
-        return make_response(jsonify(error="Internal server error"), 500)
+        return make_response(jsonify(error=f"Internal server error: {str(e)}"), 500)
     
 
 # ! ADMIN ENDPOINTS
@@ -140,7 +136,8 @@ def check_all_user_collections():
 
     try:
         if role != 'admin':
-            return make_response(jsonify(error='Access denied'), 401)
+            return make_response(jsonify(error='Forbidden'), 403)
+        
         # Retrieve all users
         response_users = requests.get('https://collection_db_manager:5010/users', verify=False)
         if response_users.status_code != 200:
@@ -154,8 +151,6 @@ def check_all_user_collections():
         users_response = requests.get('https://account_management:5000/account_management/get_username', json=users_ids, headers=new_header, verify=False)
         if users_response.status_code != 200:
             return make_response(jsonify(users_response.json()), users_response.status_code)
-        
-        # return make_response(jsonify(users_response.json()['success']), 200)
 
         # Retrieve all gachas for each user
         user_list = []
@@ -174,12 +169,9 @@ def check_all_user_collections():
             }
             user_list.append(user_data)
 
-        # Create a json array
-        json_array = json.dumps(user_list, indent=4)
-
         # Check if data is filled
-        if json_array:
-            return make_response(json_array, 200)
+        if user_list:
+            return make_response(jsonify(user_list), 200)
         
         return make_response(jsonify(error='Failed to retrieve gachas'), 500)
 
@@ -188,7 +180,7 @@ def check_all_user_collections():
         return make_response(jsonify(error=f"Request failed: {str(e)}"), 500)
     
     except Exception as e:
-        return make_response(jsonify(error="Internal server error"), 500)
+        return make_response(jsonify(error=f"Internal server error: {str(e)}"), 500)
     
     
 @app.route('/admin/collections/<int:user_id>', methods=['GET'])
@@ -199,7 +191,7 @@ def check_specific_user_collection(user_id: int):
 
     try:
         if role != 'admin':
-            return make_response(jsonify(error='Access denied'), 401)
+            return make_response(jsonify(error='Forbidden'), 403)
         
         response = requests.get(f'https://collection_db_manager:5010/user_collection/{user_id}', verify=False)
         if response.status_code == 200:
@@ -211,7 +203,7 @@ def check_specific_user_collection(user_id: int):
         return make_response(jsonify(error=f"Request failed: {str(e)}"), 500)
     
     except Exception as e:
-        return make_response(jsonify(error="Internal server error"), 500)
+        return make_response(jsonify(error=f"Internal server error: {str(e)}"), 500)
     
 
 # ! ADDITIONAL FEATURES
@@ -229,8 +221,6 @@ def get_grouped_collection():
         
         # Retrieve user_id from jwt token
         user_id = get_jwt_identity()
-        if not user_id:
-            return make_response()
 
         response = requests.get(f'https://collection_db_manager:5010/user_collection/{user_id}/grouped', verify=False)
         if response.status_code == 200:
@@ -243,7 +233,7 @@ def get_grouped_collection():
         return make_response(jsonify(error=f"Request failed: {str(e)}"), 500)
     
     except Exception as e:
-        return make_response(jsonify(error="Internal server error"), 500)
+        return make_response(jsonify(error=f"Internal server error: {str(e)}"), 500)
 
 
 if __name__ == '__main__':

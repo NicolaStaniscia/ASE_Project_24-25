@@ -41,7 +41,7 @@ def add_gacha_to_collection():
         return make_response(jsonify(error=f"Request failed: {str(e)}"), 500)
     
     except Exception as e:
-        return make_response(jsonify(error="Internal server error"), 500)
+        return make_response(jsonify(error=f"Internal server error: {str(e)}"), 500)
     
 # * Add a gacha to a user collection (chiamata dal sistema)
 @app.route('/edit/collection', methods=['POST'])
@@ -65,7 +65,7 @@ def add_gacha_to_collection_win():
         return make_response(jsonify(error=f"Request failed: {str(e)}"), 500)
     
     except Exception as e:
-        return make_response(jsonify(error="Internal server error"), 500)
+        return make_response(jsonify(error=f"Internal server error: {str(e)}"), 500)
 
 
 # * Edit a gacha of a user collection
@@ -98,7 +98,7 @@ def edit_gacha_of_collection():
         return make_response(jsonify(error=f"Request failed: {str(e)}"), 500)
     
     except Exception as e:
-        return make_response(jsonify(error="Internal server error"), 500)
+        return make_response(jsonify(error=f"Internal server error: {str(e)}"), 500)
 
 
 # * Remove a gacha from a user collection
@@ -116,7 +116,7 @@ def remove_gacha_from_collection(id_own):
         if not id_own:
             return make_response(jsonify(error='Bad request'), 400)
         
-        # data (id, user_id, gacha_id)
+        # data (id)
         response = requests.delete(f'https://collection_db_manager:5010/edit/user_collection/{id_own}', verify=False)
         if response.status_code == 200:
             return make_response(jsonify(success=response.json()['result']), 200)
@@ -128,7 +128,7 @@ def remove_gacha_from_collection(id_own):
         return make_response(jsonify(error=f"Request failed: {str(e)}"), 500)
     
     except Exception as e:
-        return make_response(jsonify(error="Internal server error"), 500)
+        return make_response(jsonify(error=f"Internal server error: {str(e)}"), 500)
 
 
 # * Add gachas (accept json array and json object)
@@ -170,7 +170,7 @@ def edit_system_gacha():
         return make_response(jsonify(error=f"Request failed: {str(e)}"), 500)
     
     except Exception as e:
-        return make_response(jsonify(error="Internal server error"), 500)
+        return make_response(jsonify(error=f"Internal server error: {str(e)}"), 500)
 
 
 # * Edit a specific gacha info
@@ -203,7 +203,7 @@ def edit_gacha_info():
         return make_response(jsonify(error=f"Request failed: {str(e)}"), 500)
     
     except Exception as e:
-        return make_response(jsonify(error="Internal server error"), 500)
+        return make_response(jsonify(error=f"Internal server error: {str(e)}"), 500)
     
 
 # * Delete a system gacha
@@ -233,7 +233,7 @@ def delete_system_gacha(gacha_id):
         return make_response(jsonify(error=f"Request failed: {str(e)}"), 500)
     
     except Exception as e:
-        return make_response(jsonify(error="Internal server error"), 500)
+        return make_response(jsonify(error=f"Internal server error: {str(e)}"), 500)
 
 
 if __name__ == '__main__':
