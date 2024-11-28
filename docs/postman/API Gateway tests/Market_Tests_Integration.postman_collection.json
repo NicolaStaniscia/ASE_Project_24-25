@@ -1,0 +1,2994 @@
+{
+	"info": {
+		"_postman_id": "9e045198-da99-41f8-ab10-a6c00fc073a6",
+		"name": "Market Tests (Integration)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39569006"
+	},
+	"item": [
+		{
+			"name": "Market - Auction Market correct input tests",
+			"item": [
+				{
+					"name": "GET /market 200 OK",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = Math.floor(Math.random() * 10) + 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/auction_market/market",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auction_market",
+								"market"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /admin/market 200 OK",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8081/auction_market/admin/market",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auction_market",
+								"admin",
+								"market"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /admin/market/history 200 OK",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8081/auction_market/admin/market/history",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auction_market",
+								"admin",
+								"market",
+								"history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /market 201 CREATED",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"seller_id = 1;\r",
+									"gacha_id = 1;\r",
+									"auction_end = \"2024-12-31 12:00:00\";\r",
+									"\r",
+									"\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', seller_id.toString());\r",
+									"pm.environment.set('seller_id', seller_id);\r",
+									"pm.environment.set('gacha_id', gacha_id);\r",
+									"pm.environment.set('auction_end', auction_end);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 201\", function() {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"gacha_id\": {{gacha_id}},\r\n    \"seller_id\": {{seller_id}},\r\n    \"starting_price\": 100,\r\n    \"auction_end\": \"{{auction_end}}\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/auction_market/market",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auction_market",
+								"market"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /market/bid 201 CREATED",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"auction_id = 1;\r",
+									"bidder_id = 2;\r",
+									"bid_amount = 100 + Math.floor(Math.random() * 900);\r",
+									"\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', bidder_id.toString());\r",
+									"pm.environment.set('bidder_id', bidder_id);\r",
+									"pm.environment.set('auction_id', auction_id);\r",
+									"pm.environment.set('bid_amount', bid_amount);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 201\", function() {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"auction_id\": {{auction_id}},\r\n    \"bidder_id\": {{bidder_id}},\r\n    \"bid_amount\": {{bid_amount}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/auction_market/market/bid",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auction_market",
+								"market",
+								"bid"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /admin/market/specific_auction 200 OK",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8081/auction_market/admin/market/specific_auction?auctionID=1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auction_market",
+								"admin",
+								"market",
+								"specific_auction"
+							],
+							"query": [
+								{
+									"key": "auctionID",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH /admin/market/specific_auction 200 OK",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": \"suspended\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8081/auction_market/admin/market/specific_auction?auctionID=1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auction_market",
+								"admin",
+								"market",
+								"specific_auction"
+							],
+							"query": [
+								{
+									"key": "auctionID",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /admin/market/specific_auction 200 OK",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8081/auction_market/admin/market/specific_auction?auctionID=1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auction_market",
+								"admin",
+								"market",
+								"specific_auction"
+							],
+							"query": [
+								{
+									"key": "auctionID",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Market - Trading History correct input tests",
+			"item": [
+				{
+					"name": "GET /market/transaction_history 200 OK",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 2;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/trading_history/market/transaction_history?user_id={{user_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"trading_history",
+								"market",
+								"transaction_history"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Market - Auction Market incorrect input tests",
+			"item": [
+				{
+					"name": "FOR TESTING PURPOSES",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"seller_id = 3;\r",
+									"gacha_id = 2;\r",
+									"auction_end = \"2024-12-31 12:00:00\";\r",
+									"\r",
+									"\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', seller_id.toString());\r",
+									"pm.environment.set('seller_id', seller_id);\r",
+									"pm.environment.set('gacha_id', gacha_id);\r",
+									"pm.environment.set('auction_end', auction_end);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 201\", function() {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"gacha_id\": {{gacha_id}},\r\n    \"seller_id\": {{seller_id}},\r\n    \"starting_price\": 100,\r\n    \"auction_end\": \"{{auction_end}}\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/auction_market/market",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auction_market",
+								"market"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /market 401 UNAUTH",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = Math.floor(Math.random() * 10) + 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 401\", function() {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/auction_market/market",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auction_market",
+								"market"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /admin/market 401 UNAUTH",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 401\", function() {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8081/auction_market/admin/market",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auction_market",
+								"admin",
+								"market"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /admin/market/history 401 UNAUTH",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 401\", function() {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8081/auction_market/admin/market/history",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auction_market",
+								"admin",
+								"market",
+								"history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /market 400 MISSING FIELDS",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"seller_id = 1;\r",
+									"gacha_id = 1;\r",
+									"\r",
+									"\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', seller_id.toString());\r",
+									"pm.environment.set('seller_id', seller_id);\r",
+									"pm.environment.set('gacha_id', gacha_id);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"gacha_id\": {{gacha_id}},\r\n    \"seller_id\": {{seller_id}},\r\n    \"starting_price\": 100\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/auction_market/market",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auction_market",
+								"market"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /market 400 FUTURE DATE",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"seller_id = 1;\r",
+									"gacha_id = 1;\r",
+									"auction_end = \"2023-12-01 12:00:00\"\r",
+									"\r",
+									"\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', seller_id.toString());\r",
+									"pm.environment.set('seller_id', seller_id);\r",
+									"pm.environment.set('gacha_id', gacha_id);\r",
+									"pm.environment.set('auction_end', auction_end)\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"gacha_id\": {{gacha_id}},\r\n    \"seller_id\": {{seller_id}},\r\n    \"starting_price\": 100,\r\n    \"auction_end\": \"{{auction_end}}\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/auction_market/market",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auction_market",
+								"market"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /market/bid 404 NOT FOUND",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"auction_id = -1;\r",
+									"bidder_id = 2;\r",
+									"bid_amount = 100 + Math.floor(Math.random() * 900);\r",
+									"\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', bidder_id.toString());\r",
+									"pm.environment.set('bidder_id', bidder_id);\r",
+									"pm.environment.set('auction_id', auction_id);\r",
+									"pm.environment.set('bid_amount', bid_amount);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 404\", function() {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"auction_id\": {{auction_id}},\r\n    \"bidder_id\": {{bidder_id}},\r\n    \"bid_amount\": {{bid_amount}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/auction_market/market/bid",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auction_market",
+								"market",
+								"bid"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /market/bid 400 INSUFFICIENT BID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"auction_id = 2;\r",
+									"bidder_id = 2;\r",
+									"bid_amount = 1;\r",
+									"\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', bidder_id.toString());\r",
+									"pm.environment.set('bidder_id', bidder_id);\r",
+									"pm.environment.set('auction_id', auction_id);\r",
+									"pm.environment.set('bid_amount', bid_amount);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"auction_id\": {{auction_id}},\r\n    \"bidder_id\": {{bidder_id}},\r\n    \"bid_amount\": {{bid_amount}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/auction_market/market/bid",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auction_market",
+								"market",
+								"bid"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /market/bid 400 INVALID INPUT",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"auction_id = 2;\r",
+									"bidder_id = 2;\r",
+									"bid_amount = \"centodieci\";\r",
+									"\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', bidder_id.toString());\r",
+									"pm.environment.set('bidder_id', bidder_id);\r",
+									"pm.environment.set('auction_id', auction_id);\r",
+									"pm.environment.set('bid_amount', bid_amount);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"auction_id\": {{auction_id}},\r\n    \"bidder_id\": {{bidder_id}},\r\n    \"bid_amount\": \"{{bid_amount}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/auction_market/market/bid",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auction_market",
+								"market",
+								"bid"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /market/bid 400 NEGATIVE BID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"auction_id = 2;\r",
+									"bidder_id = 2;\r",
+									"bid_amount = -1;\r",
+									"\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', bidder_id.toString());\r",
+									"pm.environment.set('bidder_id', bidder_id);\r",
+									"pm.environment.set('auction_id', auction_id);\r",
+									"pm.environment.set('bid_amount', bid_amount);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"auction_id\": {{auction_id}},\r\n    \"bidder_id\": {{bidder_id}},\r\n    \"bid_amount\": {{bid_amount}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/auction_market/market/bid",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auction_market",
+								"market",
+								"bid"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /market/bid 400 MISSING FIELDS",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"auction_id = 1;\r",
+									"bidder_id = 2;\r",
+									"bid_amount = 100 + Math.floor(Math.random() * 900);\r",
+									"\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', bidder_id.toString());\r",
+									"pm.environment.set('bidder_id', bidder_id);\r",
+									"pm.environment.set('auction_id', auction_id);\r",
+									"pm.environment.set('bid_amount', bid_amount);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"auction_id\": {{auction_id}},\r\n    \"bidder_id\": {{bidder_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/auction_market/market/bid",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auction_market",
+								"market",
+								"bid"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FOR TESTING PURPOSES",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": \"suspended\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8081/auction_market/admin/market/specific_auction?auctionID=2",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auction_market",
+								"admin",
+								"market",
+								"specific_auction"
+							],
+							"query": [
+								{
+									"key": "auctionID",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /market/bid 400 NOT ACTIVE AUCTION",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"auction_id = 2;\r",
+									"bidder_id = 2;\r",
+									"bid_amount = 100 + Math.floor(Math.random() * 900);\r",
+									"\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', bidder_id.toString());\r",
+									"pm.environment.set('bidder_id', bidder_id);\r",
+									"pm.environment.set('auction_id', auction_id);\r",
+									"pm.environment.set('bid_amount', bid_amount);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"auction_id\": {{auction_id}},\r\n    \"bidder_id\": {{bidder_id}},\r\n    \"bid_amount\": {{bid_amount}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/auction_market/market/bid",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auction_market",
+								"market",
+								"bid"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /admin/market/specific_auction 400 NO ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8081/auction_market/admin/market/specific_auction",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auction_market",
+								"admin",
+								"market",
+								"specific_auction"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /admin/market/specific_auction 404 NOT FOUND",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 404\", function() {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8081/auction_market/admin/market/specific_auction?auctionID=1234",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auction_market",
+								"admin",
+								"market",
+								"specific_auction"
+							],
+							"query": [
+								{
+									"key": "auctionID",
+									"value": "1234"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH /admin/market/specific_auction 400 NO ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": \"suspended\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8081/auction_market/admin/market/specific_auction",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auction_market",
+								"admin",
+								"market",
+								"specific_auction"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH /admin/market/specific_auction 404 NOT FOUND",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 404\", function() {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": \"suspended\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8081/auction_market/admin/market/specific_auction?auctionID=1234",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auction_market",
+								"admin",
+								"market",
+								"specific_auction"
+							],
+							"query": [
+								{
+									"key": "auctionID",
+									"value": "1234"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH /admin/market/specific_auction 400 INVALID STATUS",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": \"terminated\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8081/auction_market/admin/market/specific_auction?auctionID=2",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auction_market",
+								"admin",
+								"market",
+								"specific_auction"
+							],
+							"query": [
+								{
+									"key": "auctionID",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /admin/market/specific_auction 400 NO ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8081/auction_market/admin/market/specific_auction",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auction_market",
+								"admin",
+								"market",
+								"specific_auction"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /admin/market/specific_auction 404 NOT FOUND",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 404\", function() {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8081/auction_market/admin/market/specific_auction?auctionID=1234",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"auction_market",
+								"admin",
+								"market",
+								"specific_auction"
+							],
+							"query": [
+								{
+									"key": "auctionID",
+									"value": "1234"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Market - Trading History incorrect input tests",
+			"item": [
+				{
+					"name": "GET /market/transaction_history 400 INVALID ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 5.1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/trading_history/market/transaction_history?user_id={{user_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"trading_history",
+								"market",
+								"transaction_history"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -18,7 +18,7 @@ def get_transaction_history():
     user_id = request.args.get("user_id")
 
     # Se l'utente non è lo stesso dell'user_id richiesto, restituisci errore
-    if current_user != int(user_id):
+    if current_user != str(user_id):
         return jsonify({"error": "You are not authorized to access this user's transactions"}), 403
 
     # Valida user_id
