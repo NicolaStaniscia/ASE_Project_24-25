@@ -164,7 +164,7 @@ def modify_user():
         # Commit per salvare la modifica nel database
         connection.commit()
 
-        return jsonify({"message": f"User:{username}. Password modified successfully, you need to log in again."}), 201
+        return jsonify({"message": f"User:{username}. Password modified successfully, you need to log in again."}), 200
 
     except Error as e:
         return jsonify({"error": "Database error", "details": str(e)}), 500

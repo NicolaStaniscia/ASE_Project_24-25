@@ -149,7 +149,7 @@ def modify_user_account():
             )
             
             # Restituire la risposta del DB Manager, se la password dell'utente è stato modificato con successo ,allora eseguo anche il logout
-            if response.status_code == 201:
+            if response.status_code == 200:
                 revoked_tokens.add(jti)  # Aggiungi il "jti" alla blacklist (revoca il token)
             return jsonify({
                 "status": response.json(),
