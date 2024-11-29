@@ -8,846 +8,2337 @@
 	"item": [
 		{
 			"name": "add_gacha_to_a_collection",
-			"event": [
+			"item": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// ADMIN\r",
-							"admin_id = 1;\r",
-							"iat = Math.floor(Date.now() / 1000);\r",
-							"\r",
-							"pm.environment.set('admin_id', admin_id.toString());\r",
-							"pm.environment.set('iat', iat);\r",
-							"\r",
-							"// BODY\r",
-							"user_id = Math.floor(Math.random() * 10) + 1;\r",
-							"gacha_id = Math.floor(Math.random() * 36) + 1;\r",
-							"\r",
-							"pm.environment.set('user_id', user_id);\r",
-							"pm.environment.set('gacha_id', gacha_id);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// Fixed TypeError: pm.response is not a function\r",
-							"pm.test('Response is 200', function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test('Response is a JSON', function() {\r",
-							"    pm.response.to.have.header('Content-Type', 'application/json');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response is not an array\", function() {\r",
-							"    pm.expect(pm.response.json()).not.to.be.an('array');\r",
-							"});\r",
-							"\r",
-							"pm.test('Request contains Authorization', function() {\r",
-							"    pm.request.to.have.header('Authorization');\r",
-							"});\r",
-							"\r",
-							"pm.test('Request body contains elements', function () {\r",
-							"    const body = pm.request.body.raw;\r",
-							"    const jsonBody = JSON.parse(body);\r",
-							"    pm.expect(jsonBody).to.have.property('user_id');\r",
-							"    pm.expect(jsonBody).to.have.property('gacha_id');\r",
-							"});\r",
-							"\r",
-							"pm.test('Response fields', function() {\r",
-							"    pm.expect(pm.response.json()).to.have.property('success').that.is.a('string');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response body matches expected result\", function () {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    var expectedResponse = \"Gacha \" + pm.environment.get('gacha_id') + \" added to user (id: \" + pm.environment.get('user_id') + \") collection\";\r",
-							"    pm.expect(jsonData.success).to.eql(expectedResponse);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response time is less than 200ms\", function () {\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "jwt",
-					"jwt": [
+					"name": "200",
+					"event": [
 						{
-							"key": "payload",
-							"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// ADMIN\r",
+									"admin_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('iat', iat);\r",
+									"\r",
+									"// BODY\r",
+									"user_id = Math.floor(Math.random() * 10) + 1;\r",
+									"gacha_id = Math.floor(Math.random() * 36) + 1;\r",
+									"\r",
+									"pm.environment.set('user_id', user_id);\r",
+									"pm.environment.set('gacha_id', gacha_id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						},
 						{
-							"key": "header",
-							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
-							"type": "string"
-						},
-						{
-							"key": "addTokenTo",
-							"value": "header",
-							"type": "string"
-						},
-						{
-							"key": "secret",
-							"value": "JwtGACHA2425",
-							"type": "string"
-						},
-						{
-							"key": "algorithm",
-							"value": "HS256",
-							"type": "string"
-						},
-						{
-							"key": "isSecretBase64Encoded",
-							"value": false,
-							"type": "boolean"
-						},
-						{
-							"key": "headerPrefix",
-							"value": "Bearer",
-							"type": "string"
-						},
-						{
-							"key": "queryParamKey",
-							"value": "token",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Fixed TypeError: pm.response is not a function\r",
+									"pm.test('Response is 200', function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('Response is a JSON', function() {\r",
+									"    pm.response.to.have.header('Content-Type', 'application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is not an array\", function() {\r",
+									"    pm.expect(pm.response.json()).not.to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test('Request contains Authorization', function() {\r",
+									"    pm.request.to.have.header('Authorization');\r",
+									"});\r",
+									"\r",
+									"pm.test('Request body contains elements', function () {\r",
+									"    const body = pm.request.body.raw;\r",
+									"    const jsonBody = JSON.parse(body);\r",
+									"    pm.expect(jsonBody).to.have.property('user_id');\r",
+									"    pm.expect(jsonBody).to.have.property('gacha_id');\r",
+									"});\r",
+									"\r",
+									"pm.test('Response fields', function() {\r",
+									"    pm.expect(pm.response.json()).to.have.property('success').that.is.a('string');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected result\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    var expectedResponse = \"Gacha \" + pm.environment.get('gacha_id') + \" added to user (id: \" + pm.environment.get('user_id') + \") collection\";\r",
+									"    pm.expect(jsonData.success).to.eql(expectedResponse);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"user_id\": {{user_id}},\r\n    \"gacha_id\": {{gacha_id}}\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://localhost:5000/admin/edit/collection",
-					"protocol": "https",
-					"host": [
-						"localhost"
 					],
-					"port": "5000",
-					"path": [
-						"admin",
-						"edit",
-						"collection"
-					]
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": {{user_id}},\r\n    \"gacha_id\": {{gacha_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/collection",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"collection"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "400",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// ADMIN\r",
+									"admin_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('iat', iat);\r",
+									"\r",
+									"// BODY\r",
+									"user_id = Math.floor(Math.random() * 10) + 1;\r",
+									"gacha_id = Math.floor(Math.random() * 36) + 1;\r",
+									"\r",
+									"pm.environment.set('user_id', user_id);\r",
+									"pm.environment.set('gacha_id', gacha_id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Bad request'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Bad request');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": {{user_id}}\r\n    // gacha_id missing\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/collection",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"collection"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "403",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// ADMIN\r",
+									"admin_id = 1;\r",
+									"role = \"user\";\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('role', role);\r",
+									"pm.environment.set('iat', iat);\r",
+									"\r",
+									"// BODY\r",
+									"user_id = Math.floor(Math.random() * 10) + 1;\r",
+									"gacha_id = Math.floor(Math.random() * 36) + 1;\r",
+									"\r",
+									"pm.environment.set('user_id', user_id);\r",
+									"pm.environment.set('gacha_id', gacha_id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 403\", function() {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization contains the wrong role\", function() {\r",
+									"    role = pm.environment.get(\"role\");\r",
+									"    pm.expect(role).to.be.eql(\"user\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Access denied'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Access denied')\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"{{role}}\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": {{user_id}},\r\n    \"gacha_id\": {{gacha_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/collection",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"collection"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "edit_gacha_of_a_collection",
-			"event": [
+			"item": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// Generate a user id\r",
-							"user_id = Math.floor(Math.random() * 10) + 1;\r",
-							"// Chose a gacha from available gachas\r",
-							"gacha_id = Math.floor(Math.random() * 36) + 1;\r",
-							"// in_auction = 1;\r",
-							"// Select a specific idOwn (actually there are 37 rows)\r",
-							"idOwn = Math.floor(Math.random() * 8) + 1;\r",
-							"\r",
-							"// Save variables\r",
-							"pm.environment.set('id', idOwn);\r",
-							"pm.environment.set('user_id', user_id);\r",
-							"pm.environment.set('gacha_id', gacha_id);\r",
-							"\r",
-							"// ADMIN\r",
-							"admin_id = 1;\r",
-							"iat = Math.floor(Date.now() / 1000);\r",
-							"\r",
-							"pm.environment.set('admin_id', admin_id.toString());\r",
-							"pm.environment.set('iat', iat);\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('Response is 200', function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test('Response is a JSON', function() {\r",
-							"    pm.response.to.have.header('Content-Type', 'application/json');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response is not an array\", function() {\r",
-							"    pm.expect(pm.response.json()).not.to.be.an('array');\r",
-							"});\r",
-							"\r",
-							"pm.test('Request contains Authorization', function() {\r",
-							"    pm.request.to.have.header('Authorization');\r",
-							"});\r",
-							"\r",
-							"pm.test('Request body contains elements', function () {\r",
-							"    const body = pm.request.body.raw;\r",
-							"    const jsonBody = JSON.parse(body);\r",
-							"    pm.expect(jsonBody).to.have.property('user_id');\r",
-							"    pm.expect(jsonBody).to.have.property('gacha_id');\r",
-							"});\r",
-							"\r",
-							"pm.test('Response fields', function() {\r",
-							"    pm.expect(pm.response.json()).to.have.property('success').that.is.a('string');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response body matches expected result\", function () {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    var expectedResponse = \"Row n. \" + pm.environment.get('id') + \" updated\";\r",
-							"    pm.expect(jsonData.success).to.eql(expectedResponse);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response time is less than 200ms\", function () {\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "jwt",
-					"jwt": [
+					"name": "200",
+					"event": [
 						{
-							"key": "payload",
-							"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate a user id\r",
+									"user_id = Math.floor(Math.random() * 10) + 1;\r",
+									"// Chose a gacha from available gachas\r",
+									"gacha_id = Math.floor(Math.random() * 36) + 1;\r",
+									"// in_auction = 1;\r",
+									"// Select a specific idOwn (actually there are 37 rows)\r",
+									"idOwn = Math.floor(Math.random() * 8) + 1;\r",
+									"\r",
+									"// Save variables\r",
+									"pm.environment.set('id', idOwn);\r",
+									"pm.environment.set('user_id', user_id);\r",
+									"pm.environment.set('gacha_id', gacha_id);\r",
+									"\r",
+									"// ADMIN\r",
+									"admin_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('iat', iat);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						},
 						{
-							"key": "header",
-							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
-							"type": "string"
-						},
-						{
-							"key": "addTokenTo",
-							"value": "header",
-							"type": "string"
-						},
-						{
-							"key": "secret",
-							"value": "JwtGACHA2425",
-							"type": "string"
-						},
-						{
-							"key": "algorithm",
-							"value": "HS256",
-							"type": "string"
-						},
-						{
-							"key": "isSecretBase64Encoded",
-							"value": false,
-							"type": "boolean"
-						},
-						{
-							"key": "headerPrefix",
-							"value": "Bearer",
-							"type": "string"
-						},
-						{
-							"key": "queryParamKey",
-							"value": "token",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response is 200', function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('Response is a JSON', function() {\r",
+									"    pm.response.to.have.header('Content-Type', 'application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is not an array\", function() {\r",
+									"    pm.expect(pm.response.json()).not.to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test('Request contains Authorization', function() {\r",
+									"    pm.request.to.have.header('Authorization');\r",
+									"});\r",
+									"\r",
+									"pm.test('Request body contains elements', function () {\r",
+									"    const body = pm.request.body.raw;\r",
+									"    const jsonBody = JSON.parse(body);\r",
+									"    pm.expect(jsonBody).to.have.property('user_id');\r",
+									"    pm.expect(jsonBody).to.have.property('gacha_id');\r",
+									"});\r",
+									"\r",
+									"pm.test('Response fields', function() {\r",
+									"    pm.expect(pm.response.json()).to.have.property('success').that.is.a('string');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected result\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    var expectedResponse = \"Row n. \" + pm.environment.get('id') + \" updated\";\r",
+									"    pm.expect(jsonData.success).to.eql(expectedResponse);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
-					]
-				},
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id\": {{id}},\r\n    \"user_id\": {{user_id}},\r\n    \"gacha_id\": {{gacha_id}}\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://localhost:5000/admin/edit/collection",
-					"protocol": "https",
-					"host": [
-						"localhost"
 					],
-					"port": "5000",
-					"path": [
-						"admin",
-						"edit",
-						"collection"
-					]
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{id}},\r\n    \"user_id\": {{user_id}},\r\n    \"gacha_id\": {{gacha_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/collection",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"collection"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "400",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// ADMIN\r",
+									"admin_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('iat', iat);\r",
+									"\r",
+									"// BODY\r",
+									"user_id = Math.floor(Math.random() * 10) + 1;\r",
+									"gacha_id = Math.floor(Math.random() * 36) + 1;\r",
+									"\r",
+									"pm.environment.set('user_id', user_id);\r",
+									"pm.environment.set('gacha_id', gacha_id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Bad request'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Bad request');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    // id_own missing\r\n    \"user_id\": {{user_id}},\r\n    \"gacha_id\": {{gacha_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/collection",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"collection"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "403",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// ADMIN\r",
+									"admin_id = 1;\r",
+									"role = \"user\";\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('role', role);\r",
+									"pm.environment.set('iat', iat);\r",
+									"\r",
+									"// BODY\r",
+									"id = 1;\r",
+									"user_id = Math.floor(Math.random() * 10) + 1;\r",
+									"gacha_id = Math.floor(Math.random() * 36) + 1;\r",
+									"\r",
+									"pm.environment.set('id', id);\r",
+									"pm.environment.set('user_id', user_id);\r",
+									"pm.environment.set('gacha_id', gacha_id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 403\", function() {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization contains the wrong role\", function() {\r",
+									"    role = pm.environment.get(\"role\");\r",
+									"    pm.expect(role).to.be.eql(\"user\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Access denied'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Access denied')\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"{{role}}\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{id}},\r\n    \"user_id\": {{user_id}},\r\n    \"gacha_id\": {{gacha_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/collection",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"collection"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "delete_gacha_from_collection",
-			"event": [
+			"item": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"id_own = 8;\r",
-							"pm.environment.set('id', id_own);\r",
-							"\r",
-							"// ADMIN\r",
-							"admin_id = 1;\r",
-							"iat = Math.floor(Date.now() / 1000);\r",
-							"\r",
-							"pm.environment.set('admin_id', admin_id.toString());\r",
-							"pm.environment.set('iat', iat);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('Response is 200', function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test('Response is a JSON', function() {\r",
-							"    pm.response.to.have.header('Content-Type', 'application/json');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response is not an array\", function() {\r",
-							"    pm.expect(pm.response.json()).not.to.be.an('array');\r",
-							"});\r",
-							"\r",
-							"pm.test('Request contains Authorization', function() {\r",
-							"    pm.request.to.have.header('Authorization');\r",
-							"});\r",
-							"\r",
-							"pm.test('Response fields', function() {\r",
-							"    pm.expect(pm.response.json()).to.have.property('success').that.is.a('string');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response body matches expected result\", function () {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    var expectedResponse = \"Row (id: \" + pm.environment.get('id') + \") deleted\";\r",
-							"    pm.expect(jsonData.success).to.eql(expectedResponse);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response time is less than 200ms\", function () {\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "jwt",
-					"jwt": [
+					"name": "200",
+					"event": [
 						{
-							"key": "payload",
-							"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"id_own = 8;\r",
+									"pm.environment.set('id', id_own);\r",
+									"\r",
+									"// ADMIN\r",
+									"admin_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						},
 						{
-							"key": "header",
-							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
-							"type": "string"
-						},
-						{
-							"key": "addTokenTo",
-							"value": "header",
-							"type": "string"
-						},
-						{
-							"key": "secret",
-							"value": "JwtGACHA2425",
-							"type": "string"
-						},
-						{
-							"key": "algorithm",
-							"value": "HS256",
-							"type": "string"
-						},
-						{
-							"key": "isSecretBase64Encoded",
-							"value": false,
-							"type": "boolean"
-						},
-						{
-							"key": "headerPrefix",
-							"value": "Bearer",
-							"type": "string"
-						},
-						{
-							"key": "queryParamKey",
-							"value": "token",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response is 200', function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('Response is a JSON', function() {\r",
+									"    pm.response.to.have.header('Content-Type', 'application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is not an array\", function() {\r",
+									"    pm.expect(pm.response.json()).not.to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test('Request contains Authorization', function() {\r",
+									"    pm.request.to.have.header('Authorization');\r",
+									"});\r",
+									"\r",
+									"pm.test('Response fields', function() {\r",
+									"    pm.expect(pm.response.json()).to.have.property('success').that.is.a('string');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected result\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    var expectedResponse = \"Row (id: \" + pm.environment.get('id') + \") deleted\";\r",
+									"    pm.expect(jsonData.success).to.eql(expectedResponse);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
-					]
-				},
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://localhost:5000/admin/edit/collection/{{id}}",
-					"protocol": "https",
-					"host": [
-						"localhost"
 					],
-					"port": "5000",
-					"path": [
-						"admin",
-						"edit",
-						"collection",
-						"{{id}}"
-					]
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/collection/{{id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"collection",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "400",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"id_own = 0; \r",
+									"pm.environment.set('id', id_own);\r",
+									"\r",
+									"// ADMIN\r",
+									"admin_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Bad request'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Bad request');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/collection/{{id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"collection",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "403",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// ADMIN\r",
+									"admin_id = 1;\r",
+									"role = \"user\";\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('role', role);\r",
+									"pm.environment.set('iat', iat);\r",
+									"\r",
+									"// BODY\r",
+									"id = 1;\r",
+									"pm.environment.set('id', id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 403\", function() {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization contains the wrong role\", function() {\r",
+									"    role = pm.environment.get(\"role\");\r",
+									"    pm.expect(role).to.be.eql(\"user\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Access denied'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Access denied')\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"{{role}}\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/collection/{{id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"collection",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "add_system_gacha",
-			"event": [
+			"item": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"admin_id = 1;\r",
-							"iat = Math.floor(Date.now() / 1000);\r",
-							"\r",
-							"pm.environment.set('admin_id', admin_id.toString());\r",
-							"pm.environment.set('iat', iat);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('Response is 200', function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test('Response is a JSON', function() {\r",
-							"    pm.response.to.have.header('Content-Type', 'application/json');\r",
-							"});\r",
-							"\r",
-							"pm.test('Request contains Authorization', function() {\r",
-							"    pm.request.to.have.header('Authorization');\r",
-							"});\r",
-							"\r",
-							"pm.test('Request body contains elements', function () {\r",
-							"    const body = pm.request.body.raw;\r",
-							"    const jsonBody = JSON.parse(body);\r",
-							"    jsonBody.forEach((item) => {\r",
-							"        pm.expect(item).to.have.property('name').that.is.a('string');\r",
-							"        pm.expect(item).to.have.property('extractionProb').that.is.a('number');\r",
-							"        pm.expect(item).to.have.property('rarity').that.is.a('string');\r",
-							"        pm.expect(item).to.have.property('image').that.is.a('string');\r",
-							"        pm.expect(item).to.have.property('damage').that.is.a('number');\r",
-							"        pm.expect(item).to.have.property('speed').that.is.a('number');\r",
-							"        pm.expect(item).to.have.property('critical').that.is.a('number');\r",
-							"        pm.expect(item).to.have.property('accuracy').that.is.a('number');\r",
-							"    });\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response body matches expected result\", function () {\r",
-							"    const requestBody = pm.request.body.raw;\r",
-							"    const jsonData = JSON.parse(requestBody)\r",
-							"    let n = 0;\r",
-							"\r",
-							"    if (Array.isArray(jsonData)) { \r",
-							"        n = jsonData.length;\r",
-							"    } else {\r",
-							"        n = 1;\r",
-							"    }\r",
-							"    console.log(\"n: \" + n);\r",
-							"\r",
-							"    const response = pm.response.json();\r",
-							"    var expectedResponse = \"Added \" + n + \" new gachas\";\r",
-							"    pm.expect(response.success).to.eql(expectedResponse);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response time is less than 200ms\", function () {\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "jwt",
-					"jwt": [
+					"name": "200",
+					"event": [
 						{
-							"key": "payload",
-							"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"admin_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						},
 						{
-							"key": "header",
-							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
-							"type": "string"
-						},
-						{
-							"key": "addTokenTo",
-							"value": "header",
-							"type": "string"
-						},
-						{
-							"key": "secret",
-							"value": "JwtGACHA2425",
-							"type": "string"
-						},
-						{
-							"key": "algorithm",
-							"value": "HS256",
-							"type": "string"
-						},
-						{
-							"key": "isSecretBase64Encoded",
-							"value": false,
-							"type": "boolean"
-						},
-						{
-							"key": "headerPrefix",
-							"value": "Bearer",
-							"type": "string"
-						},
-						{
-							"key": "queryParamKey",
-							"value": "token",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response is 200', function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('Response is a JSON', function() {\r",
+									"    pm.response.to.have.header('Content-Type', 'application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test('Request contains Authorization', function() {\r",
+									"    pm.request.to.have.header('Authorization');\r",
+									"});\r",
+									"\r",
+									"pm.test('Request body contains elements', function () {\r",
+									"    const body = pm.request.body.raw;\r",
+									"    const jsonBody = JSON.parse(body);\r",
+									"    jsonBody.forEach((item) => {\r",
+									"        pm.expect(item).to.have.property('name').that.is.a('string');\r",
+									"        pm.expect(item).to.have.property('extractionProb').that.is.a('number');\r",
+									"        pm.expect(item).to.have.property('rarity').that.is.a('string');\r",
+									"        pm.expect(item).to.have.property('image').that.is.a('string');\r",
+									"        pm.expect(item).to.have.property('damage').that.is.a('number');\r",
+									"        pm.expect(item).to.have.property('speed').that.is.a('number');\r",
+									"        pm.expect(item).to.have.property('critical').that.is.a('number');\r",
+									"        pm.expect(item).to.have.property('accuracy').that.is.a('number');\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected result\", function () {\r",
+									"    const requestBody = pm.request.body.raw;\r",
+									"    const jsonData = JSON.parse(requestBody)\r",
+									"    let n = 0;\r",
+									"\r",
+									"    if (Array.isArray(jsonData)) { \r",
+									"        n = jsonData.length;\r",
+									"    } else {\r",
+									"        n = 1;\r",
+									"    }\r",
+									"    console.log(\"n: \" + n);\r",
+									"\r",
+									"    const response = pm.response.json();\r",
+									"    var expectedResponse = \"Added \" + n + \" new gachas\";\r",
+									"    pm.expect(response.success).to.eql(expectedResponse);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "[\r\n    {\r\n        \"name\": \"try\", \r\n        \"extractionProb\": 0.4, \r\n        \"rarity\": \"Rare\", \r\n        \"image\": \"path/to/image\", \r\n        \"damage\": 68, \r\n        \"speed\": 64, \r\n        \"critical\": 0.1, \r\n        \"accuracy\": 74\r\n    },\r\n    {\r\n        \"name\": \"try2\", \r\n        \"extractionProb\": 0.4, \r\n        \"rarity\": \"Rare\", \r\n        \"image\": \"path/to/image\", \r\n        \"damage\": 68, \r\n        \"speed\": 64, \r\n        \"critical\": 0.1, \r\n        \"accuracy\": 74\r\n    }\r\n]",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://localhost:5000/admin/edit/gacha",
-					"protocol": "https",
-					"host": [
-						"localhost"
 					],
-					"port": "5000",
-					"path": [
-						"admin",
-						"edit",
-						"gacha"
-					]
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"name\": \"try\", \r\n        \"extractionProb\": 0.4, \r\n        \"rarity\": \"Rare\", \r\n        \"image\": \"path/to/image\", \r\n        \"damage\": 68, \r\n        \"speed\": 64, \r\n        \"critical\": 0.1, \r\n        \"accuracy\": 74\r\n    },\r\n    {\r\n        \"name\": \"try2\", \r\n        \"extractionProb\": 0.4, \r\n        \"rarity\": \"Rare\", \r\n        \"image\": \"path/to/image\", \r\n        \"damage\": 68, \r\n        \"speed\": 64, \r\n        \"critical\": 0.1, \r\n        \"accuracy\": 74\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/gacha",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"gacha"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "400",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"admin_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Bad request'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Bad request');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"name\": \"try\", \r\n        \"extractionProb\": 0.4, \r\n        \"rarity\": \"Rare\", \r\n        \"image\": \"path/to/image\", \r\n        \"damage\": 68, \r\n        \"speed\": 64, \r\n        \"critical\": 0.1, \r\n        \"accuracy\": 74\r\n    },\r\n    {\r\n        \"name\": \"try2\", \r\n        \"extractionProb\": 0.4, \r\n        // \"rarity\": \"Rare\",    RARITY MISSING \r\n        \"image\": \"path/to/image\", \r\n        \"damage\": 68, \r\n        \"speed\": 64, \r\n        \"critical\": 0.1, \r\n        \"accuracy\": 74\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/gacha",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"gacha"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "403",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"admin_id = 1;\r",
+									"role = \"user\";\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set(\"role\", role);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 403\", function() {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization contains the wrong role\", function() {\r",
+									"    role = pm.environment.get(\"role\");\r",
+									"    pm.expect(role).to.be.eql(\"user\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Access denied'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Access denied')\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"{{role}}\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"name\": \"try\", \r\n        \"extractionProb\": 0.4, \r\n        \"rarity\": \"Rare\", \r\n        \"image\": \"path/to/image\", \r\n        \"damage\": 68, \r\n        \"speed\": 64, \r\n        \"critical\": 0.1, \r\n        \"accuracy\": 74\r\n    },\r\n    {\r\n        \"name\": \"try2\", \r\n        \"extractionProb\": 0.4, \r\n        \"rarity\": \"Rare\", \r\n        \"image\": \"path/to/image\", \r\n        \"damage\": 68, \r\n        \"speed\": 64, \r\n        \"critical\": 0.1, \r\n        \"accuracy\": 74\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/gacha",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"gacha"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "edit_system_gacha",
-			"event": [
+			"item": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"admin_id = 1;\r",
-							"iat = Math.floor(Date.now() / 1000);\r",
-							"\r",
-							"pm.environment.set('admin_id', admin_id.toString());\r",
-							"pm.environment.set('iat', iat);\r",
-							"\r",
-							"// Gacha\r",
-							"gacha_id = 37;\r",
-							"pm.environment.set('gacha_id', gacha_id);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('Response is 200', function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test('Response is a JSON', function() {\r",
-							"    pm.response.to.have.header('Content-Type', 'application/json');\r",
-							"});\r",
-							"\r",
-							"pm.test('Request body is not an array', function() {\r",
-							"    const jsonBody = JSON.parse(pm.request.body.raw);\r",
-							"    pm.expect(jsonBody).not.to.be.an('array');\r",
-							"});\r",
-							"\r",
-							"pm.test('Request contains Authorization', function() {\r",
-							"    pm.request.to.have.header('Authorization');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response body matches expected result\", function () {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    var expectedResponse = \"Gacha (id: \" + pm.environment.get('gacha_id') + \") updated\";\r",
-							"    pm.expect(jsonData.success).to.eql(expectedResponse);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response time is less than 200ms\", function () {\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "jwt",
-					"jwt": [
+					"name": "200",
+					"event": [
 						{
-							"key": "payload",
-							"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"admin_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('iat', iat);\r",
+									"\r",
+									"// Gacha\r",
+									"gacha_id = 37;\r",
+									"pm.environment.set('gacha_id', gacha_id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						},
 						{
-							"key": "header",
-							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
-							"type": "string"
-						},
-						{
-							"key": "addTokenTo",
-							"value": "header",
-							"type": "string"
-						},
-						{
-							"key": "secret",
-							"value": "JwtGACHA2425",
-							"type": "string"
-						},
-						{
-							"key": "algorithm",
-							"value": "HS256",
-							"type": "string"
-						},
-						{
-							"key": "isSecretBase64Encoded",
-							"value": false,
-							"type": "boolean"
-						},
-						{
-							"key": "headerPrefix",
-							"value": "Bearer",
-							"type": "string"
-						},
-						{
-							"key": "queryParamKey",
-							"value": "token",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response is 200', function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('Response is a JSON', function() {\r",
+									"    pm.response.to.have.header('Content-Type', 'application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test('Request body is not an array', function() {\r",
+									"    const jsonBody = JSON.parse(pm.request.body.raw);\r",
+									"    pm.expect(jsonBody).not.to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test('Request contains Authorization', function() {\r",
+									"    pm.request.to.have.header('Authorization');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected result\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    var expectedResponse = \"Gacha (id: \" + pm.environment.get('gacha_id') + \") updated\";\r",
+									"    pm.expect(jsonData.success).to.eql(expectedResponse);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
-					]
-				},
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id\": {{gacha_id}},\r\n    \"name\": \"try_patch\",\r\n    \"rarity\": \"Super Ultra Rare\",\r\n    \"extractionProb\": 0.0005\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://localhost:5000/admin/edit/gacha",
-					"protocol": "https",
-					"host": [
-						"localhost"
 					],
-					"port": "5000",
-					"path": [
-						"admin",
-						"edit",
-						"gacha"
-					]
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{gacha_id}},\r\n    \"name\": \"try_patch\",\r\n    \"rarity\": \"Super Ultra Rare\",\r\n    \"extractionProb\": 0.0005\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/gacha",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"gacha"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "400",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"admin_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Bad request'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Bad request');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    // id missing\r\n    \"name\": \"try\", \r\n    \"extractionProb\": 0.4, \r\n    \"rarity\": \"Rare\", \r\n    \"image\": \"path/to/image\", \r\n    \"damage\": 68, \r\n    \"speed\": 64, \r\n    \"critical\": 0.1, \r\n    \"accuracy\": 74\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/gacha",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"gacha"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "403",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"admin_id = 1;\r",
+									"role = \"user\";\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set(\"role\", role);\r",
+									"pm.environment.set('iat', iat);\r",
+									"\r",
+									"// GACHA\r",
+									"pm.environment.set('gacha_id', 3);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 403\", function() {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization contains the wrong role\", function() {\r",
+									"    role = pm.environment.get(\"role\");\r",
+									"    pm.expect(role).to.be.eql(\"user\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Access denied'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Access denied')\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"{{role}}\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{gacha_id}},\r\n    \"name\": \"try_patch\",\r\n    \"rarity\": \"Super Ultra Rare\",\r\n    \"extractionProb\": 0.0005\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/gacha",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"gacha"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "delete_system_gacha",
-			"event": [
+			"item": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"gacha_id = 37;\r",
-							"pm.environment.set('gacha_id', gacha_id);\r",
-							"\r",
-							"// ADMIN\r",
-							"admin_id = 1;\r",
-							"iat = Math.floor(Date.now() / 1000);\r",
-							"\r",
-							"pm.environment.set('admin_id', admin_id.toString());\r",
-							"pm.environment.set('iat', iat);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('Response is 200', function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test('Response is a JSON', function() {\r",
-							"    pm.response.to.have.header('Content-Type', 'application/json');\r",
-							"});\r",
-							"\r",
-							"pm.test('Request contains Authorization', function() {\r",
-							"    pm.request.to.have.header('Authorization');\r",
-							"});\r",
-							"\r",
-							"pm.test('Response contains field', function() {\r",
-							"    pm.expect(pm.response.json()).to.have.property('success');\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Response body matches expected result\", function () {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    var expectedResponse = \"Gacha (id: \" + pm.environment.get('gacha_id') + \") deleted from the system\";\r",
-							"    pm.expect(jsonData.success).to.eql(expectedResponse);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response time is less than 200ms\", function () {\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "jwt",
-					"jwt": [
+					"name": "200",
+					"event": [
 						{
-							"key": "payload",
-							"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"gacha_id = 37;\r",
+									"pm.environment.set('gacha_id', gacha_id);\r",
+									"\r",
+									"// ADMIN\r",
+									"admin_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						},
 						{
-							"key": "header",
-							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
-							"type": "string"
-						},
-						{
-							"key": "addTokenTo",
-							"value": "header",
-							"type": "string"
-						},
-						{
-							"key": "secret",
-							"value": "JwtGACHA2425",
-							"type": "string"
-						},
-						{
-							"key": "algorithm",
-							"value": "HS256",
-							"type": "string"
-						},
-						{
-							"key": "isSecretBase64Encoded",
-							"value": false,
-							"type": "boolean"
-						},
-						{
-							"key": "headerPrefix",
-							"value": "Bearer",
-							"type": "string"
-						},
-						{
-							"key": "queryParamKey",
-							"value": "token",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response is 200', function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('Response is a JSON', function() {\r",
+									"    pm.response.to.have.header('Content-Type', 'application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test('Request contains Authorization', function() {\r",
+									"    pm.request.to.have.header('Authorization');\r",
+									"});\r",
+									"\r",
+									"pm.test('Response contains field', function() {\r",
+									"    pm.expect(pm.response.json()).to.have.property('success');\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response body matches expected result\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    var expectedResponse = \"Gacha (id: \" + pm.environment.get('gacha_id') + \") deleted from the system\";\r",
+									"    pm.expect(jsonData.success).to.eql(expectedResponse);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
-					]
-				},
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://localhost:5000/admin/edit/gacha/{{gacha_id}}",
-					"protocol": "https",
-					"host": [
-						"localhost"
 					],
-					"port": "5000",
-					"path": [
-						"admin",
-						"edit",
-						"gacha",
-						"{{gacha_id}}"
-					]
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/gacha/{{gacha_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"gacha",
+								"{{gacha_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "400",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"admin_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('iat', iat);\r",
+									"\r",
+									"// GACHA\r",
+									"id = 0;\r",
+									"pm.environment.set('gacha_id', id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Gacha ID missing'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Gacha ID missing');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/gacha/{{gacha_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"gacha",
+								"{{gacha_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "403",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"admin_id = 1;\r",
+									"role = \"user\";\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set(\"role\", role);\r",
+									"pm.environment.set('iat', iat);\r",
+									"\r",
+									"// GACHA\r",
+									"pm.environment.set('gacha_id', 3);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 403\", function() {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization contains the wrong role\", function() {\r",
+									"    role = pm.environment.get(\"role\");\r",
+									"    pm.expect(role).to.be.eql(\"user\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Access denied'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Access denied')\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"{{role}}\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/edit/gacha/{{gacha_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"edit",
+								"gacha",
+								"{{gacha_id}}"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		}
 	]
 }

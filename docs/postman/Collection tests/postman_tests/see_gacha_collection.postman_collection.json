@@ -9,855 +9,2511 @@
 	"item": [
 		{
 			"name": "get_grouped_collection",
-			"event": [
+			"item": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"user_id = Math.floor(Math.random() * 10) + 1;\r",
-							"iat = Math.floor(Date.now() / 1000);\r",
-							"\r",
-							"pm.environment.set('user_id', user_id.toString());  \r",
-							"pm.environment.set('iat', iat);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status is 200\", function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response is an array\", function () {\r",
-							"    pm.expect(pm.response.json()).to.be.an('array');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response header should contains Authorization field\", function() {\r",
-							"    pm.request.to.have.header('Authorization');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Each item has expected properties\", function () {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    jsonData.forEach((item) => {\r",
-							"        pm.expect(item).to.have.property('id');\r",
-							"        pm.expect(typeof item.id).to.eql('number');\r",
-							"\r",
-							"        pm.expect(item).to.have.property('name');\r",
-							"        pm.expect(typeof item.name).to.eql('string');;\r",
-							"\r",
-							"        pm.expect(item).to.have.property('rarity');\r",
-							"        pm.expect(typeof item.rarity).to.eql('string');\r",
-							"\r",
-							"        pm.expect(item).to.have.property('image');\r",
-							"        pm.expect(typeof item.image).to.eql('string');\r",
-							"\r",
-							"        pm.expect(item).to.have.property('quantity');\r",
-							"        pm.expect(typeof item.quantity).to.eql('number');\r",
-							"    });\r",
-							"});\r",
-							"\r",
-							"pm.test('Quantity is > 0', function() {\r",
-							"    const jsonData = pm.response.json()\r",
-							"    jsonData.forEach((item) => {\r",
-							"        pm.expect(item.quantity).to.be.greaterThan(0);\r",
-							"    });\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Allowed rarity values\", function () {\r",
-							"    var allowedValues = ['Common', 'Rare', 'Super Rare', 'Ultra Rare', 'Super Ultra Rare'];\r",
-							"    const jsonData = pm.response.json();\r",
-							"    jsonData.forEach((item) => {\r",
-							"        pm.expect(allowedValues).to.include(item.rarity);\r",
-							"    });\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response time is less than 200ms\", function () {\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "jwt",
-					"jwt": [
+					"name": "200",
+					"event": [
 						{
-							"key": "payload",
-							"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = Math.floor(Math.random() * 10) + 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());  \r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						},
 						{
-							"key": "header",
-							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
-							"type": "string"
-						},
-						{
-							"key": "addTokenTo",
-							"value": "header",
-							"type": "string"
-						},
-						{
-							"key": "secret",
-							"value": "JwtGACHA2425",
-							"type": "string"
-						},
-						{
-							"key": "algorithm",
-							"value": "HS256",
-							"type": "string"
-						},
-						{
-							"key": "isSecretBase64Encoded",
-							"value": false,
-							"type": "boolean"
-						},
-						{
-							"key": "headerPrefix",
-							"value": "Bearer",
-							"type": "string"
-						},
-						{
-							"key": "queryParamKey",
-							"value": "token",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response header should contains Authorization field\", function() {\r",
+									"    pm.request.to.have.header('Authorization');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each item has expected properties\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    jsonData.forEach((item) => {\r",
+									"        pm.expect(item).to.have.property('id');\r",
+									"        pm.expect(typeof item.id).to.eql('number');\r",
+									"\r",
+									"        pm.expect(item).to.have.property('name');\r",
+									"        pm.expect(typeof item.name).to.eql('string');;\r",
+									"\r",
+									"        pm.expect(item).to.have.property('rarity');\r",
+									"        pm.expect(typeof item.rarity).to.eql('string');\r",
+									"\r",
+									"        pm.expect(item).to.have.property('image');\r",
+									"        pm.expect(typeof item.image).to.eql('string');\r",
+									"\r",
+									"        pm.expect(item).to.have.property('quantity');\r",
+									"        pm.expect(typeof item.quantity).to.eql('number');\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test('Quantity is > 0', function() {\r",
+									"    const jsonData = pm.response.json()\r",
+									"    jsonData.forEach((item) => {\r",
+									"        pm.expect(item.quantity).to.be.greaterThan(0);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Allowed rarity values\", function () {\r",
+									"    var allowedValues = ['Common', 'Rare', 'Super Rare', 'Ultra Rare', 'Super Ultra Rare'];\r",
+									"    const jsonData = pm.response.json();\r",
+									"    jsonData.forEach((item) => {\r",
+									"        pm.expect(allowedValues).to.include(item.rarity);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://localhost:5000/collection/grouped",
-					"protocol": "https",
-					"host": [
-						"localhost"
 					],
-					"port": "5000",
-					"path": [
-						"collection",
-						"grouped"
-					]
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/collection/grouped",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"collection",
+								"grouped"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "401",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 401\", function() {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains msg field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('msg');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Missing Authorization Header'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.msg).to.be.eql('Missing Authorization Header');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    // user_id (sub) missing\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/collection/grouped",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"collection",
+								"grouped"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "403",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// user\r",
+									"user_id = 1;\r",
+									"role = \"admin\";\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('role', role);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 403\", function() {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization contains the wrong role\", function() {\r",
+									"    role = pm.environment.get(\"role\");\r",
+									"    pm.expect(role).to.be.eql(\"admin\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Access forbidden'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Access forbidden: only users can own a collection')\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"{{role}}\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/collection/grouped",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"collection",
+								"grouped"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "get_user_collection",
-			"event": [
+			"item": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"user_id = Math.floor(Math.random() * 10) + 1;\r",
-							"iat = Math.floor(Date.now() / 1000);\r",
-							"\r",
-							"pm.environment.set('user_id', user_id.toString());\r",
-							"pm.environment.set('iat', iat);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status is 200\", function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response is an array\", function () {\r",
-							"    pm.expect(pm.response.json()).to.be.an('array');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response header should contains Authorization field\", function() {\r",
-							"    pm.request.to.have.header('Authorization');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Each item has expected properties\", function () {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.be.an('array');\r",
-							"    jsonData.forEach((item) => {\r",
-							"        pm.expect(item).to.have.property('idOwn');\r",
-							"        pm.expect(typeof item.idOwn).to.eql('number');\r",
-							"\r",
-							"        pm.expect(item).to.have.property('gachaId');\r",
-							"        pm.expect(typeof item.gachaId).to.eql('number');\r",
-							"\r",
-							"        pm.expect(item).to.have.property('name');\r",
-							"        pm.expect(typeof item.name).to.eql('string');;\r",
-							"\r",
-							"        pm.expect(item).to.have.property('rarity');\r",
-							"        pm.expect(typeof item.rarity).to.eql('string');\r",
-							"\r",
-							"        pm.expect(item).to.have.property('image');\r",
-							"        pm.expect(typeof item.image).to.eql('string');\r",
-							"    });\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Allowed rarity values\", function () {\r",
-							"    var allowedValues = ['Common', 'Rare', 'Super Rare', 'Ultra Rare', 'Super Ultra Rare'];\r",
-							"    const jsonData = pm.response.json();\r",
-							"    jsonData.forEach((item) => {\r",
-							"        pm.expect(allowedValues).to.include(item.rarity);\r",
-							"    });\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response time is less than 200ms\", function () {\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "jwt",
-					"jwt": [
+					"name": "200",
+					"event": [
 						{
-							"key": "payload",
-							"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = Math.floor(Math.random() * 10) + 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						},
 						{
-							"key": "header",
-							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
-							"type": "string"
-						},
-						{
-							"key": "addTokenTo",
-							"value": "header",
-							"type": "string"
-						},
-						{
-							"key": "secret",
-							"value": "JwtGACHA2425",
-							"type": "string"
-						},
-						{
-							"key": "algorithm",
-							"value": "HS256",
-							"type": "string"
-						},
-						{
-							"key": "isSecretBase64Encoded",
-							"value": false,
-							"type": "boolean"
-						},
-						{
-							"key": "headerPrefix",
-							"value": "Bearer",
-							"type": "string"
-						},
-						{
-							"key": "queryParamKey",
-							"value": "token",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response header should contains Authorization field\", function() {\r",
+									"    pm.request.to.have.header('Authorization');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each item has expected properties\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"    jsonData.forEach((item) => {\r",
+									"        pm.expect(item).to.have.property('idOwn');\r",
+									"        pm.expect(typeof item.idOwn).to.eql('number');\r",
+									"\r",
+									"        pm.expect(item).to.have.property('gachaId');\r",
+									"        pm.expect(typeof item.gachaId).to.eql('number');\r",
+									"\r",
+									"        pm.expect(item).to.have.property('name');\r",
+									"        pm.expect(typeof item.name).to.eql('string');;\r",
+									"\r",
+									"        pm.expect(item).to.have.property('rarity');\r",
+									"        pm.expect(typeof item.rarity).to.eql('string');\r",
+									"\r",
+									"        pm.expect(item).to.have.property('image');\r",
+									"        pm.expect(typeof item.image).to.eql('string');\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Allowed rarity values\", function () {\r",
+									"    var allowedValues = ['Common', 'Rare', 'Super Rare', 'Ultra Rare', 'Super Ultra Rare'];\r",
+									"    const jsonData = pm.response.json();\r",
+									"    jsonData.forEach((item) => {\r",
+									"        pm.expect(allowedValues).to.include(item.rarity);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:5000/collection",
-					"protocol": "https",
-					"host": [
-						"localhost"
 					],
-					"port": "5000",
-					"path": [
-						"collection"
-					]
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5000/collection",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"collection"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "401",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 401\", function() {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains msg field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('msg');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Missing Authorization Header'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.msg).to.be.eql('Missing Authorization Header');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    // user_id (sub) missing\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/collection",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"collection"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "403",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// user\r",
+									"user_id = 1;\r",
+									"role = \"admin\";\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('role', role);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 403\", function() {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization contains the wrong role\", function() {\r",
+									"    role = pm.environment.get(\"role\");\r",
+									"    pm.expect(role).to.be.eql(\"admin\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Access forbidden'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Access forbidden: only users can own a collection')\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"{{role}}\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/collection",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"collection"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "see_a_specific_gacha_owned",
-			"event": [
+			"item": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// Generate gacha_id\r",
-							"gacha_id = 5;\r",
-							"\r",
-							"// Generate info for jwt token\r",
-							"user_id = Math.floor(Math.random() * 10) + 1;\r",
-							"iat = Math.floor(Date.now() / 1000);\r",
-							"\r",
-							"// Save all in env variables\r",
-							"pm.environment.set('gacha_id', gacha_id);\r",
-							"pm.environment.set('user_id', user_id.toString());\r",
-							"pm.environment.set('iat', iat);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status is 200\", function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response is not an array\", function () {\r",
-							"    pm.expect(pm.response.json()).not.to.be.an('array');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response header should contains Authorization field\", function() {\r",
-							"    pm.request.to.have.header('Authorization');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Each item has expected properties\", function () {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).not.to.be.an('array');\r",
-							"\r",
-							"    // Check properties\r",
-							"    pm.expect(jsonData).to.have.property('id').that.is.a('number');\r",
-							"    pm.expect(jsonData).to.have.property('name').that.is.a('string');\r",
-							"    pm.expect(jsonData).to.have.property('extractionProb').that.is.a('number');\r",
-							"    pm.expect(jsonData).to.have.property('rarity').that.is.a('string');\r",
-							"    pm.expect(jsonData).to.have.property('image').that.is.a('string');\r",
-							"    pm.expect(jsonData).to.have.property('damage').that.is.a('number');\r",
-							"    pm.expect(jsonData).to.have.property('speed').that.is.a('number');\r",
-							"    pm.expect(jsonData).to.have.property('critical').that.is.a('number');\r",
-							"    pm.expect(jsonData).to.have.property('accuracy').that.is.a('number');\r",
-							"});\r",
-							"\r",
-							"pm.test('Numeric values between 0 and 100', function() {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.damage).is.within(0, 100);\r",
-							"    pm.expect(jsonData.speed).is.within(0, 100);\r",
-							"    pm.expect(jsonData.damage).is.within(0, 100);\r",
-							"    pm.expect(jsonData.accuracy).is.within(0, 100);\r",
-							"});\r",
-							"\r",
-							"pm.test('Probabilities are between 0 and 1', function () {\r",
-							"    pm.expect(pm.response.json().critical).to.be.within(0, 1);\r",
-							"    pm.expect(pm.response.json().extractionProb).to.be.within(0, 1);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Allowed rarity values\", function () {\r",
-							"    var allowedValues = ['Common', 'Rare', 'Super Rare', 'Ultra Rare', 'Super Ultra Rare'];\r",
-							"    const jsonData = pm.response.json();\r",
-							"    pm.expect(allowedValues).to.include(jsonData.rarity);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response time is less than 200ms\", function () {\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "jwt",
-					"jwt": [
+					"name": "200",
+					"event": [
 						{
-							"key": "payload",
-							"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Generate gacha_id\r",
+									"gacha_id = 5;\r",
+									"\r",
+									"// Generate info for jwt token\r",
+									"user_id = Math.floor(Math.random() * 10) + 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"// Save all in env variables\r",
+									"pm.environment.set('gacha_id', gacha_id);\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						},
 						{
-							"key": "header",
-							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
-							"type": "string"
-						},
-						{
-							"key": "addTokenTo",
-							"value": "header",
-							"type": "string"
-						},
-						{
-							"key": "secret",
-							"value": "JwtGACHA2425",
-							"type": "string"
-						},
-						{
-							"key": "algorithm",
-							"value": "HS256",
-							"type": "string"
-						},
-						{
-							"key": "isSecretBase64Encoded",
-							"value": false,
-							"type": "boolean"
-						},
-						{
-							"key": "headerPrefix",
-							"value": "Bearer",
-							"type": "string"
-						},
-						{
-							"key": "queryParamKey",
-							"value": "token",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is not an array\", function () {\r",
+									"    pm.expect(pm.response.json()).not.to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response header should contains Authorization field\", function() {\r",
+									"    pm.request.to.have.header('Authorization');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each item has expected properties\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).not.to.be.an('array');\r",
+									"\r",
+									"    // Check properties\r",
+									"    pm.expect(jsonData).to.have.property('id').that.is.a('number');\r",
+									"    pm.expect(jsonData).to.have.property('name').that.is.a('string');\r",
+									"    pm.expect(jsonData).to.have.property('extractionProb').that.is.a('number');\r",
+									"    pm.expect(jsonData).to.have.property('rarity').that.is.a('string');\r",
+									"    pm.expect(jsonData).to.have.property('image').that.is.a('string');\r",
+									"    pm.expect(jsonData).to.have.property('damage').that.is.a('number');\r",
+									"    pm.expect(jsonData).to.have.property('speed').that.is.a('number');\r",
+									"    pm.expect(jsonData).to.have.property('critical').that.is.a('number');\r",
+									"    pm.expect(jsonData).to.have.property('accuracy').that.is.a('number');\r",
+									"});\r",
+									"\r",
+									"pm.test('Numeric values between 0 and 100', function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.damage).is.within(0, 100);\r",
+									"    pm.expect(jsonData.speed).is.within(0, 100);\r",
+									"    pm.expect(jsonData.damage).is.within(0, 100);\r",
+									"    pm.expect(jsonData.accuracy).is.within(0, 100);\r",
+									"});\r",
+									"\r",
+									"pm.test('Probabilities are between 0 and 1', function () {\r",
+									"    pm.expect(pm.response.json().critical).to.be.within(0, 1);\r",
+									"    pm.expect(pm.response.json().extractionProb).to.be.within(0, 1);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Allowed rarity values\", function () {\r",
+									"    var allowedValues = ['Common', 'Rare', 'Super Rare', 'Ultra Rare', 'Super Ultra Rare'];\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(allowedValues).to.include(jsonData.rarity);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:5000/collection/{{gacha_id}}",
-					"protocol": "https",
-					"host": [
-						"localhost"
 					],
-					"port": "5000",
-					"path": [
-						"collection",
-						"{{gacha_id}}"
-					]
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5000/collection/{{gacha_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"collection",
+								"{{gacha_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "400",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"gacha_id = 0;\r",
+									"\r",
+									"pm.environment.set(\"user_id\", user_id.toString());\r",
+									"pm.environment.set(\"iat\", iat);\r",
+									"pm.environment.set(\"gacha_id\", gacha_id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 400\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error fields\", function() {\r",
+									"    const json = pm.response.json();\r",
+									"    pm.expect(json).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Gacha ID missing'\", function() {\r",
+									"    const json = pm.response.json();\r",
+									"    pm.expect(json.error).to.be.eql('Gacha ID missing');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5000/collection/{{gacha_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"collection",
+								"{{gacha_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "401",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"pm.environment.set('iat', iat);\r",
+									"\r",
+									"gacha_id = 2;\r",
+									"pm.environment.set(\"gacha_id\", gacha_id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 401\", function() {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains msg field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('msg');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Missing Authorization Header'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.msg).to.be.eql('Missing Authorization Header');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    // user_id (sub) missing\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/collection/{{gacha_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"collection",
+								"{{gacha_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "403",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// user\r",
+									"user_id = 1;\r",
+									"role = \"admin\";\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('user_id', user_id.toString());\r",
+									"pm.environment.set('role', role);\r",
+									"pm.environment.set('iat', iat);\r",
+									"\r",
+									"// GACHA\r",
+									"gacha_id = 2;\r",
+									"pm.environment.set(\"gacha_id\", gacha_id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 403\", function() {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization contains the wrong role\", function() {\r",
+									"    role = pm.environment.get(\"role\");\r",
+									"    pm.expect(role).to.be.eql(\"admin\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Access forbidden'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Access forbidden: only users can own a collection')\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"{{role}}\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/collection/{{gacha_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"collection",
+								"{{gacha_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "404",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 1;\r",
+									"role = \"user\";\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set(\"user_id\", user_id);\r",
+									"pm.environment.set(\"role\", role);\r",
+									"pm.environment.set(\"iat\", iat);\r",
+									"\r",
+									"// GACHA \r",
+									"gacha_id = 10;  // In this test, gachas are up to 5\r",
+									"pm.environment.set(\"gacha_id\", gacha_id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 404\", function() {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const json = pm.response.json();\r",
+									"    pm.expect(json).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Gacha not owned'\", function() {\r",
+									"    const json = pm.response.json();\r",
+									"    pm.expect(json.error).to.be.eql('Gacha not owned');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5000/collection/{{gacha_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"collection",
+								"{{gacha_id}}"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "see_users_collections",
-			"event": [
+			"item": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"admin_id = 1;\r",
-							"iat = Math.floor(Date.now() / 1000);\r",
-							"\r",
-							"pm.environment.set('admin_id', admin_id.toString());\r",
-							"pm.environment.set('iat', iat);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('Status is 200', function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response is an array\", function () {\r",
-							"    pm.expect(pm.response.json()).to.be.an('array');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response header should contains Authorization field\", function() {\r",
-							"    pm.request.to.have.header('Authorization');\r",
-							"});\r",
-							"\r",
-							"pm.test('Each item contains an array', function () {\r",
-							"    const jsonData = pm.response.json()\r",
-							"    jsonData.forEach((item) => {\r",
-							"        pm.expect(item).to.have.property('gachas').that.is.an('array');\r",
-							"    });\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Each item should contain a gachas array with the required attributes\", function () {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    jsonData.forEach((item) => {\r",
-							"        // Check user and gacha sub items\r",
-							"        pm.expect(item).to.have.property('user_id').that.is.a('number');\r",
-							"        pm.expect(item).to.have.property('gachas').that.is.an('array');\r",
-							"\r",
-							"        // Per ogni gacha, verifica che abbia gli attributi richiesti\r",
-							"        item.gachas.forEach((gacha) => {\r",
-							"            pm.expect(gacha).to.have.property('gachaId').that.is.a('number');\r",
-							"            pm.expect(gacha).to.have.property('idOwn').that.is.a('number');\r",
-							"            pm.expect(gacha).to.have.property('image').that.is.a('string');\r",
-							"            pm.expect(gacha).to.have.property('name').that.is.a('string');\r",
-							"            pm.expect(gacha).to.have.property('rarity').that.is.a('string');\r",
-							"        });\r",
-							"    });\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Allowed rarity values\", function () {\r",
-							"    var allowedValues = ['Common', 'Rare', 'Super Rare', 'Ultra Rare', 'Super Ultra Rare'];\r",
-							"    const jsonData = pm.response.json();\r",
-							"    jsonData.forEach((item) => {\r",
-							"        // Check rarity level for each gacha sub array\r",
-							"        item.gachas.forEach((gacha) => {\r",
-							"            pm.expect(allowedValues).to.include(gacha.rarity);\r",
-							"        });\r",
-							"    });\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "jwt",
-					"jwt": [
+					"name": "200",
+					"event": [
 						{
-							"key": "payload",
-							"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"admin_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						},
 						{
-							"key": "header",
-							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
-							"type": "string"
-						},
-						{
-							"key": "addTokenTo",
-							"value": "header",
-							"type": "string"
-						},
-						{
-							"key": "secret",
-							"value": "JwtGACHA2425",
-							"type": "string"
-						},
-						{
-							"key": "algorithm",
-							"value": "HS256",
-							"type": "string"
-						},
-						{
-							"key": "isSecretBase64Encoded",
-							"value": false,
-							"type": "boolean"
-						},
-						{
-							"key": "headerPrefix",
-							"value": "Bearer",
-							"type": "string"
-						},
-						{
-							"key": "queryParamKey",
-							"value": "token",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 200', function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response header should contains Authorization field\", function() {\r",
+									"    pm.request.to.have.header('Authorization');\r",
+									"});\r",
+									"\r",
+									"pm.test('Each item contains an array', function () {\r",
+									"    const jsonData = pm.response.json()\r",
+									"    jsonData.forEach((item) => {\r",
+									"        pm.expect(item).to.have.property('gachas').that.is.an('array');\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each item should contain a gachas array with the required attributes\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    jsonData.forEach((item) => {\r",
+									"        // Check user and gacha sub items\r",
+									"        pm.expect(item).to.have.property('user_id').that.is.a('number');\r",
+									"        pm.expect(item).to.have.property('gachas').that.is.an('array');\r",
+									"\r",
+									"        // Per ogni gacha, verifica che abbia gli attributi richiesti\r",
+									"        item.gachas.forEach((gacha) => {\r",
+									"            pm.expect(gacha).to.have.property('gachaId').that.is.a('number');\r",
+									"            pm.expect(gacha).to.have.property('idOwn').that.is.a('number');\r",
+									"            pm.expect(gacha).to.have.property('image').that.is.a('string');\r",
+									"            pm.expect(gacha).to.have.property('name').that.is.a('string');\r",
+									"            pm.expect(gacha).to.have.property('rarity').that.is.a('string');\r",
+									"        });\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Allowed rarity values\", function () {\r",
+									"    var allowedValues = ['Common', 'Rare', 'Super Rare', 'Ultra Rare', 'Super Ultra Rare'];\r",
+									"    const jsonData = pm.response.json();\r",
+									"    jsonData.forEach((item) => {\r",
+									"        // Check rarity level for each gacha sub array\r",
+									"        item.gachas.forEach((gacha) => {\r",
+									"            pm.expect(allowedValues).to.include(gacha.rarity);\r",
+									"        });\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:5000/admin/collections",
-					"protocol": "https",
-					"host": [
-						"localhost"
 					],
-					"port": "5000",
-					"path": [
-						"admin",
-						"collections"
-					]
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5000/admin/collections",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"collections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "401",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 401\", function() {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains msg field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('msg');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Missing Authorization Header'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.msg).to.be.eql('Missing Authorization Header');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    // user_id (sub) missing\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/collections",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"collections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "403",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// admin\r",
+									"admin_id = 1;\r",
+									"role = \"user\";\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('role', role);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 403\", function() {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization contains the wrong role\", function() {\r",
+									"    role = pm.environment.get(\"role\");\r",
+									"    pm.expect(role).to.be.eql(\"user\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Access forbidden'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Forbidden');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"{{role}}\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/collections",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"collections"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "see_a_specific_user_collection",
-			"event": [
+			"item": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"admin_id = 1;\r",
-							"iat = Math.floor(Date.now() / 1000);\r",
-							"user_id = Math.floor(Math.random() * 10) + 1;\r",
-							"\r",
-							"// Add to env variables\r",
-							"pm.environment.set('admin_id', admin_id.toString());\r",
-							"pm.environment.set('iat', iat);\r",
-							"pm.environment.set('user_id', user_id);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test('Status is 200', function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response is an array\", function () {\r",
-							"    pm.expect(pm.response.json()).to.be.an('array');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response header should contains Authorization field\", function() {\r",
-							"    pm.request.to.have.header('Authorization');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Each item should contain a gachas array with the required attributes\", function () {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    jsonData.forEach((item) => {\r",
-							"        pm.expect(item).to.have.property('gachaId').that.is.a('number');\r",
-							"        pm.expect(item).to.have.property('idOwn').that.is.a('number');\r",
-							"        pm.expect(item).to.have.property('image').that.is.a('string');\r",
-							"        pm.expect(item).to.have.property('name').that.is.a('string');\r",
-							"        pm.expect(item).to.have.property('rarity').that.is.a('string');\r",
-							"    });\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Allowed rarity values\", function () {\r",
-							"    var allowedValues = ['Common', 'Rare', 'Super Rare', 'Ultra Rare', 'Super Ultra Rare'];\r",
-							"    const jsonData = pm.response.json();\r",
-							"    jsonData.forEach((item) => {\r",
-							"        pm.expect(allowedValues).to.include(item.rarity);\r",
-							"    });\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response time is less than 200ms\", function () {\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "jwt",
-					"jwt": [
+					"name": "200",
+					"event": [
 						{
-							"key": "payload",
-							"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
-							"type": "string"
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"admin_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"user_id = Math.floor(Math.random() * 10) + 1;\r",
+									"\r",
+									"// Add to env variables\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('iat', iat);\r",
+									"pm.environment.set('user_id', user_id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						},
 						{
-							"key": "header",
-							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
-							"type": "string"
-						},
-						{
-							"key": "addTokenTo",
-							"value": "header",
-							"type": "string"
-						},
-						{
-							"key": "secret",
-							"value": "JwtGACHA2425",
-							"type": "string"
-						},
-						{
-							"key": "algorithm",
-							"value": "HS256",
-							"type": "string"
-						},
-						{
-							"key": "isSecretBase64Encoded",
-							"value": false,
-							"type": "boolean"
-						},
-						{
-							"key": "headerPrefix",
-							"value": "Bearer",
-							"type": "string"
-						},
-						{
-							"key": "queryParamKey",
-							"value": "token",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 200', function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response header should contains Authorization field\", function() {\r",
+									"    pm.request.to.have.header('Authorization');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each item should contain a gachas array with the required attributes\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    jsonData.forEach((item) => {\r",
+									"        pm.expect(item).to.have.property('gachaId').that.is.a('number');\r",
+									"        pm.expect(item).to.have.property('idOwn').that.is.a('number');\r",
+									"        pm.expect(item).to.have.property('image').that.is.a('string');\r",
+									"        pm.expect(item).to.have.property('name').that.is.a('string');\r",
+									"        pm.expect(item).to.have.property('rarity').that.is.a('string');\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Allowed rarity values\", function () {\r",
+									"    var allowedValues = ['Common', 'Rare', 'Super Rare', 'Ultra Rare', 'Super Ultra Rare'];\r",
+									"    const jsonData = pm.response.json();\r",
+									"    jsonData.forEach((item) => {\r",
+									"        pm.expect(allowedValues).to.include(item.rarity);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:5000/admin/collections/{{user_id}}",
-					"protocol": "https",
-					"host": [
-						"localhost"
 					],
-					"port": "5000",
-					"path": [
-						"admin",
-						"collections",
-						"{{user_id}}"
-					]
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5000/admin/collections/{{user_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"collections",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "401",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"user_id = 2;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"pm.environment.set('user_id', user_id);\r",
+									"pm.environment.set('iat', iat);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 401\", function() {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains msg field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('msg');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Missing Authorization Header'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.msg).to.be.eql('Missing Authorization Header');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    // user_id (sub) missing\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/collections/{{user_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"collections",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "403",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"admin_id = 1;\r",
+									"role = \"user\";\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('role', role);\r",
+									"pm.environment.set('iat', iat);\r",
+									"\r",
+									"// user\r",
+									"user_id = 1;\r",
+									"pm.environment.set(\"user_id\", user_id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response is 403\", function() {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization contains the wrong role\", function() {\r",
+									"    role = pm.environment.get(\"role\");\r",
+									"    pm.expect(role).to.be.eql(\"user\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains error field\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Forbidden'\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.be.eql('Forbidden')\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"{{role}}\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5000/admin/collections/{{user_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"collections",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "404",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"admin_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"user_id = 6;\r",
+									"\r",
+									"// Add to env variables\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('iat', iat);\r",
+									"pm.environment.set('user_id', user_id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response is 404', function() {\r",
+									"    pm.response.to.have.status(404);\r",
+									"})\r",
+									"\r",
+									"pm.test('Response contains error field', function() {\r",
+									"    const json = pm.response.json();\r",
+									"    pm.expect(json).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'User not found'\", function() {\r",
+									"    const json = pm.response.json();\r",
+									"    const user_id = pm.environment.get('user_id');\r",
+									"    pm.expect(json.error).to.be.eql('User (id: ' + user_id + ') not found');\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5000/admin/collections/{{user_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"collections",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "get_system_gacha",
-			"event": [
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status is 200\", function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response is an array\", function () {\r",
-							"    pm.expect(pm.response.json()).to.be.an('array');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Each item have some properties\", function() {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    jsonData.forEach((item) => {\r",
-							"        pm.expect(item).to.have.property('id').that.is.a('number');\r",
-							"        pm.expect(item).to.have.property('name').that.is.a('string');\r",
-							"        pm.expect(item).to.have.property('image').that.is.a('string');\r",
-							"        pm.expect(item).to.have.property('rarity').that.is.a('string');\r",
-							"        pm.expect(item).to.have.property('extractionProb').that.is.a('number');\r",
-							"    });\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Probabilities are between 0 and 1\", function() {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    jsonData.forEach((item) => {\r",
-							"        pm.expect(item.extractionProb).is.within(0, 1);\r",
-							"    });\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Allowed rarity values\", function () {\r",
-							"    var allowedValues = ['Common', 'Rare', 'Super Rare', 'Ultra Rare', 'Super Ultra Rare'];\r",
-							"    const jsonData = pm.response.json();\r",
-							"    jsonData.forEach((item) => {\r",
-							"        pm.expect(allowedValues).to.include(item.rarity);\r",
-							"    });\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response time is less than 200ms\", function () {\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:5000/system_collection",
-					"protocol": "https",
-					"host": [
-						"localhost"
+					"name": "200",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each item have some properties\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    jsonData.forEach((item) => {\r",
+									"        pm.expect(item).to.have.property('id').that.is.a('number');\r",
+									"        pm.expect(item).to.have.property('name').that.is.a('string');\r",
+									"        pm.expect(item).to.have.property('image').that.is.a('string');\r",
+									"        pm.expect(item).to.have.property('rarity').that.is.a('string');\r",
+									"        pm.expect(item).to.have.property('extractionProb').that.is.a('number');\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Probabilities are between 0 and 1\", function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    jsonData.forEach((item) => {\r",
+									"        pm.expect(item.extractionProb).is.within(0, 1);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Allowed rarity values\", function () {\r",
+									"    var allowedValues = ['Common', 'Rare', 'Super Rare', 'Ultra Rare', 'Super Ultra Rare'];\r",
+									"    const jsonData = pm.response.json();\r",
+									"    jsonData.forEach((item) => {\r",
+									"        pm.expect(allowedValues).to.include(item.rarity);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
 					],
-					"port": "5000",
-					"path": [
-						"system_collection"
-					]
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5000/system_collection",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"system_collection"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "get_a_specific_system_gacha",
-			"event": [
+			"item": [
 				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"gacha_id = 5\r",
-							"\r",
-							"pm.environment.set('gacha_id', gacha_id);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
+					"name": "200",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"gacha_id = 5\r",
+									"\r",
+									"pm.environment.set('gacha_id', gacha_id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is not an array\", function() {\r",
+									"    pm.expect(pm.response.json()).not.to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each item has expected properties\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).not.to.be.an('array');\r",
+									"\r",
+									"    // Check properties\r",
+									"    pm.expect(jsonData).to.have.property('id').that.is.a('number');\r",
+									"    pm.expect(jsonData).to.have.property('name').that.is.a('string');\r",
+									"    pm.expect(jsonData).to.have.property('extractionProb').that.is.a('number');\r",
+									"    pm.expect(jsonData).to.have.property('rarity').that.is.a('string');\r",
+									"    pm.expect(jsonData).to.have.property('image').that.is.a('string');\r",
+									"    pm.expect(jsonData).to.have.property('damage').that.is.a('number');\r",
+									"    pm.expect(jsonData).to.have.property('speed').that.is.a('number');\r",
+									"    pm.expect(jsonData).to.have.property('critical').that.is.a('number');\r",
+									"    pm.expect(jsonData).to.have.property('accuracy').that.is.a('number');\r",
+									"});\r",
+									"\r",
+									"pm.test('Numeric values between 0 and 100', function() {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.damage).is.within(0, 100);\r",
+									"    pm.expect(jsonData.speed).is.within(0, 100);\r",
+									"    pm.expect(jsonData.damage).is.within(0, 100);\r",
+									"    pm.expect(jsonData.accuracy).is.within(0, 100);\r",
+									"});\r",
+									"\r",
+									"pm.test('Probabilities are between 0 and 1', function () {\r",
+									"    pm.expect(pm.response.json().critical).to.be.within(0, 1);\r",
+									"    pm.expect(pm.response.json().extractionProb).to.be.within(0, 1);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Allowed rarity values\", function () {\r",
+									"    var allowedValues = ['Common', 'Rare', 'Super Rare', 'Ultra Rare', 'Super Ultra Rare'];\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(allowedValues).to.include(jsonData.rarity);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5000/system_collection/{{gacha_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"system_collection",
+								"{{gacha_id}}"
+							]
+						}
+					},
+					"response": []
 				},
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status is 200\", function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response is not an array\", function() {\r",
-							"    pm.expect(pm.response.json()).not.to.be.an('array');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Each item has expected properties\", function () {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).not.to.be.an('array');\r",
-							"\r",
-							"    // Check properties\r",
-							"    pm.expect(jsonData).to.have.property('id').that.is.a('number');\r",
-							"    pm.expect(jsonData).to.have.property('name').that.is.a('string');\r",
-							"    pm.expect(jsonData).to.have.property('extractionProb').that.is.a('number');\r",
-							"    pm.expect(jsonData).to.have.property('rarity').that.is.a('string');\r",
-							"    pm.expect(jsonData).to.have.property('image').that.is.a('string');\r",
-							"    pm.expect(jsonData).to.have.property('damage').that.is.a('number');\r",
-							"    pm.expect(jsonData).to.have.property('speed').that.is.a('number');\r",
-							"    pm.expect(jsonData).to.have.property('critical').that.is.a('number');\r",
-							"    pm.expect(jsonData).to.have.property('accuracy').that.is.a('number');\r",
-							"});\r",
-							"\r",
-							"pm.test('Numeric values between 0 and 100', function() {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.damage).is.within(0, 100);\r",
-							"    pm.expect(jsonData.speed).is.within(0, 100);\r",
-							"    pm.expect(jsonData.damage).is.within(0, 100);\r",
-							"    pm.expect(jsonData.accuracy).is.within(0, 100);\r",
-							"});\r",
-							"\r",
-							"pm.test('Probabilities are between 0 and 1', function () {\r",
-							"    pm.expect(pm.response.json().critical).to.be.within(0, 1);\r",
-							"    pm.expect(pm.response.json().extractionProb).to.be.within(0, 1);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Allowed rarity values\", function () {\r",
-							"    var allowedValues = ['Common', 'Rare', 'Super Rare', 'Ultra Rare', 'Super Ultra Rare'];\r",
-							"    const jsonData = pm.response.json();\r",
-							"    pm.expect(allowedValues).to.include(jsonData.rarity);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response time is less than 200ms\", function () {\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:5000/system_collection/{{gacha_id}}",
-					"protocol": "https",
-					"host": [
-						"localhost"
+					"name": "404",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"admin_id = 1;\r",
+									"iat = Math.floor(Date.now() / 1000);\r",
+									"gacha_id = 11;\r",
+									"\r",
+									"// Add to env variables\r",
+									"pm.environment.set('admin_id', admin_id.toString());\r",
+									"pm.environment.set('iat', iat);\r",
+									"pm.environment.set('gacha_id', gacha_id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response is 404', function() {\r",
+									"    pm.response.to.have.status(404);\r",
+									"})\r",
+									"\r",
+									"pm.test('Response contains error field', function() {\r",
+									"    const json = pm.response.json();\r",
+									"    pm.expect(json).to.have.property('error');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is 'Gacha not found'\", function() {\r",
+									"    const json = pm.response.json();\r",
+									"    pm.expect(json.error).to.be.eql('Gacha not found');\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
 					],
-					"port": "5000",
-					"path": [
-						"system_collection",
-						"{{gacha_id}}"
-					]
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "payload",
+									"value": "{\r\n    \"sub\": \"{{admin_id}}\",\r\n    \"role\": \"admin\",\r\n    \"iat\": {{iat}}\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "JwtGACHA2425",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5000/system_collection/{{gacha_id}}",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"system_collection",
+								"{{gacha_id}}"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		}
 	]
 }

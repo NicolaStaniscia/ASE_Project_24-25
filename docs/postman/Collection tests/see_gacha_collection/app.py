@@ -25,7 +25,7 @@ def get_user_collection():
             return make_response(jsonify(error='Access forbidden: only users can own a collection'), 403)
         
         # ! TEST DATA
-        params = {"n": rnd.randint(2, 6)}
+        params = {"n": 5}
 
         # Send a request
         response = send_request('get_user_collection', **params)
@@ -49,7 +49,7 @@ def see_gacha_info(gacha_id):
             return make_response(jsonify(error='Access forbidden: only users can own a collection'), 403)
         
         if not gacha_id:
-            return make_response(jsonify(error='User not set'), 400)
+            return make_response(jsonify(error='Gacha ID missing'), 400)
         
         # ! TEST DATA 1
         collection_params = {"n": 5} 
@@ -94,6 +94,10 @@ def get_system_collection():
 @app.route('/system_collection/<int:gacha_id>', methods=['GET'])  
 def get_info_about_system_gacha(gacha_id):
     try: 
+        # Simulate to have up to 10 gachas
+        if gacha_id > 10:
+            return make_response(jsonify(error='Gacha not found'), 404)
+        
         # ! TEST DATA
         params = {"gacha_id": gacha_id}
         response = send_request('see_gacha_info', **params)
@@ -116,7 +120,7 @@ def check_all_user_collections():
 
     try:
         if role != 'admin':
-            return make_response(jsonify(error='Access denied'), 401)
+            return make_response(jsonify(error='Forbidden'), 403)
         
         # ! TEST DATA 1
         owners_params = {"n": rnd.randint(1, 4)}
@@ -166,7 +170,20 @@ def check_specific_user_collection(user_id: int):
 
     try:
         if role != 'admin':
-            return make_response(jsonify(error='Access denied'), 401)
+            return make_response(jsonify(error='Forbidden'), 403)
+        
+        if not user_id:
+            return make_response(jsonify(error='User ID missing'), 400)
+        
+        # Insert user inside a json array
+        user = [{"user": user_id}]
+        json_user = json.dumps(user)
+
+        ids = {"ids": json_user}
+
+        # Simulate recovery of usernames (up to 5)
+        if user_id > 5:
+            return make_response(jsonify(error=f'User (id: {user_id}) not found'), 404)
         
         # ! TEST DATA
         params = {"n": rnd.randint(2, 5)}
