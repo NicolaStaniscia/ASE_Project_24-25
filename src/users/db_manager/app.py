@@ -310,7 +310,6 @@ def decrease_currency():
 def usernames():
     data = request.get_json()
     ids = data.get('ids', [])
-    print(ids)
 
     try:
         connection = get_db_connection()
@@ -328,14 +327,14 @@ def usernames():
         for user_id in ids:
             cursor.execute(query, (user_id,))
             result = cursor.fetchone()
+            if result is None:
+                return make_response(jsonify(error=f'User (id: {user_id}) not found'), 404)
+            
             usernames.append(
                 {"id": user_id, "username": result[0]}
             )
 
-        if not usernames: return make_response(jsonify(error='No users'), 400)
-
-        # Create a json array
-        jsonArray = json.dumps(usernames, indent=4)
+        if not usernames: return make_response(jsonify(error='No users'), 404)
 
         return make_response(jsonify(usernames), 200)
         

@@ -188,10 +188,21 @@ def check_all_user_collections():
 def check_specific_user_collection(user_id: int):
     jwt_payload = get_jwt()
     role = jwt_payload.get('role', 'unknown')
+    auth_headers = request.headers.get('Authorization')
+    new_header = {'Authorization': auth_headers}
 
     try:
         if role != 'admin':
             return make_response(jsonify(error='Forbidden'), 403)
+        
+        if not user_id:
+            return make_response(jsonify(error="User ID missing"), 400)
+        
+        # Check username
+        id = {"ids": [user_id]}
+        username = requests.get("https://account_management:5000/account_management/get_username", json=id, headers=new_header, verify=False)
+        if username.status_code != 200:
+            return make_response(jsonify(username.json()), username.status_code)
         
         response = requests.get(f'https://collection_db_manager:5010/user_collection/{user_id}', verify=False)
         if response.status_code == 200:
