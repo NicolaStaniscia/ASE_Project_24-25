@@ -1,12 +1,12 @@
 openapi: 3.0.0
 
 info:
-  title: Collection API - Users
+  title: Collection API - User
   description: API 
   version: 1.0.0
 
 servers:
-  - url: http://localhost
+  - url: http://localhost:8080
     description: API gateway
 
 tags:
@@ -46,6 +46,16 @@ paths:
                       type: string
                     rarity:
                       type: string
+        '401':
+          description: Campo "Authorization" mancante
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing Authorization Header"
         '403':
           description: Accesso vietato, solo gli utenti possono accedere alla collezione
           content:
@@ -56,16 +66,6 @@ paths:
                   error:
                     type: string
                     example: "Access forbidden: only users can own a collection"
-        '400':
-          description: Mancata configurazione dell'utente nel token JWT
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "User not set"
         '500':
           description: Errore interno del server o richiesta fallita
           content:
@@ -106,7 +106,16 @@ paths:
                       type: integer
                     rarity:
                       type: string
-
+        '401':
+          description: Campo "Authorization" mancante
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing Authorization Header"
         '403':
           description: Accesso vietato, solo gli utenti possono accedere alla collezione
           content:
@@ -117,16 +126,6 @@ paths:
                   error:
                     type: string
                     example: "Access forbidden: only users can own a collection"
-        '400':
-          description: Mancata configurazione dell'utente nel token JWT
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "User not set"
         '500':
           description: Errore interno del server o richiesta fallita
           content:
@@ -142,7 +141,7 @@ paths:
     get:
       tags:
         - See gacha collection
-      summary: Recupera le informazioni su un gacha specifico
+      summary: Recupera le informazioni su uno specifico gacha posseduto
       description: Restituisce le informazioni dettagliate su un gacha specifico se l'utente lo possiede.
       security:
         - BearerAuth: []
@@ -182,6 +181,26 @@ paths:
                     type: string
                   speed:
                     type: integer
+        '400':
+          description: Richiesta malformata. gacha_id obbligatorio
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Gacha ID missing"
+        '401':
+          description: Campo "Authorization" mancante
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing Authorization Header"
         '403':
           description: Accesso vietato, solo gli utenti possono visualizzare la collezione
           content:
@@ -192,16 +211,6 @@ paths:
                   error:
                     type: string
                     example: "Access forbidden: only users can own a collection"
-        '400':
-          description: Mancata configurazione dell'utente nel token JWT
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: "User not set"
         '404':
           description: Gacha non posseduto dall'utente o non trovato
           content:
@@ -358,6 +367,16 @@ paths:
                   error:
                     type: string
                     example: You don't have enough points
+        '401':
+          description: Campo "Authorization" mancante
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing Authorization Header"
         '403':
           description: Accesso negato, l'utente non ha il ruolo corretto.
           content:
@@ -414,6 +433,16 @@ paths:
                   error:
                     type: string
                     example: "You don't have enough points"
+        '401':
+          description: Campo "Authorization" mancante
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing Authorization Header" 
         '403':
           description: L'utente non ha il ruolo necessario per accedere a questo endpoint.
           content:
@@ -469,6 +498,16 @@ paths:
                   error:
                     type: string
                     example: "You don't have enough points"
+        '401':
+          description: Campo "Authorization" mancante
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing Authorization Header"
         '403':
           description: L'utente non ha il ruolo necessario per accedere a questo endpoint.
           content:
