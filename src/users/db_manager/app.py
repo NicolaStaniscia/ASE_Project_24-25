@@ -360,6 +360,9 @@ def get_all_users(username):
             result = cursor.fetchone()
 
         # Restituisci i risultati in JSON
+        if result == None:
+            return jsonify({"error": "User not found!"}), 404
+        
         return jsonify(result), 200
 
     except Error as e:
@@ -422,7 +425,6 @@ def check_payments(username):
             cursor.close()
         if 'connection' in locals() and connection.is_connected():
             connection.close()
-
 
 if __name__ == '__main__':
     app.run(debug=True)

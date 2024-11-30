@@ -161,8 +161,9 @@ def modify_user_account():
 @app.route('/account_management/delete_user_account/<username>', methods=['DELETE'])
 @jwt_required()  # Richiede un token JWT valido
 def delete_user_account(username):
+    
     if not username:
-                return jsonify({"error": "username is required"}), 400
+        return jsonify({"error": "username is required"}), 400
     
     current_user = get_jwt()["username"]  # Ottieni l'utente dal token
     role = get_jwt()["role"]  # Ottieni il ruolo dal token
@@ -250,7 +251,12 @@ def get_currency():
 @jwt_required()
 def set_currency():
     user_id = get_jwt_identity()
+    if not user_id:
+        return make_response(jsonify(error="Forbidden"), 403)
     data = request.get_json()
+    if not data['currency']:
+         return make_response(jsonify(error="Bad request"), 400)
+    
     new_data = {'user_id': int(user_id), 'currency': data['currency']}
 
     try:
@@ -329,7 +335,7 @@ def login_admin():
             return jsonify({"access_token": access_token, "status": "Login completed successfully"}), 200
         
         elif response.status_code == 401:#invalid credentials
-            return jsonify({"status": "Invalid credentials"}), 401
+            return jsonify({"error": "Invalid credentials"}), 401
         else:
             return jsonify({"error": "Database Error"}), 500
         
