@@ -79,6 +79,11 @@ def roll_standard():
     auth_headers = request.headers.get('Authorization')
     new_header = {'Authorization':auth_headers}
 
+    # Variables for rollback
+    updated_currency = 0
+    bullet_p = 0
+    assigned = False
+
     try:
         if role != 'user':
             return make_response(jsonify(error='Only users can roll a gacha'), 403)
@@ -115,8 +120,8 @@ def roll_standard():
         assign['gacha_id'] = card
         
         # Edit currency 
-        new_balance = bullet_p - standard_price
-        data_update = {'currency': new_balance}
+        updated_currency = bullet_p - standard_price
+        data_update = {'currency': updated_currency}
         update_resp = requests.patch('https://account_management:5000/account_management/currency', json=data_update, headers=new_header, verify=False)
         if update_resp.status_code != 200:
             return make_response(jsonify(update_resp.json()), update_resp.status_code)
@@ -124,8 +129,8 @@ def roll_standard():
         # Send assignment request
         assign_response = requests.post('https://collection_db_manager:5010/edit/user_collection', json=assign, verify=False)
         if assign_response.status_code == 200:
+            assigned = True
             return make_response(jsonify(success=assign_response.json()['result']), 200)
-        
 
         return make_response(jsonify(assign_response.json()), assign_response.status_code)
     
@@ -136,6 +141,11 @@ def roll_standard():
     except Exception as e:
         return make_response(jsonify(error="Internal server error"), 500)
     
+    finally:
+        rollback = {'currency': bullet_p}
+        if updated_currency != 0 and assigned == False:
+            requests.patch('https://account_management:5000/account_management/currency', json=rollback, headers=new_header, verify=False)
+    
     
 @app.route('/roll/gold', methods=['POST'])
 @jwt_required()
@@ -145,7 +155,12 @@ def roll_gold():
     role = jwt_payload.get('role', 'unknown')
     user_id = get_jwt_identity()
     auth_headers = request.headers.get('Authorization')
-    new_header = {'Authorization':auth_headers}
+    new_header = {'Authorization': auth_headers}
+
+    # Variables for rollback
+    updated_currency = 0
+    bullet_p = 0
+    assigned = False
 
     try:
         if role != 'user':
@@ -184,8 +199,8 @@ def roll_gold():
         assign['gacha_id'] = card
 
         # Edit currency 
-        new_balance = bullet_p - gold_price
-        data_update = {'currency':new_balance}
+        updated_currency = bullet_p - gold_price
+        data_update = {'currency': updated_currency}
         update_resp = requests.patch('https://account_management:5000/account_management/currency', json=data_update, headers=new_header, verify=False)
         if update_resp.status_code != 200:
             return make_response(jsonify(update_resp.json()), update_resp.status_code)
@@ -193,8 +208,8 @@ def roll_gold():
         # Send assignment request
         assign_response = requests.post('https://collection_db_manager:5010/edit/user_collection', json=assign, verify=False)
         if assign_response.status_code == 200:
+            assigned = True
             return make_response(jsonify(success=assign_response.json()['result']), 200)
-        
 
         return make_response(jsonify(assign_response.json()), assign_response.status_code)
 
@@ -204,6 +219,11 @@ def roll_gold():
     
     except Exception as e:
         return make_response(jsonify(error="Internal server error"), 500)
+    
+    finally:
+        rollback = {'currency': bullet_p}
+        if updated_currency != 0 and assigned == False:
+            requests.patch('https://account_management:5000/account_management/currency', json=rollback, headers=new_header, verify=False)
 
 
 @app.route('/roll/platinum', methods=['POST'])
@@ -215,6 +235,11 @@ def roll_platinum():
     user_id = get_jwt_identity()
     auth_headers = request.headers.get('Authorization')
     new_header = {'Authorization':auth_headers}
+    
+    # Variables for rollback
+    updated_currency = 0
+    bullet_p = 0
+    assigned = False
 
     try:
         if role != 'user':
@@ -253,8 +278,8 @@ def roll_platinum():
         assign['gacha_id'] = card
 
         # Edit currency 
-        new_balance = bullet_p - platinum_price
-        data_update = {'currency':new_balance}
+        updated_currency = bullet_p - platinum_price
+        data_update = {'currency': updated_currency}
         update_resp = requests.patch('https://account_management:5000/account_management/currency', json=data_update, headers=new_header, verify=False)
         if update_resp.status_code != 200:
             return make_response(jsonify(update_resp.json()), update_resp.status_code)
@@ -262,6 +287,7 @@ def roll_platinum():
         # Send assignment request
         assign_response = requests.post('https://collection_db_manager:5010/edit/user_collection', json=assign, verify=False)
         if assign_response.status_code == 200:
+            assigned = True
             return make_response(jsonify(success=assign_response.json()['result']), 200)
         
 
@@ -273,6 +299,11 @@ def roll_platinum():
     
     except Exception as e:
         return make_response(jsonify(error="Internal server error"), 500)
+    
+    finally:
+        rollback = {'currency': bullet_p}
+        if updated_currency != 0 and assigned == False:
+            requests.patch('https://account_management:5000/account_management/currency', json=rollback, headers=new_header, verify=False)
 
 
 if __name__ == '__main__':
