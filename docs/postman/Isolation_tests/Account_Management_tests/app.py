@@ -261,6 +261,7 @@ def login_admin():
         }
 
     response = send_request('check_credentials', **params)
+    
     access_token = create_access_token(
                 identity=str(id),
                 additional_claims={
@@ -277,22 +278,17 @@ def view_users():
     role = get_jwt()["role"]  # Ottieni l'utente dal token
     # Controlla che l'utente stia modificando il proprio account
     if role != 'admin':
-        return jsonify({"error": "Unauthorized"}), 403
+        return make_response(jsonify({"error": 'Unauthorized'}), 403)
 
 
     # Ottieni lo username dalla query string, se presente
     username = request.args.get('username', "all")  # Usa 'default_user' se non c'è
-    db_manager_url = f"https://users_db_manager:5000/get_all_users/{username}"  # URL del servizio DB Manager
-    try:
-        # Inoltrare i dati al DB Manager
-        response = requests.get(db_manager_url,verify=False)
-
-        return jsonify({
-            "status": response.json(),
-            }), response.status_code
     
-    except requests.exceptions.RequestException as e:
-        return jsonify({"error": "Failed to connect to DB Manager", "details": str(e)}), 500
+    params = {
+            "username": username
+        }
+    response = send_request('get_all_users', **params)
+    return make_response(jsonify(response), 200)
 
 @app.route('/account_management/admin/modify_user', methods=['PATCH'])
 @jwt_required()  # Richiede un token JWT valido
@@ -301,36 +297,26 @@ def modify_user():
     role = get_jwt()["role"]  # Ottieni l'utente dal token
     # Controlla che l'utente stia modificando il proprio account
     if role != 'admin':
-        return jsonify({"error": "Unauthorized"}), 403
+        return make_response(jsonify({"error": 'Unauthorized'}), 403)
 
     data = request.get_json()
     username = data.get('username')
     new_currency = data.get('new_currency')
 
     if not username or not new_currency:
-        return jsonify({"error": "username and new_currency are required"}), 400
+        return make_response(jsonify({"error": 'username and new_currency are required'}), 400)
     try:
         new_currency = int(new_currency)  # Prova a convertirlo in intero
     except ValueError:
-        return jsonify({"error": "'new_currency' must be an integer"}), 400
+        return make_response(jsonify({"error": "'new_currency' must be an integer"}), 400)
 
-    db_manager_url = "https://users_db_manager:5000/modify_user_by_admin"  # URL del servizio DB Manager
-    try:
-        # Inoltrare i dati al DB Manager
-        response = requests.patch(db_manager_url, json={
+
+    params = {
             "username": username,
-            "new_currency": new_currency},
-            verify=False
-        )
-        
-        # Restituire la risposta del DB Manager, se la password dell'utente è stato modificato con successo ,allora eseguo anche il logout
-        if response.status_code == 200:
-            return jsonify({
-                "status": response.json(),
-                }), response.status_code
-    
-    except requests.exceptions.RequestException as e:
-        return jsonify({"error": "Failed to connect to DB Manager", "details": str(e)}), 500
+            "new_currency": new_currency
+        }
+    response = send_request('modify_user_by_admin', **params)
+    return make_response(jsonify(response), 200)
     
 @app.route('/account_management/admin/check_payments_history/<username>', methods=['GET'])
 @jwt_required()  # Richiede un token valido
@@ -339,22 +325,17 @@ def check_payments_history(username):
     role = get_jwt()["role"]  # Ottieni l'utente dal token
     # Controlla che l'utente stia modificando il proprio account
     if role != 'admin':
-        return jsonify({"error": "Unauthorized"}), 403
+        return make_response(jsonify({"error": 'Unauthorized'}), 403)
 
     # Ottieni lo username dalla query string, se presente
     if not username:
-        return jsonify({"error": "Username is required"}), 400
-    db_manager_url = f"https://users_db_manager:5000/check_payments/{username}"  # URL del servizio DB Manager
-    try:
-        # Inoltrare i dati al DB Manager
-        response = requests.get(db_manager_url,verify=False)
-
-        return jsonify({
-            "status": response.json(),
-            }), response.status_code
+        return make_response(jsonify({"error": 'username is required'}), 400)
     
-    except requests.exceptions.RequestException as e:
-        return jsonify({"error": "Failed to connect to DB Manager", "details": str(e)}), 500
+    params = {
+            "username": username
+        }
+    response = send_request('check_payments', **params)
+    return make_response(jsonify(response), 200)
 
 if __name__ == '__main__':
     app.run(debug=True)
