@@ -8,4 +8,4 @@ COPY . .
 RUN pip install -r requirements.txt
 
 # Comando per avviare il server Flask
-CMD ["flask", "run", "--host=0.0.0.0","--cert=./certs/cert.pem","--key=./certs/key.pem"]
+CMD ["flask", "run", "--host=0.0.0.0","--cert=/run/secrets/market_dbm_cert","--key=/run/secrets/market_dbm_key"]

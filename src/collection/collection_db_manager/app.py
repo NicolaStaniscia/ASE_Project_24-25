@@ -26,12 +26,23 @@ class MyApp(Flask):
 
     # ! FUNCTIONS
 
+    def get_secret(self, secret_path):
+        try:
+            # Read secret
+            with open(secret_path, 'r') as secret_file:
+                secret = secret_file.read().strip()  # Remove spaces and newline
+            return secret
+        except FileNotFoundError:
+            raise Exception(f"Secret file not found at {secret_path}")
+        except Exception as e:
+            raise Exception(f"Error reading secret: {str(e)}")
+
     # * Connect to db
     def connect_db(self):
         config = {
             'host': getenv('MYSQL_HOST'),
             'user': getenv('MYSQL_USER'),
-            'password': getenv('MYSQL_PASSWORD'),
+            'password': self.get_secret('/run/secrets/collection_mysql_password'),
             'database': getenv('MYSQL_DATABASE')
         }
 

@@ -5,8 +5,19 @@ import requests
 
 app = Flask(__name__)
 
+def get_secret(secret_path):
+        try:
+            # Read secret
+            with open(secret_path, 'r') as secret_file:
+                secret = secret_file.read().strip()  # Remove spaces and newline
+            return secret
+        except FileNotFoundError:
+            raise Exception(f"Secret file not found at {secret_path}")
+        except Exception as e:
+            raise Exception(f"Error reading secret: {str(e)}")
+
 # Set jwt config
-app.config['JWT_SECRET_KEY'] = getenv('JWT_PASSWORD')
+app.config['JWT_SECRET_KEY'] = get_secret('/run/secrets/jwt_password')
 app.config['JWT_TOKEN_LOCATION'] = [getenv('JWT_LOCATION')]
 jwt = JWTManager(app)
 

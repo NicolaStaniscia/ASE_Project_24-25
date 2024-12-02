@@ -3,25 +3,31 @@ services:
     build:
       context: ./market/auction_market
     container_name: auction_market
-    environment:
-      - MARKET_DB_URI=mysql+pymysql://root:root@mysql:3306/market_db
     networks:
       - backend
     depends_on:
       - db-manager
       - mysql
+    secrets:
+      - market_db_uri
+      - jwt_password
+      - auction_market_cert
+      - auction_market_key
   
   trading_history:
     build:
       context: ./market/trading_history
     container_name: trading_history
-    environment:
-      - MARKET_DB_URI=mysql+pymysql://root:root@mysql:3306/market_db
     networks:
       - backend
     depends_on:
       - db-manager
       - mysql
+    secrets:
+      - market_db_uri
+      - jwt_password
+      - trading_history_cert
+      - trading_history_key
   
   see_gacha_collection:
     build: ./collection/see_gacha_collection
@@ -32,10 +38,13 @@ services:
     ports:
       - 5007:5007
     environment:
-      - JWT_PASSWORD=JwtGACHA2425
       - JWT_LOCATION=headers
     networks:
       - backend
+    secrets:
+      - jwt_password
+      - see_gacha_collection_cert
+      - see_gacha_collection_key
   
   edit_gacha_collection:
     build: ./collection/edit_gacha_collection
@@ -46,10 +55,13 @@ services:
     ports:
       - 5008:5008
     environment:
-      - JWT_PASSWORD=JwtGACHA2425  # To test remove secrets
       - JWT_LOCATION=headers
     networks:
       - backend
+    secrets:
+      - jwt_password
+      - edit_gacha_collection_cert
+      - edit_gacha_collection_key
     
   roll_gacha:
     build: ./collection/roll_gacha
@@ -60,10 +72,13 @@ services:
     ports:
       - 5009:5009
     environment:
-      - JWT_PASSWORD=JwtGACHA2425  # /run/secrets/jwt_password
       - JWT_LOCATION=headers
     networks:
       - backend
+    secrets:
+      - jwt_password
+      - roll_gacha_cert
+      - roll_gacha_key
   
   account_management:
     build: ./users/account_management
@@ -73,6 +88,10 @@ services:
       - users_db_manager
     networks:
       - backend
+    secrets:
+      - jwt_password
+      - account_management_cert
+      - account_management_key
 
   db-manager:
     build:
@@ -84,8 +103,11 @@ services:
       - backend
     depends_on:
       - mysql
-    environment:
-      - MARKET_DB_URI=mysql+pymysql://root:root@mysql:3306/market_db
+    secrets:
+      - jwt_password
+      - market_db_uri
+      - market_dbm_cert
+      - market_dbm_key
 
   collection_db_manager:
     build: ./collection/collection_db_manager
@@ -94,7 +116,6 @@ services:
     environment:
       MYSQL_HOST: collection_db
       MYSQL_USER: collection_manager
-      MYSQL_PASSWORD: TOSCAgha69
       MYSQL_DATABASE: collection_db
     ports:
       - 5010:5010
@@ -102,6 +123,10 @@ services:
       - collection_db
     networks:
       - backend
+    secrets:
+      - collection_mysql_password
+      - collection_db_manager_cert
+      - collection_db_manager_key
 
   users_db_manager:
     build: ./users/db_manager
@@ -110,13 +135,17 @@ services:
       - users_db
     networks:
       - backend
+    secrets:
+      - account_mysql_password
+      - account_db_manager_cert
+      - account_db_manager_key
   
   mysql:
     image: mysql:latest
     container_name: mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/market_mysql_root_password
       MYSQL_DATABASE: market_db
     ports:
       - "3306:3306"
@@ -125,6 +154,10 @@ services:
       - ./init_db/init_market.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - backend
+    secrets:
+      - market_mysql_root_password
+      - market_db_cert
+      - market_db_key
 
   collection_db:
     image: mysql:latest
@@ -136,23 +169,28 @@ services:
       - ./init_db/owned_collection.csv:/var/lib/mysql-files/owned_collection.csv
       - ./init_db/init_collection.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
-      MYSQL_ROOT_PASSWORD: Spin&Go_2425
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/collection_mysql_root_password
       MYSQL_DATABASE: collection_db
       MYSQL_USER: collection_manager
-      MYSQL_PASSWORD: TOSCAgha69
+      MYSQL_PASSWORD_FILE: /run/secrets/collection_mysql_password
     ports:
       - 3307:3307
     networks:
       - backend
+    secrets:
+      - collection_mysql_root_password
+      - collection_mysql_password
+      - collection_db_cert
+      - collection_db_key
 
   users_db:
     image: mysql:latest  
     container_name: users_db
     environment:
-      MYSQL_ROOT_PASSWORD: ase2425!
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/account_mysql_root_password
       MYSQL_DATABASE: account_management
       MYSQL_USER: user
-      MYSQL_PASSWORD: ase2425
+      MYSQL_PASSWORD_FILE: /run/secrets/account_mysql_password
     ports:
       - "3308:3308"
     volumes:
@@ -161,6 +199,11 @@ services:
       - ./init_db/init_users.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - backend
+    secrets:
+      - account_mysql_root_password
+      - account_mysql_password
+      - users_db_cert
+      - users_db_key
 
   api_gateway:
     image: nginx:latest
@@ -188,3 +231,81 @@ networks:
   frontend:
   backend:
   admin_frontend:
+
+secrets:
+
+  # Collection secrets
+  collection_mysql_root_password:
+    file: ./secrets/collection_mysql_root_password.txt
+  collection_mysql_password: 
+    file: ./secrets/collection_mysql_password.txt
+  jwt_password:
+    file: ./secrets/jwt_password.txt
+
+  # Account management secrets
+  account_mysql_root_password: 
+    file: ./secrets/account_mysql_root_password.txt
+  account_mysql_password: 
+    file: ./secrets/account_mysql_password.txt
+
+  # Market secrets
+  market_mysql_root_password: 
+    file: ./secrets/market_mysql_root_password.txt
+  market_db_uri:
+    file: ./secrets/market_db_uri.txt
+
+  # Collection TLS
+  collection_db_manager_cert:
+    file: ./secrets/https/collection_db_manager/cert.pem
+  collection_db_manager_key:
+    file: ./secrets/https/collection_db_manager/key.pem
+  see_gacha_collection_cert:
+    file: ./secrets/https/see_gacha_collection/cert.pem
+  see_gacha_collection_key:
+    file: ./secrets/https/see_gacha_collection/key.pem
+  edit_gacha_collection_cert:
+    file: ./secrets/https/edit_gacha_collection/cert.pem
+  edit_gacha_collection_key:
+    file: ./secrets/https/edit_gacha_collection/key.pem
+  roll_gacha_cert:
+    file: ./secrets/https/roll_gacha/cert.pem
+  roll_gacha_key:
+    file: ./secrets/https/roll_gacha/key.pem
+
+  # Account management TLS
+  account_db_manager_cert:
+    file: ./secrets/https/account_db_manager/cert.pem
+  account_db_manager_key:
+    file: ./secrets/https/account_db_manager/key.pem
+  account_management_cert:
+    file: ./secrets/https/account_management/cert.pem
+  account_management_key:
+    file: ./secrets/https/account_management/key.pem
+
+  # Market TLS
+  market_dbm_cert:
+    file: ./secrets/https/market_dbm/cert.pem
+  market_dbm_key:
+    file: ./secrets/https/market_dbm/key.pem
+  auction_market_cert:
+    file: ./secrets/https/auction_market/cert.pem
+  auction_market_key:
+    file: ./secrets/https/auction_market/key.pem
+  trading_history_cert:
+    file: ./secrets/https/trading_history/cert.pem
+  trading_history_key:
+    file: ./secrets/https/trading_history/key.pem
+
+  # DB TLS
+  collection_db_cert:
+    file: ./secrets/https/collection_db/cert.pem
+  collection_db_key:
+    file: ./secrets/https/collection_db/key.pem
+  users_db_cert:
+    file: ./secrets/https/users_db/cert.pem
+  users_db_key:
+    file: ./secrets/https/users_db/key.pem
+  market_db_cert:
+    file: ./secrets/https/market_db/cert.pem
+  market_db_key:
+    file: ./secrets/https/market_db/key.pem

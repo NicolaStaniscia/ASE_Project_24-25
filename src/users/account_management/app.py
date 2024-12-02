@@ -8,8 +8,19 @@ from datetime import timedelta
 
 app = Flask(__name__)
 
+def get_secret(secret_path):
+        try:
+            # Read secret
+            with open(secret_path, 'r') as secret_file:
+                secret = secret_file.read().strip()  # Remove spaces and newline
+            return secret
+        except FileNotFoundError:
+            raise Exception(f"Secret file not found at {secret_path}")
+        except Exception as e:
+            raise Exception(f"Error reading secret: {str(e)}")
+        
 # Configurazione della chiave segreta per JWT
-app.config["JWT_SECRET_KEY"] = "JwtGACHA2425"  # Cambia con una chiave sicura
+app.config["JWT_SECRET_KEY"] = get_secret('/run/secrets/jwt_password')
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 app.config['JWT_TOKEN_LOCATION'] = ['headers']
 

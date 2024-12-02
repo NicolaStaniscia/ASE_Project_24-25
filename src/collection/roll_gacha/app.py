@@ -6,8 +6,19 @@ import requests
 
 app = Flask(__name__)
 
+def get_secret(secret_path):
+        try:
+            # Read secret
+            with open(secret_path, 'r') as secret_file:
+                secret = secret_file.read().strip()  # Remove spaces and newline
+            return secret
+        except FileNotFoundError:
+            raise Exception(f"Secret file not found at {secret_path}")
+        except Exception as e:
+            raise Exception(f"Error reading secret: {str(e)}")
+
 # Set jwt config
-app.config['JWT_SECRET_KEY'] = getenv('JWT_PASSWORD')
+app.config['JWT_SECRET_KEY'] = get_secret('/run/secrets/jwt_password')
 app.config['JWT_TOKEN_LOCATION'] = [getenv('JWT_LOCATION')]
 jwt = JWTManager(app)
 
@@ -139,7 +150,7 @@ def roll_standard():
         return make_response(jsonify(error=f"Request failed: {str(e)}"), 500)
     
     except Exception as e:
-        return make_response(jsonify(error="Internal server error"), 500)
+        return make_response(jsonify(error=f"Internal server error: {str(e)}"), 500)
     
     finally:
         rollback = {'currency': bullet_p}
@@ -179,7 +190,7 @@ def roll_gold():
         # Retrieve gachas
         gacha_response = requests.get('https://collection_db_manager:5010/gacha', verify=False)
         if gacha_response.status_code != 200:
-            return make_response(jsonify(error='Request failed'), gacha_response.status_code)
+            return make_response(jsonify(error=f'Request failed: {gacha_response.json()}'), gacha_response.status_code)
         
         # Retrieve response data and set config
         sys_gacha = gacha_response.json()
@@ -218,7 +229,7 @@ def roll_gold():
         return make_response(jsonify(error=f"Request failed: {str(e)}"), 500)
     
     except Exception as e:
-        return make_response(jsonify(error="Internal server error"), 500)
+        return make_response(jsonify(error=f"Internal server error: {str(e)}"), 500)
     
     finally:
         rollback = {'currency': bullet_p}
