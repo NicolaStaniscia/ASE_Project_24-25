@@ -18,6 +18,17 @@ jwt = JWTManager(app)
 # Set per i token revocati
 revoked_tokens = set()
 
+#MOCK tests
+mock_request = None
+def send_request(endpoint: str, **kwargs):
+    if mock_request:
+        response = mock_request(endpoint, **kwargs)
+        if not isinstance(response, dict):
+            raise ValueError("Invalid response format")
+        return response
+    else:
+        raise NotImplementedError('mock_request not implemented')
+
 # Callback per verificare se un token è stato revocato
 @jwt.token_in_blocklist_loader
 def check_if_token_is_revoked(jwt_header, jwt_payload):
@@ -32,73 +43,44 @@ def create_user_account():
     password = data.get('password')
     
     if not username or not password:
-                return jsonify({"error": "username and password are required"}), 400
-
+        return make_response(jsonify({"error": 'username and password are required'}), 400)
+    
     # a questo punto si genera il salt casuale e l'hash della password
     salt = os.urandom(16).hex()
     hashed_password = hashlib.sha256((salt + password).encode('utf-8')).hexdigest()
-    db_manager_url = "https://users_db_manager:5000/create_user"  # URL del servizio DB Manager
-    try:
-        # Inoltrare i dati al DB Manager
-        response = requests.post(db_manager_url, json={
+
+    params = {
             "username": username,
             "salt": salt,
-            "password": hashed_password},
-            verify=False
-        )
-        
-        # Restituire la risposta del DB Manager
-        return jsonify({
-            "status": response.json(),
-            }), response.status_code
-    
-    except requests.exceptions.RequestException as e:
+            "password": hashed_password
+        }
 
-        return jsonify({"error": "Failed to connect to DB Manager", "details": str(e)}), 500
+    response = send_request('create_user', **params)
+    return make_response(jsonify(response), 201)
 
 @app.route('/account_management/login', methods=['POST'])
 def login():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-    user_type = "normal"
 
     if not username or not password:
-                return jsonify({"error": "username and password are required"}), 400
+        return make_response(jsonify({"error": 'username and password are required'}), 400)
+    
+    params = {
+            "username": username,
+            "password": password
+        }
 
-    #inoltro le credenziali al db_manager per verificare se sono corrette:
-    db_manager_url = "https://users_db_manager:5000/check_credentials"
-    try:
-
-        response = requests.post(db_manager_url, json={
-                "username": username,
-                "password": password,
-                "user_type": user_type},
-                verify=False
-            )
-        
-        if response.status_code == 200:#credentials ok
-            url = f"https://db_manager:5000/get_id/{username}/{user_type}"
-            response = requests.get(url,verify=False)
-            id = data.get('id')
-            access_token = create_access_token(
+    response = send_request('check_credentials', **params)
+    access_token = create_access_token(
                 identity=str(id),
                 additional_claims={
                     "username": username,
                     "role": 'user'
                 }
             )
-            return jsonify({"access_token": access_token, "status": "Login completed successfully"}), 200
-        
-        elif response.status_code == 401:#invalid credentials
-            return jsonify({"error": "Invalid credentials"}), 401
-        else:
-            return jsonify({"error": "Database Error"}), 500
-        
-
-    except requests.exceptions.RequestException as e:
-
-        return jsonify({"error": "Failed to connect to DB Manager", "details": str(e)}), 500
+    return make_response(jsonify({"access_token": access_token, "message" : response.get("message")}), 200)
 
 @app.route('/account_management/logout', methods=['POST'])
 @jwt_required()  # Richiede un token valido
@@ -129,41 +111,33 @@ def modify_user_account():
     new_password = data.get('new_password')
 
     if not username or not new_password:
-                return jsonify({"error": "username and new_password are required"}), 400
+        return make_response(jsonify({"error": 'username and password are required'}), 400)
 
     # Controlla che l'utente stia modificando il proprio account
     if username != current_user or role != 'user':
-        return jsonify({"error": "Unauthorized"}), 403
+        return make_response(jsonify({"error": 'Unauthorized'}), 403)
+    
     else:
-        db_manager_url = "https://users_db_manager:5000/modify_user"  # URL del servizio DB Manager
         #creo il salt e l'hash della nuova password
         salt = os.urandom(16).hex()
         hashed_password = hashlib.sha256((salt + new_password).encode('utf-8')).hexdigest()
-        try:
-            # Inoltrare i dati al DB Manager
-            response = requests.patch(db_manager_url, json={
-                "username": username,
-                "salt": salt,
-                "password": hashed_password},
-                verify=False
-            )
-            
-            # Restituire la risposta del DB Manager, se la password dell'utente è stato modificato con successo ,allora eseguo anche il logout
-            if response.status_code == 200:
-                revoked_tokens.add(jti)  # Aggiungi il "jti" alla blacklist (revoca il token)
-            return jsonify({
-                "status": response.json(),
-                }), response.status_code
-    
-        except requests.exceptions.RequestException as e:
-            return jsonify({"error": "Failed to connect to DB Manager", "details": str(e)}), 500
+
+        params = {
+            "username": username,
+            "salt": salt,
+            "password": hashed_password
+        }
+
+        response = send_request('modify_user', **params)
+        revoked_tokens.add(jti)  # Aggiungi il "jti" alla blacklist (revoca il token)
+        return make_response(jsonify(response), 200)
     
 @app.route('/account_management/delete_user_account/<username>', methods=['DELETE'])
 @jwt_required()  # Richiede un token JWT valido
 def delete_user_account(username):
     
     if not username:
-        return jsonify({"error": "username is required"}), 400
+        return make_response(jsonify({"error": 'username is required'}), 400)
     
     current_user = get_jwt()["username"]  # Ottieni l'utente dal token
     role = get_jwt()["role"]  # Ottieni il ruolo dal token
@@ -171,25 +145,16 @@ def delete_user_account(username):
 
     # Controlla che l'utente stia modificando il proprio account
     if username != current_user or role != 'user':
-        return jsonify({"error": "Unauthorized"}), 403
+        return make_response(jsonify({"error": 'Unauthorized'}), 403)
     else:
 
-        db_manager_url = f"https://users_db_manager:5000/remove_user/{username}"  # URL del servizio DB Manager
-        
-        try:
-            # Inoltrare i dati al DB Manager
-            response = requests.delete(db_manager_url, verify=False)
-            
-            # Restituire la risposta del DB Manager, se l'utente è stato eliminato con successo, allora eseguo anche il logout
-            if response.status_code == 200:
-                revoked_tokens.add(jti)  # Aggiungi il "jti" alla blacklist (revoca il token)
-            return jsonify({
-                "status": response.json(),
-                }), response.status_code
-    
-        except requests.exceptions.RequestException as e:
+        params = {
+            "username": username
+        }
 
-            return jsonify({"error": "Failed to connect to DB Manager", "details": str(e)}), 500
+        response = send_request('remove_user', **params)
+        revoked_tokens.add(jti)  # Aggiungi il "jti" alla blacklist (revoca il token)
+        return make_response(jsonify(response), 200)
 
 @app.route('/account_management/buy_in_game_currency', methods=['POST'])
 @jwt_required()  # Richiede un token JWT valido
@@ -201,29 +166,20 @@ def buy_in_game_currency():
     pack = data.get('pack')
 
     if not username or pack not in [1, 2, 3]:
-                    return jsonify({"error": "username and pack are required"}), 400
+        return make_response(jsonify({"error": 'username and pack are required'}), 400)
 
     # Controlla che l'utente stia modificando il proprio account
     if username != current_user or role != 'user':
-        return jsonify({"error": "Unauthorized"}), 403
+        return make_response(jsonify({"error": 'Unauthorized'}), 403)
     else:
-        db_manager_url = "https://users_db_manager:5000/increase_user_currency"  # URL del servizio DB Manager
-        try:
-            # Inoltrare i dati al DB Manager
-            response = requests.post(db_manager_url, json={
-                "username": username,
-                "pack": pack},
-                verify=False
-            )
-            
-            # Restituire la risposta del DB Manager
-            return jsonify({
-                "status": response.json(),
-                }), response.status_code
-    
-        except requests.exceptions.RequestException as e:
 
-            return jsonify({"error": "Failed to connect to DB Manager", "details": str(e)}), 500
+        params = {
+            "username": username,
+            "pack": pack
+        }
+
+        response = send_request('increase_user_currency', **params)
+        return make_response(jsonify(response), 201)
         
 # Used to roll a gacha and make bids
 @app.route('/account_management/get_currency', methods=['GET'])
@@ -231,46 +187,36 @@ def buy_in_game_currency():
 def get_currency():
 
     user_id = get_jwt_identity()
-    try:
-        if not user_id:
-            return make_response(jsonify(error="Forbidden"), 403)
 
-        response = requests.get(f'https://users_db_manager:5000/get_user_currency/{user_id}', verify=False)
-        if response.status_code == 200:
-            return make_response(jsonify(points=response.json()), 200)
-
-        return make_response(jsonify(response.json()), response.status_code)
-     
-    except requests.exceptions.RequestException as e:
-        return make_response(jsonify(error='Request failed'), 500)
-    except Exception as e:
-        return make_response(jsonify(error='Internal server error'), 500)
+    if not user_id:
+        return make_response(jsonify(error= "Forbidden"), 403)
+    
+    params = {
+        "id": user_id
+    }
+    response = send_request('get_user_currency', **params)
+    return make_response(jsonify(response), 200)
 
 # Use after rolled a gacha   
 @app.route('/account_management/currency', methods=['PATCH'])
 @jwt_required()
 def set_currency():
+
     user_id = get_jwt_identity()
     if not user_id:
-        return make_response(jsonify(error="Forbidden"), 403)
+        return make_response(jsonify(error= "Forbidden"), 403)
+    
     data = request.get_json()
     if not data['currency']:
          return make_response(jsonify(error="Bad request"), 400)
     
-    new_data = {'user_id': int(user_id), 'currency': data['currency']}
+    params = {
+        "id": user_id,
+        "currency": data['currency']
+    }
+    response = send_request('set_user_currency', **params)
+    return make_response(jsonify(response), 200)
 
-    try:
-        # data (user_id, currency)
-        response = requests.patch(f'https://users_db_manager:5000/edit/currency', json=new_data, verify=False)
-        if response.status_code == 200:
-            return make_response(jsonify(success=response.json()['message']), 200)
-
-        return make_response(jsonify(response.json()), response.status_code)
-     
-    except requests.exceptions.RequestException as e:
-        return make_response(jsonify(error='Request failed'), 500)
-    except Exception as e:
-        return make_response(jsonify(error='Internal server error'), 500)
 
 #ADMIN SERVICES
 
@@ -305,44 +251,24 @@ def login_admin():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-    user_type = "admin"
 
     if not username or not password:
-                return jsonify({"error": "username and password are required"}), 400
+        return make_response(jsonify({"error": 'username and password are required'}), 400)
+    
+    params = {
+            "username": username,
+            "password": password
+        }
 
-    #inoltro le credenziali al db_manager per verificare se sono corrette:
-    db_manager_url = "https://users_db_manager:5000/check_credentials"
-    try:
-
-        response = requests.post(db_manager_url, json={
-                "username": username,
-                "password": password,
-                "user_type": user_type},
-                verify=False
-            )
-        
-        if response.status_code == 200:#credentials ok
-            url = f"https://db_manager:5000/get_id/{username}/{user_type}"
-            response = requests.get(url,verify=False)
-            id = data.get('id')
-            access_token = create_access_token(
+    response = send_request('check_credentials', **params)
+    access_token = create_access_token(
                 identity=str(id),
                 additional_claims={
                     "username": username,
                     "role": 'admin'
                 }
             )
-            return jsonify({"access_token": access_token, "status": "Login completed successfully"}), 200
-        
-        elif response.status_code == 401:#invalid credentials
-            return jsonify({"error": "Invalid credentials"}), 401
-        else:
-            return jsonify({"error": "Database Error"}), 500
-        
-
-    except requests.exceptions.RequestException as e:
-
-        return jsonify({"error": "Failed to connect to DB Manager", "details": str(e)}), 500
+    return make_response(jsonify({"access_token": access_token, "message" : response.get("message")}), 200)
 
 @app.route('/account_management/admin/view_users', methods=['GET'])
 @jwt_required()  # Richiede un token valido

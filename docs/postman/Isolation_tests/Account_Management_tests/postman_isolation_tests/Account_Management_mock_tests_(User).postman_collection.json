@@ -1,0 +1,2084 @@
+{
+	"info": {
+		"_postman_id": "6d28008f-fb2e-4467-965f-44d75b69c6d4",
+		"name": "Account_Management_mock_tests_(User)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39573357"
+	},
+	"item": [
+		{
+			"name": "create_user_account OK (201 CREATED)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Controlla che la risposta sia valida e conforme alle aspettative",
+							"pm.test(\"Status code is 200 or handled error\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([201, 400, 409, 500]);",
+							"});",
+							"",
+							"// Verifica la presenza di una chiave 'status' o 'error' nel corpo della risposta",
+							"pm.test(\"Response has 'message' or 'error'\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.any.keys('message', 'error');",
+							"});",
+							"",
+							"// Controlla il contenuto della risposta per un caso di successo",
+							"pm.test(\"Successful response structure\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    if (pm.response.code === 201) {",
+							"        pm.expect(jsonData).to.have.property('message');",
+							"        pm.expect(jsonData).to.be.an('object');",
+							"    }",
+							"});",
+							"",
+							"// Gestione degli errori (400 o 500)",
+							"pm.test(\"Error response structure\", function () {",
+							"    if (pm.response.code !== 201) {",
+							"        const jsonData = pm.response.json();",
+							"        pm.expect(jsonData).to.have.property('error');",
+							"        pm.expect(jsonData.error).to.be.a('string');",
+							"        if (jsonData.details) {",
+							"            pm.expect(jsonData.details).to.be.a('string');",
+							"        }",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Genera un numero casuale tra 11 e 99",
+							"const randomNumber = Math.floor(Math.random() * (99 - 11 + 1)) + 11;",
+							"",
+							"// Genera il username e password con il numero casuale",
+							"const username = `user${randomNumber}`;",
+							"const password = username; // La password è identica al username",
+							"",
+							"// Imposta le variabili di ambiente per usarle nei test o successivamente",
+							"pm.environment.set(\"username\", username);",
+							"pm.environment.set(\"password\", password);",
+							"",
+							"// Log dei valori generati (opzionale, utile per debug)",
+							"console.log(\"Generated username:\", username);",
+							"console.log(\"Generated password:\", password);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/account_management/create_user_account",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"account_management",
+						"create_user_account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create_user_account ERROR (400 Missing Argument)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Invio di username e password già esistenti",
+							"const username = `user1`;",
+							"const password = username; // La password è identica al username",
+							"",
+							"// Imposta le variabili di ambiente per usarle nei test o successivamente",
+							"pm.environment.set(\"username\", username);",
+							"pm.environment.set(\"password\", password);",
+							"",
+							"// Log dei valori generati (opzionale, utile per debug)",
+							"console.log(\"Generated username:\", username);",
+							"console.log(\"Generated password:\", password);",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Controlla che la risposta sia valida e conforme alle aspettative",
+							"pm.test(\"Status code is 200 or handled error\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([201, 400, 409, 500]);",
+							"});",
+							"",
+							"// Verifica la presenza di una chiave 'status' o 'error' nel corpo della risposta",
+							"pm.test(\"Response has 'message' or 'error'\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.any.keys('message', 'error');",
+							"});",
+							"",
+							"// Controlla il contenuto della risposta per un caso di successo",
+							"pm.test(\"Successful response structure\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    if (pm.response.code === 201) {",
+							"        pm.expect(jsonData).to.have.property('status');",
+							"        pm.expect(jsonData.status).to.be.an('object');",
+							"    }",
+							"});",
+							"",
+							"// Gestione degli errori",
+							"pm.test(\"Error response structure\", function () {",
+							"    if (pm.response.code !== 201) {",
+							"        const jsonData = pm.response.json();",
+							"        pm.expect(jsonData).to.have.property('error');",
+							"        pm.expect(jsonData.error).to.be.a('string');",
+							"        if (jsonData.details) {",
+							"            pm.expect(jsonData.details).to.be.a('string');",
+							"        }",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"\",\n    \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/account_management/create_user_account",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"account_management",
+						"create_user_account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login OK (200)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Genera un nome utente casuale",
+							"const randomNumber = Math.floor(Math.random() * 10) + 1;// Numero tra 1 e 10",
+							"",
+							"const username = `user${randomNumber}`;",
+							"const password = username;",
+							"",
+							"// Salva le variabili in Postman",
+							"pm.environment.set(\"username\", username);",
+							"pm.environment.set(\"password\", password);",
+							"",
+							"console.log(\"Generated username:\", username);",
+							"console.log(\"Generated password:\", password);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"// Test codice di stato",
+							"pm.test(\"Status code is correct\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 400, 401, 500]);",
+							"});",
+							"",
+							"// Test credenziali valide",
+							"if (pm.response.code === 200) {",
+							"    pm.test(\"Login successful\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"access_token\");",
+							"        pm.expect(jsonData).to.have.property(\"message\");",
+							"    });",
+							"}",
+							"",
+							"// Test credenziali non valide",
+							"if (pm.response.code === 400) {",
+							"    pm.test(\"Missing credentials\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"username and password are required\");",
+							"    });",
+							"}",
+							"",
+							"// Test credenziali non valide",
+							"if (pm.response.code === 401) {",
+							"    pm.test(\"Invalid credentials\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"Invalid credentials\");",
+							"    });",
+							"}",
+							"",
+							"// Test errori del database",
+							"if (pm.response.code === 500) {",
+							"    pm.test(\"Database error handled\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"Database Error\");",
+							"    });",
+							"}",
+							"",
+							"// Test fallimento connessione a DB Manager",
+							"if (jsonData.error === \"Failed to connect to DB Manager\") {",
+							"    pm.test(\"Failed to connect to DB Manager\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"details\");",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/account_management/login",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"account_management",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login ERROR (400 Missing Argument)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const username = `wrongusername`;",
+							"const password = 'wrongpassword';",
+							"",
+							"// Salva le variabili in Postman",
+							"pm.environment.set(\"username\", username);",
+							"pm.environment.set(\"password\", password);",
+							"",
+							"console.log(\"Generated username:\", username);",
+							"console.log(\"Generated password:\", password);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"// Test codice di stato",
+							"pm.test(\"Status code is correct\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 400, 401, 500]);",
+							"});",
+							"",
+							"// Test credenziali valide",
+							"if (pm.response.code === 200) {",
+							"    pm.test(\"Login successful\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"access_token\");",
+							"        pm.expect(jsonData).to.have.property(\"message\");",
+							"    });",
+							"}",
+							"",
+							"// Test credenziali non valide",
+							"if (pm.response.code === 400) {",
+							"    pm.test(\"Missing credentials\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"username and password are required\");",
+							"    });",
+							"}",
+							"",
+							"// Test credenziali non valide",
+							"if (pm.response.code === 401) {",
+							"    pm.test(\"Invalid credentials\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"Invalid credentials\");",
+							"    });",
+							"}",
+							"",
+							"// Test errori del database",
+							"if (pm.response.code === 500) {",
+							"    pm.test(\"Database error handled\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"Database Error\");",
+							"    });",
+							"}",
+							"",
+							"// Test fallimento connessione a DB Manager",
+							"if (jsonData.error === \"Failed to connect to DB Manager\") {",
+							"    pm.test(\"Failed to connect to DB Manager\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"details\");",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/account_management/login",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"account_management",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "modify_user_account OK (200)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Genera un numero casuale tra 1 e 10",
+							"const randomNumber = Math.floor(Math.random() * 10) + 1;",
+							"// Costruisce il nome utente",
+							"const username = `user${randomNumber}`;",
+							"const new_password = `new_user${randomNumber}`;",
+							"const user_id = randomNumber;",
+							"const iat = Math.floor(Date.now() / 1000);",
+							"const jti = CryptoJS.lib.WordArray.random(16).toString(); // Genera un identificatore unico",
+							"",
+							"",
+							"// Salva i dati nel contesto di Postman",
+							"pm.environment.set('user_id', user_id.toString());",
+							"pm.environment.set('username', username);",
+							"pm.environment.set('new_password', new_password);",
+							"pm.environment.set('iat', iat);",
+							"pm.environment.set('jti', jti);",
+							"",
+							"// Log dei valori generati (utile per debug)",
+							"console.log(\"Username:\", username);",
+							"console.log(\"New Password:\", new_password);",
+							"console.log(\"User ID:\", user_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"// Test codice di stato",
+							"pm.test(\"Status code is correct\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 400, 403, 500]);",
+							"});",
+							"",
+							"// Test successo (200 OK)",
+							"if (pm.response.code === 200) {",
+							"    pm.test(\"Password modified successfully\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"message\");",
+							"        pm.expect(jsonData.message).that.includes(\"Password modified successfully\");",
+							"    });",
+							"}",
+							"",
+							"// Test richiesta incompleta (400 Bad Request)",
+							"if (pm.response.code === 400) {",
+							"    pm.test(\"Missing username or password\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"username and new_password are required\");",
+							"    });",
+							"}",
+							"",
+							"// Test non autorizzato (403 Forbidden)",
+							"if (pm.response.code === 403) {",
+							"    pm.test(\"Unauthorized access\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"Unauthorized\");",
+							"    });",
+							"}",
+							"",
+							"// Test errori del database (500 Internal Server Error)",
+							"if (pm.response.code === 500) {",
+							"    pm.test(\"Database error handled\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"Database error\");",
+							"        pm.expect(jsonData).to.have.property(\"details\");",
+							"    });",
+							"}",
+							"",
+							"// Test fallimento connessione a DB Manager (500)",
+							"if (jsonData.error === \"Failed to connect to DB Manager\") {",
+							"    pm.test(\"Failed to connect to DB Manager\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"details\");",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"followAuthorizationHeader": false
+			},
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\n    \"sub\":\"{{user_id}}\",\n    \"username\": \"{{username}}\",\n    \"role\": \"user\",\n    \"jti\": \"{{jti}}\",\n    \"iat\": {{iat}}\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "JwtGACHA2425",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{\n  \"alg\": \"HS256\",\n  \"typ\": \"JWT\"\n}",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"new_password\": \"{{new_password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/account_management/modify_user_account",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"account_management",
+						"modify_user_account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "modify_user_account ERROR (403 Unauthorized)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Genera un numero casuale tra 1 e 10",
+							"const randomNumber = Math.floor(Math.random() * 10) + 1;",
+							"// Costruisce il nome utente",
+							"const username = `user${randomNumber}`;",
+							"const new_password = `new_user${randomNumber}`;",
+							"const user_id = randomNumber;",
+							"const iat = Math.floor(Date.now() / 1000);",
+							"const jti = CryptoJS.lib.WordArray.random(16).toString(); // Genera un identificatore unico",
+							"",
+							"",
+							"// Salva i dati nel contesto di Postman",
+							"pm.environment.set('user_id', user_id.toString());",
+							"pm.environment.set('username', username);",
+							"pm.environment.set('new_password', new_password);",
+							"pm.environment.set('iat', iat);",
+							"pm.environment.set('jti', jti);",
+							"",
+							"// Log dei valori generati (utile per debug)",
+							"console.log(\"Username:\", username);",
+							"console.log(\"New Password:\", new_password);",
+							"console.log(\"User ID:\", user_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"// Test codice di stato",
+							"pm.test(\"Status code is correct\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 400, 403, 500]);",
+							"});",
+							"",
+							"// Test successo (200 OK)",
+							"if (pm.response.code === 200) {",
+							"    pm.test(\"Password modified successfully\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"message\");",
+							"        pm.expect(jsonData.message).that.includes(\"Password modified successfully\");",
+							"    });",
+							"}",
+							"",
+							"// Test richiesta incompleta (400 Bad Request)",
+							"if (pm.response.code === 400) {",
+							"    pm.test(\"Missing username or password\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"username and new_password are required\");",
+							"    });",
+							"}",
+							"",
+							"// Test non autorizzato (403 Forbidden)",
+							"if (pm.response.code === 403) {",
+							"    pm.test(\"Unauthorized access\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"Unauthorized\");",
+							"    });",
+							"}",
+							"",
+							"// Test errori del database (500 Internal Server Error)",
+							"if (pm.response.code === 500) {",
+							"    pm.test(\"Database error handled\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"Database error\");",
+							"        pm.expect(jsonData).to.have.property(\"details\");",
+							"    });",
+							"}",
+							"",
+							"// Test fallimento connessione a DB Manager (500)",
+							"if (jsonData.error === \"Failed to connect to DB Manager\") {",
+							"    pm.test(\"Failed to connect to DB Manager\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"details\");",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"followAuthorizationHeader": false
+			},
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\n    \"sub\":\"{{user_id}}\",\n    \"username\": \"wronguser\",\n    \"role\": \"user\",\n    \"jti\": \"{{jti}}\",\n    \"iat\": {{iat}}\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "JwtGACHA2425",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{\n  \"alg\": \"HS256\",\n  \"typ\": \"JWT\"\n}",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"new_password\": \"{{new_password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/account_management/modify_user_account",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"account_management",
+						"modify_user_account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "buy_in_game_currency OK (201 CREATED)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const random_pack = Math.floor(Math.random() * 3) + 1;",
+							"// Genera un numero casuale tra 1 e 10",
+							"const randomNumber = Math.floor(Math.random() * 10) + 1;",
+							"// Costruisce il nome utente",
+							"const username = `user${randomNumber}`;",
+							"const user_id = randomNumber;",
+							"const iat = Math.floor(Date.now() / 1000);",
+							"const jti = CryptoJS.lib.WordArray.random(16).toString(); // Genera un identificatore unico",
+							"",
+							"",
+							"// Salva i dati nel contesto di Postman",
+							"pm.environment.set('user_id', user_id.toString());",
+							"pm.environment.set('username', username);",
+							"pm.environment.set('random_pack', random_pack);",
+							"pm.environment.set('iat', iat);",
+							"pm.environment.set('jti', jti);",
+							"",
+							"// Log dei valori generati (utile per debug)",
+							"console.log(\"Username:\", username);",
+							"console.log(\"User ID:\", user_id);",
+							"console.log(\"Pack:\", random_pack);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"// Test codice di stato",
+							"pm.test(\"Status code is correct\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([201, 400, 403, 500]);",
+							"});",
+							"",
+							"// Test successo (201 Created)",
+							"if (pm.response.code === 201) {",
+							"    pm.test(\"Purchase successfull\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"message\");",
+							"        pm.expect(jsonData.message).that.includes(\"Transaction successfull\");",
+							"    });",
+							"}",
+							"",
+							"// Test richiesta incompleta (400 Bad Request)",
+							"if (pm.response.code === 400) {",
+							"    pm.test(\"Missing username or invalid pack\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"username and pack are required\");",
+							"    });",
+							"}",
+							"",
+							"// Test non autorizzato (403 Forbidden)",
+							"if (pm.response.code === 403) {",
+							"    pm.test(\"Unauthorized access\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"Unauthorized\");",
+							"    });",
+							"}",
+							"",
+							"// Test errore di connessione al DB Manager (500)",
+							"if (pm.response.code === 500) {",
+							"    pm.test(\"Failed to connect to DB Manager\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"Failed to connect to DB Manager\");",
+							"        pm.expect(jsonData).to.have.property(\"details\");",
+							"    });",
+							"}",
+							"",
+							"// Test errori generici del database (500 Internal Server Error)",
+							"if (jsonData.error === \"Database error\") {",
+							"    pm.test(\"Database error handled\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"details\");",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\n    \"sub\":\"{{user_id}}\",\n    \"username\": \"{{username}}\",\n    \"role\": \"user\",\n    \"jti\": \"{{jti}}\",\n    \"iat\": {{iat}}\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "JwtGACHA2425",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{\n  \"alg\": \"HS256\",\n  \"typ\": \"JWT\"\n}",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"{{username}}\",\r\n    \"pack\": {{random_pack}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/account_management/buy_in_game_currency",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"account_management",
+						"buy_in_game_currency"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "buy_in_game_currency ERROR (400 Bad Request)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const random_pack = Math.floor(Math.random() * 3) + 1;",
+							"// Genera un numero casuale tra 1 e 10",
+							"const randomNumber = Math.floor(Math.random() * 10) + 1;",
+							"// Costruisce il nome utente",
+							"const username = `user${randomNumber}`;",
+							"const user_id = randomNumber;",
+							"const iat = Math.floor(Date.now() / 1000);",
+							"const jti = CryptoJS.lib.WordArray.random(16).toString(); // Genera un identificatore unico",
+							"",
+							"",
+							"// Salva i dati nel contesto di Postman",
+							"pm.environment.set('user_id', user_id.toString());",
+							"pm.environment.set('username', username);",
+							"pm.environment.set('random_pack', random_pack);",
+							"pm.environment.set('iat', iat);",
+							"pm.environment.set('jti', jti);",
+							"",
+							"// Log dei valori generati (utile per debug)",
+							"console.log(\"Username:\", username);",
+							"console.log(\"User ID:\", user_id);",
+							"console.log(\"Pack:\", random_pack);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"// Test codice di stato",
+							"pm.test(\"Status code is correct\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([201, 400, 403, 500]);",
+							"});",
+							"",
+							"// Test successo (201 Created)",
+							"if (pm.response.code === 201) {",
+							"    pm.test(\"Purchase successful\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"status\");",
+							"        pm.expect(jsonData.message).that.includes(\"Transaction successfull\");",
+							"    });",
+							"}",
+							"",
+							"// Test richiesta incompleta (400 Bad Request)",
+							"if (pm.response.code === 400) {",
+							"    pm.test(\"Missing username or invalid pack\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"username and pack are required\");",
+							"    });",
+							"}",
+							"",
+							"// Test non autorizzato (403 Forbidden)",
+							"if (pm.response.code === 403) {",
+							"    pm.test(\"Unauthorized access\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"Unauthorized\");",
+							"    });",
+							"}",
+							"",
+							"// Test errore di connessione al DB Manager (500)",
+							"if (pm.response.code === 500) {",
+							"    pm.test(\"Failed to connect to DB Manager\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"Failed to connect to DB Manager\");",
+							"        pm.expect(jsonData).to.have.property(\"details\");",
+							"    });",
+							"}",
+							"",
+							"// Test errori generici del database (500 Internal Server Error)",
+							"if (jsonData.error === \"Database error\") {",
+							"    pm.test(\"Database error handled\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"details\");",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\n    \"sub\":\"{{user_id}}\",\n    \"username\": \"{{username}}\",\n    \"role\": \"user\",\n    \"jti\": \"{{jti}}\",\n    \"iat\": {{iat}}\n}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "JwtGACHA2425",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{\n  \"alg\": \"HS256\",\n  \"typ\": \"JWT\"\n}",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"{{username}}\"//,\r\n    //\"pack\": {{random_pack}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/account_management/buy_in_game_currency",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"account_management",
+						"buy_in_game_currency"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_currency OK (200)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"user_id = Math.floor(Math.random() * 10) + 1;\r",
+							"pm.environment.set('user_id', user_id);\r",
+							"\r",
+							"console.log(\"User ID:\", user_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is correct\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 403, 404, 500]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Requests header contains Authorization\", function() {\r",
+							"    pm.request.to.have.header('Authorization');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains points\", function() {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('message');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Points is an array\", function() {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.include(\"The actual currency\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "JwtGACHA2425",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5000/account_management/get_currency",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"account_management",
+						"get_currency"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_currency ERROR (403 Forbidden)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is correct\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 403, 404, 500]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Requests header contains Authorization\", function() {\r",
+							"    pm.request.to.have.header('Authorization');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains points\", function() {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('error');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Points is an array\", function() {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.error).to.include(\"Forbidden\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n    \"sub\": \"\",\r\n    \"role\": \"user\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "JwtGACHA2425",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5000/account_management/get_currency",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"account_management",
+						"get_currency"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "set_currency OK (200)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"user_id = Math.floor(Math.random() * 10) + 1;\r",
+							"currency = 500 + Math.floor(Math.random() * 600);\r",
+							"\r",
+							"pm.environment.set('user_id', user_id);\r",
+							"pm.environment.set('currency', currency);\r",
+							"\r",
+							"console.log(\"User ID:\", user_id);\r",
+							"console.log(\"New Currency:\", currency);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response is 200\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Request header contains Authorization\", function() {\r",
+							"    pm.request.to.have.header('Authorization');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Request body contains currency\", function() {\r",
+							"    const body = pm.request.body.raw;\r",
+							"    const jsonBody = JSON.parse(body);\r",
+							"    pm.expect(jsonBody).to.have.property('currency');\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Response contains field\", function() {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('message');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body matches expected result\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.include('New currency');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "JwtGACHA2425",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"currency\": {{currency}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/account_management/currency",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"account_management",
+						"currency"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "set_currency ERROR (400 Bad Request)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"user_id = Math.floor(Math.random() * 10) + 1;\r",
+							"currency = 500 + Math.floor(Math.random() * 600);\r",
+							"\r",
+							"pm.environment.set('user_id', user_id);\r",
+							"pm.environment.set('currency', currency);\r",
+							"\r",
+							"console.log(\"User ID:\", user_id);\r",
+							"console.log(\"New Currency:\", currency);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response is 200\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Request header contains Authorization\", function() {\r",
+							"    pm.request.to.have.header('Authorization');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Request body contains currency\", function() {\r",
+							"    const body = pm.request.body.raw;\r",
+							"    const jsonBody = JSON.parse(body);\r",
+							"    pm.expect(jsonBody).to.have.property('currency');\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Response contains field\", function() {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('success');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body matches expected result\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    var expectedResponse = \"Currency updated\";\r",
+							"    pm.expect(jsonData.success).to.eql(expectedResponse);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "JwtGACHA2425",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"currency\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/account_management/currency",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"account_management",
+						"currency"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete_user_account OK (200)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Genera un numero casuale tra 1 e 10",
+							"const randomNumber = Math.floor(Math.random() * 10) + 1;",
+							"// Costruisce il nome utente",
+							"const username = `user${randomNumber}`;",
+							"const user_id = randomNumber;",
+							"const iat = Math.floor(Date.now() / 1000);",
+							"const jti = CryptoJS.lib.WordArray.random(16).toString(); // Genera un identificatore unico",
+							"",
+							"",
+							"// Salva i dati nel contesto di Postman",
+							"pm.environment.set('user_id', user_id.toString());",
+							"pm.environment.set('username', username);",
+							"pm.environment.set('iat', iat);",
+							"pm.environment.set('jti', jti);",
+							"",
+							"// Log dei valori generati (utile per debug)",
+							"console.log(\"Username:\", username);",
+							"console.log(\"User ID:\", user_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"// Test codice di stato",
+							"pm.test(\"Status code is correct\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 400, 403, 500]);",
+							"});",
+							"",
+							"// Test successo (200 OK)",
+							"if (pm.response.code === 200) {",
+							"    pm.test(\"User Removed successfully\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"message\");",
+							"        pm.expect(jsonData.message).that.includes(\"eliminated successfully\");",
+							"    });",
+							"}",
+							"",
+							"// Test richiesta incompleta (400 Bad Request)",
+							"if (pm.response.code === 400) {",
+							"    pm.test(\"Missing username\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"username is required\");",
+							"    });",
+							"}",
+							"",
+							"// Test non autorizzato (403 Forbidden)",
+							"if (pm.response.code === 403) {",
+							"    pm.test(\"Unauthorized access\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"Unauthorized\");",
+							"    });",
+							"}",
+							"",
+							"// Test errori del database (500 Internal Server Error)",
+							"if (pm.response.code === 500) {",
+							"    pm.test(\"Database error handled\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"Database error\");",
+							"        pm.expect(jsonData).to.have.property(\"details\");",
+							"    });",
+							"}",
+							"",
+							"// Test fallimento connessione a DB Manager (500)",
+							"if (jsonData.error === \"Failed to connect to DB Manager\") {",
+							"    pm.test(\"Failed to connect to DB Manager\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"details\");",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n    \"sub\":\"{{user_id}}\",\r\n    \"username\": \"{{username}}\",\r\n    \"role\": \"user\",\r\n    \"jti\": \"{{jti}}\",\r\n    \"iat\": {{iat}}\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "JwtGACHA2425",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5000/account_management/delete_user_account/{{username}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"account_management",
+						"delete_user_account",
+						"{{username}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete_user_account ERROR(403 Unauthorized)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Genera un numero casuale tra 1 e 10",
+							"const randomNumber = Math.floor(Math.random() * 10) + 1;",
+							"// Costruisce il nome utente",
+							"const username = `user${randomNumber}`;",
+							"//const user_id = randomNumber;",
+							"const iat = Math.floor(Date.now() / 1000);",
+							"const jti = CryptoJS.lib.WordArray.random(16).toString(); // Genera un identificatore unico",
+							"",
+							"",
+							"// Salva i dati nel contesto di Postman",
+							"//pm.environment.set('user_id', user_id.toString());",
+							"pm.environment.set('username', username);",
+							"pm.environment.set('iat', iat);",
+							"pm.environment.set('jti', jti);",
+							"",
+							"// Log dei valori generati (utile per debug)",
+							"console.log(\"Username:\", username);",
+							"//console.log(\"User ID:\", user_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"// Test codice di stato",
+							"pm.test(\"Status code is correct\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 400, 403, 500]);",
+							"});",
+							"",
+							"// Test successo (200 OK)",
+							"if (pm.response.code === 200) {",
+							"    pm.test(\"User Removed successfully\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"message\");",
+							"        pm.expect(jsonData.message).that.includes(\"eliminated successfully\");",
+							"    });",
+							"}",
+							"",
+							"// Test richiesta incompleta (400 Bad Request)",
+							"if (pm.response.code === 400) {",
+							"    pm.test(\"Missing username\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"username is required\");",
+							"    });",
+							"}",
+							"",
+							"// Test non autorizzato (403 Forbidden)",
+							"if (pm.response.code === 403) {",
+							"    pm.test(\"Unauthorized access\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"Unauthorized\");",
+							"    });",
+							"}",
+							"",
+							"// Test errori del database (500 Internal Server Error)",
+							"if (pm.response.code === 500) {",
+							"    pm.test(\"Database error handled\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"Database error\");",
+							"        pm.expect(jsonData).to.have.property(\"details\");",
+							"    });",
+							"}",
+							"",
+							"// Test fallimento connessione a DB Manager (500)",
+							"if (jsonData.error === \"Failed to connect to DB Manager\") {",
+							"    pm.test(\"Failed to connect to DB Manager\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"details\");",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n    \"sub\":\"{{user_id}}\",\r\n    \"username\": \"wrongusername\",\r\n    \"role\": \"user\",\r\n    \"jti\": \"{{jti}}\",\r\n    \"iat\": {{iat}}\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "JwtGACHA2425",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5000/account_management/delete_user_account/{{username}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"account_management",
+						"delete_user_account",
+						"{{username}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout OK (200)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Genera un numero casuale tra 1 e 10",
+							"const randomNumber = Math.floor(Math.random() * 10) + 1;",
+							"// Costruisce il nome utente",
+							"const username = `user${randomNumber}`;",
+							"const user_id = randomNumber;",
+							"const iat = Math.floor(Date.now() / 1000);",
+							"const jti = CryptoJS.lib.WordArray.random(16).toString(); // Genera un identificatore unico",
+							"",
+							"",
+							"// Salva i dati nel contesto di Postman",
+							"pm.environment.set('user_id', user_id.toString());",
+							"pm.environment.set('username', username);",
+							"pm.environment.set('iat', iat);",
+							"pm.environment.set('jti', jti);",
+							"",
+							"// Log dei valori generati (utile per debug)",
+							"console.log(\"Username:\", username);",
+							"console.log(\"User ID:\", user_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"// Test codice di stato",
+							"pm.test(\"Status code is correct\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 400, 403]);",
+							"});",
+							"",
+							"// Test successo (200 OK)",
+							"if (pm.response.code === 200) {",
+							"    pm.test(\"Logout successful\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"message\");",
+							"        pm.expect(jsonData.message).to.match(/logged out, token revoked\\./);",
+							"    });",
+							"}",
+							"",
+							"// Test richiesta incompleta (400 Bad Request)",
+							"if (pm.response.code === 400) {",
+							"    pm.test(\"Missing username\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"username is required\");",
+							"    });",
+							"}",
+							"",
+							"if (pm.response.code === 403) {",
+							"    pm.test(\"Unauthorized logout attempt\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\");",
+							"        pm.expect(jsonData.error).to.include(\"Unauthorized\");",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n    \"sub\":\"{{user_id}}\",\r\n    \"username\": \"{{username}}\",\r\n    \"role\": \"user\",\r\n    \"jti\": \"{{jti}}\",\r\n    \"iat\": {{iat}}\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "JwtGACHA2425",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"{{username}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/account_management/logout",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"account_management",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout ERROR (403 Unauthorized)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Genera un numero casuale tra 1 e 10",
+							"const randomNumber = Math.floor(Math.random() * 10) + 1;",
+							"// Costruisce il nome utente",
+							"const username = `user${randomNumber}`;",
+							"const user_id = randomNumber;",
+							"const iat = Math.floor(Date.now() / 1000);",
+							"const jti = CryptoJS.lib.WordArray.random(16).toString(); // Genera un identificatore unico",
+							"",
+							"",
+							"// Salva i dati nel contesto di Postman",
+							"pm.environment.set('user_id', user_id.toString());",
+							"pm.environment.set('username', username);",
+							"pm.environment.set('iat', iat);",
+							"pm.environment.set('jti', jti);",
+							"",
+							"// Log dei valori generati (utile per debug)",
+							"console.log(\"Username:\", username);",
+							"console.log(\"User ID:\", user_id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"// Test codice di stato",
+							"pm.test(\"Status code is correct\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 400, 403]);",
+							"});",
+							"",
+							"// Test successo (200 OK)",
+							"if (pm.response.code === 200) {",
+							"    pm.test(\"Logout successful\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"message\");",
+							"        pm.expect(jsonData.message).to.match(/logged out, token revoked\\./);",
+							"    });",
+							"}",
+							"",
+							"// Test richiesta incompleta (400 Bad Request)",
+							"if (pm.response.code === 400) {",
+							"    pm.test(\"Missing username\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\", \"username is required\");",
+							"    });",
+							"}",
+							"",
+							"if (pm.response.code === 403) {",
+							"    pm.test(\"Unauthorized logout attempt\", function () {",
+							"        pm.expect(jsonData).to.have.property(\"error\");",
+							"        pm.expect(jsonData.error).to.include(\"Unauthorized\");",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\r\n    \"sub\":\"{{user_id}}\",\r\n    \"username\": \"wrongusername\",\r\n    \"role\": \"user\",\r\n    \"jti\": \"{{jti}}\",\r\n    \"iat\": {{iat}}\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "JwtGACHA2425",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"{{username}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5000/account_management/logout",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"account_management",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
