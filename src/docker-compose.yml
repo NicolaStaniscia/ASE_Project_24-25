@@ -226,6 +226,11 @@ services:
       - roll_gacha
       - account_management
     restart: on-failure
+    secrets:
+      - user_api_cert
+      - user_api_key
+      - admin_api_cert
+      - admin_api_key
 
 networks:
   frontend:
@@ -295,6 +300,16 @@ secrets:
     file: ./secrets/https/trading_history/cert.pem
   trading_history_key:
     file: ./secrets/https/trading_history/key.pem
+
+  # API GATEWAY TLS
+  user_api_cert:
+    file: ./secrets/https/user_api/cert.pem
+  user_api_key:
+    file: ./secrets/https/user_api/key.pem
+  admin_api_cert:
+    file: ./secrets/https/admin_api/cert.pem
+  admin_api_key:
+    file: ./secrets/https/admin_api/key.pem
 
   # DB TLS
   collection_db_cert:
