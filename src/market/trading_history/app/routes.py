@@ -6,6 +6,15 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_tok
 
 trading_history = Blueprint('trading_history', __name__)
 
+# Mock functions
+mock_dbm_transaction_history = None
+mock_dbm_market_transaction = None
+mock_users_market_transaction = None
+mock_users_market_currency = None
+mock_users_market_refund = None
+mock_users_refund_currency = None
+mock_dbm_market_refund = None
+
 def dbm_url(path):
     return current_app.config['DBM_URL'] + path
 
@@ -27,22 +36,26 @@ def get_transaction_history():
     except ValueError:
         return jsonify({"error": "Invalid User ID format"}), 400
 
-    #### CORREGGERE CON CHIAMATA AL DBM
-    transaction_history = UserTransactionHistory.query.filter_by(user_id=user_id).all()
-    if not transaction_history:
-        return jsonify({"transactions": [], "message": "No transactions found for this user"}), 200
+    # Chiamata al db_manager per recuperare la cronologia delle transazioni
+    try:
+        if mock_dbm_transaction_history:
+            response = mock_dbm_transaction_history(user_id=user_id)
+        else:
+            response = requests.get(
+                dbm_url("/market/transaction_history"), 
+                params={"user_id": user_id}, 
+                timeout=5, 
+                verify=False
+            )
+        if response.status_code == 404:
+            return jsonify({"transactions": [], "message": "No transactions found for this user"}), 200
+        if response.status_code != 200:
+            return jsonify({"error": "Failed to fetch transaction history"}), response.status_code
 
-    result = [
-        {
-            "auction_id": t.auction_id,
-            "transaction_type": t.transaction_type,
-            "amount": t.amount,
-            "transaction_time": t.transaction_time
-        }
-        for t in transaction_history
-    ]
-
-    return jsonify({"transactions": result}), 200
+        result = response.json().get("transactions", [])
+        return jsonify({"transactions": result}), 200
+    except requests.RequestException as e:
+        return jsonify({"error": f"Error communicating with DBM: {str(e)}"}), 500
 
 # Endpoint POST /market/transaction
 @trading_history.route('/market/transaction', methods=['POST'])
@@ -71,18 +84,23 @@ def record_transaction():
         token = create_access_token(
             identity=str(seller_id)
         )
-        
-        # Chiamata al db-manager per registrare la transazione
-        response = requests.post(dbm_url("/market/transaction"), json={
-            "auction_id": auction_id,
-            "buyer_id": buyer_id,
-            "seller_id": seller_id,
-            "final_price": final_price
-        }, verify=False)
+        if mock_dbm_market_transaction:
+            response = mock_dbm_market_transaction()
+        else:
+            # Chiamata al db-manager per registrare la transazione
+            response = requests.post(dbm_url("/market/transaction"), json={
+                "auction_id": auction_id,
+                "buyer_id": buyer_id,
+                "seller_id": seller_id,
+                "final_price": final_price
+            }, verify=False)
 
         # Recupera il credito del venditore
         headers = {"Authorization": f"Bearer {token}"}
-        response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=headers,verify=False)
+        if mock_users_market_transaction:
+            response = mock_users_market_transaction(user_id=seller_id)
+        else:
+            response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=headers,verify=False)
         if response.status_code == 404:
             return jsonify({"error": "Not found"}), 404
         
@@ -91,7 +109,10 @@ def record_transaction():
         # Calcolo il nuovo saldo
         new_balance = user_credit + final_price
         # Aggiorna il saldo
-        response = requests.patch('https://account_management:5000/account_management/currency', json={
+        if mock_users_market_currency:
+            response = mock_users_market_currency(data={"currency": new_balance})
+        else:
+            response = requests.patch('https://account_management:5000/account_management/currency', json={
             "currency": new_balance
         }, headers=headers,verify=False)
 
@@ -129,12 +150,23 @@ def process_refund():
     except ValueError:
         return jsonify({"error": "Invalid input format or negative amount"}), 400
 
-    #### CORREGGERE CON CHIAMATA AL DBM
-    existing_refund = UserTransactionHistory.query.filter_by(
-        user_id=user_id, auction_id=auction_id, transaction_type="refund"
-    ).first()
-    if existing_refund:
-        return jsonify({"error": "Refund already processed"}), 409
+     # Verifica rimborsi esistenti tramite db_manager
+    try:
+        if mock_dbm_market_refund:
+            dbm_response = mock_dbm_market_refund(user_id=user_id)
+        else:
+            dbm_response = requests.get(
+                dbm_url("/market/check_refund"),
+                params={"user_id": user_id, "auction_id": auction_id},
+                timeout=5,
+                verify=False
+            )
+        if dbm_response.status_code == 409:
+            return jsonify({"error": "Refund already processed"}), 409
+        if dbm_response.status_code != 200:
+            return jsonify({"error": "Error checking refund status"}), dbm_response.status_code
+    except requests.RequestException as e:
+        return jsonify({"error": f"Error communicating with DBM: {str(e)}"}), 500
     
     try:
         token = create_access_token(
@@ -143,8 +175,10 @@ def process_refund():
         
         # Effettua il rimborso aggiornando il saldo dell'utente
         headers = {"Authorization": f"Bearer {token}"}
-        response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=headers, verify=False)
-
+        if mock_users_market_refund:
+            response = mock_users_market_refund(user_id=user_id)
+        else:
+            response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=headers, verify=False)
         if response.status_code == 404:
             return jsonify({"error": "User not found"}), 404
 
@@ -152,11 +186,13 @@ def process_refund():
 
         # Calcola il nuovo saldo
         new_balance = user_credit + amount
-
         # Aggiorna il saldo dell'utente
-        response = requests.patch(f"{current_app.config['USERS_URL']}/account_management/currency", json={
-            "currency": new_balance
-        }, headers=headers, verify=False)
+        if mock_users_refund_currency:
+            response = mock_users_refund_currency(data={"currency": new_balance}, user_id=user_id)
+        else:
+            response = requests.patch(f"{current_app.config['USERS_URL']}/account_management/currency", json={
+                "currency": new_balance
+            }, headers=headers, verify=False)
 
         if response.status_code != 200:
             return jsonify({"error": response.json().get("error", "Unknown error")}), response.status_code

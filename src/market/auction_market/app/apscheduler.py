@@ -4,6 +4,16 @@ from flask import current_app, jsonify
 from .models import Auctions, Bids, db
 import requests
 
+# Mock functions
+mock_dbm_get_market = None
+mock_trading_market_refund = None
+mock_dbm_get_auctions = None
+mock_dbm_update_status = None
+mock_dbm_losing_bids = None
+mock_dbm_update_bid = None
+
+
+
 def dbm_url(path):
     return current_app.config['DBM_URL'] + path
 
@@ -33,27 +43,44 @@ def init_scheduler(app):
 
 def process_expired_auctions(app):
     with app.app_context():
-        now = datetime.utcnow()
+        try:
+            # Effettua la chiamata al DB Manager per recuperare le aste scadute
+            if mock_dbm_get_auctions:
+                response = mock_dbm_get_auctions()
+            else:
+                response = requests.get(
+                    dbm_url("/market/expired_auctions"),
+                    timeout=5,
+                    verify=False
+                )
+            if response.status_code != 200:
+                return jsonify({
+                    "error": response.json().get("error", "Unknown error"),
+                    "status_code": response.status_code
+                }), response.status_code
 
-        # Recupera aste scadute e attive
-        ##### CORREGGERE CON CHIAMATA AL DBM
-        expired_auctions = Auctions.query.filter(
-            Auctions.auction_end <= now,
-            Auctions.status == 'active'
-        ).all()
+            expired_auctions = response.json().get("expired_auctions", [])
+        except requests.RequestException as e:
+            return jsonify({"error": f"Failed to communicate with DB Manager: {str(e)}"}), 500
 
         for auction in expired_auctions:
+            auction_id = auction.get("id")
             try:
-                with db.session.begin():
-                    # Aggiorna lo stato dell'asta a "closed"
-                    auction.status = 'closed'
-                    db.session.commit()
+                    # Chiamata al DB Manager per aggiornare lo stato dell'asta
+                    update_url = dbm_url(f"/market/update_auction_status/{auction_id}")
+                    if mock_dbm_update_status:
+                        response_update = mock_dbm_update_status(auction_id,status="closed")
+                    else:
+                        response_update = requests.patch(update_url, json={"status": "closed"}, timeout=5,verify=False)
+
+                    if response_update.status_code != 200:
+                        raise Exception(f"Failed to update auction {auction_id} to closed")
 
                     # Triggera l'endpoint per trasferire il gacha
                     auction_win_url = "https://localhost:5000/auction_market/market/auction_win"  # Aggiorna con l'URL reale
                     response_win = requests.post(auction_win_url, json={
-                        "auction_id": auction.id
-                    }, verify=False)
+                        "auction_id": auction_id
+                    }, timeout=5,verify=False)
 
                     if response_win.status_code != 200:
                         raise Exception("Failed to transfer gacha ownership")
@@ -61,8 +88,8 @@ def process_expired_auctions(app):
                     # Triggera l'endpoint per trasferire il denaro al venditore
                     auction_complete_url = "https://localhost:5000/auction_market/market/auction_complete"  # Aggiorna con l'URL reale
                     response_complete = requests.post(auction_complete_url, json={
-                        "auction_id": auction.id
-                    }, verify=False)
+                        "auction_id": auction_id
+                    }, timeout=5,verify=False)
 
                     if response_complete.status_code != 200:
                         raise Exception("Failed to transfer final price to seller")
@@ -70,23 +97,24 @@ def process_expired_auctions(app):
                     # Triggera l'endpoint per i rimborsi nell'auction_market
                     auction_refund_url = "https://localhost:5000/auction_market/market/auction_refund"  # Aggiorna con l'URL reale
                     response_refund = requests.post(auction_refund_url, json={
-                        "auction_id": auction.id
-                    }, verify=False)
+                        "auction_id": auction_id
+                    }, timeout=5,verify=False)
 
                     if response_refund.status_code != 200:
                         raise Exception("Failed to process refunds for losing bidders")
 
             except Exception as e:
-                db.session.rollback()
                 # Log dell'errore senza interrompere il processo per altre aste
-                print(f"Error processing auction {auction.id}: {str(e)}")
+                print(f"Error processing auction {auction_id}: {str(e)}")
 
 def refund_non_winning_bids(app):
     with app.app_context():
-        with db.session.no_autoflush:  # Evita conflitti con altre transazioni
             # Recupero delle aste attive
             try:
-                response = requests.get(dbm_url("/market"), timeout=5, verify=False)
+                if mock_dbm_get_market:
+                    response = mock_dbm_get_market()
+                else:
+                    response = requests.get(dbm_url("/market"), timeout=5, verify=False)
                 if response.status_code != 200:
                     return jsonify({'error': 'Failed to fetch active auctions'}), response.status_code
 
@@ -94,36 +122,82 @@ def refund_non_winning_bids(app):
             except requests.RequestException as e:
                 return jsonify({'error': f"Error communicating with DBM: {str(e)}"}), 500
 
+            result = []
             for auction in active_auctions:
-                # Trova l'offerta più alta per l'asta
-                ##### CORREGGERE CON CHIAMATA AL DBM
-                highest_bid = Bids.query.filter_by(auction_id=auction['id']).order_by(Bids.bid_amount.desc()).first()
+                auction_id = auction.get("id")
 
-                ##### CORREGGERE CON CHIAMATA AL DBM
-                # Trova tutte le offerte perdenti non ancora rimborsate
-                losing_bids = Bids.query.filter(
-                    Bids.auction_id == auction['id'],
-                    Bids.id != highest_bid.id if highest_bid else True,  # Ignora l'offerta vincente
-                    Bids.refunded == False  # Solo offerte non ancora rimborsate
-                ).all()
+                try:
+                    # Ottieni le offerte perdenti tramite il DBM
+                    if mock_dbm_losing_bids:
+                        response = mock_dbm_losing_bids(auction_id)
+                    else:
+                        response = requests.get(
+                            dbm_url(f"/market/losing_bids/{auction_id}"),
+                            timeout=5,
+                            verify=False
+                        )
+                    if response.status_code != 200:
+                        result.append({
+                            "auction_id": auction_id,
+                            "status": "failed",
+                            "details": response.text
+                        })
+                        continue
+
+                    losing_bids = response.json().get("losing_bids", [])
+                except requests.RequestException as e:
+                    result.append({
+                        "auction_id": auction_id,
+                        "status": "failed",
+                        "details": str(e)
+                    })
+                    continue
 
                 for bid in losing_bids:
                     try:
                         # Effettua il rimborso tramite il servizio di trading
                         trading_url = current_app.config['TRADING_HISTORY_URL'] + "/market/refund"
-                        response = requests.post(trading_url, json={
-                            "user_id": bid.bidder_id,
-                            "auction_id": auction.id,
-                            "amount": bid.bid_amount
-                        }, verify=False)
-
-                        if response.status_code == 200:
-                            # Segna l'offerta come rimborsata
-                            bid.refunded = True
-                            db.session.commit()
+                        if mock_trading_market_refund:
+                            response = mock_trading_market_refund(auction_id=auction_id,user_id=bid["bidder_id"],amount=bid["bid_amount"])
                         else:
-                            db.session.rollback()
-                            print(f"Refund failed for bid {bid.id} in auction {auction.id}")
-                    except requests.exceptions.RequestException as e:
-                        db.session.rollback()
-                        print(f"Error processing refund for bid {bid.id} in auction {auction.id}: {str(e)}")
+                            response = requests.post(trading_url, json={
+                                "user_id": bid["bidder_id"],
+                                "auction_id": auction_id,
+                                "amount": bid["bid_amount"]
+                            }, verify=False)
+                        if response.status_code == 200:
+                            update_url = dbm_url(f"/market/update_bid_status/{bid['id']}")
+                            if mock_dbm_update_bid:
+                                update_response = mock_dbm_update_bid(new_status=True,bid_id=bid['id'])
+                            else:
+                                update_response = requests.patch(update_url, json={"refunded": True}, verify=False)
+
+                            if update_response.status_code == 200:
+                                result.append({
+                                    "bid_id": bid["id"],
+                                    "auction_id": auction_id,
+                                    "status": "refunded"
+                                })
+                            else:
+                                result.append({
+                                    "bid_id": bid["id"],
+                                    "auction_id": auction_id,
+                                    "status": "refund_failed",
+                                    "details": f"Failed to update refund status: {update_response.text}"
+                                })
+                        else:
+                            result.append({
+                                "bid_id": bid["id"],
+                                "auction_id": auction_id,
+                                "status": "refund_failed",
+                                "details": response.text
+                            })
+                    except requests.RequestException as e:
+                        result.append({
+                            "bid_id": bid["id"],
+                            "auction_id": auction_id,
+                            "status": "refund_failed",
+                            "details": str(e)
+                        })
+
+            return jsonify({"refund_results": result}), 200

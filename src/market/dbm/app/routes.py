@@ -369,6 +369,182 @@ def process_auction_refund():
     except Exception as e:
         return jsonify({"error": f"Error processing refund: {str(e)}"}), 500
 
+# Endpoint: GET /market/transaction_history
+@db_manager.route('/market/transaction_history', methods=['GET'])
+def get_transaction_history_dbm():
+    user_id = request.args.get("user_id")
+
+    try:
+        # Recupera la cronologia delle transazioni
+        transactions = UserTransactionHistory.query.filter_by(user_id=user_id).all()
+        if not transactions:
+            return jsonify({"transactions": [], "message": "No transactions found for this user"}), 404
+
+        result = [
+            {
+                "auction_id": t.auction_id,
+                "transaction_type": t.transaction_type,
+                "amount": t.amount,
+                "transaction_time": t.transaction_time
+            }
+            for t in transactions
+        ]
+        return jsonify({"transactions": result}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error fetching transaction history: {str(e)}"}), 500
+    
+# Endpoint GET /market/check_refund
+@db_manager.route('/market/check_refund', methods=['GET'])
+def check_existing_refund():
+    user_id = request.args.get("user_id")
+    auction_id = request.args.get("auction_id")
+
+    try:
+        existing_refund = UserTransactionHistory.query.filter_by(
+            user_id=user_id, auction_id=auction_id, transaction_type="refund"
+        ).first()
+        if existing_refund:
+            return jsonify({"error": "Refund already processed"}), 409
+
+        return jsonify({"message": "No existing refund found"}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error checking refund: {str(e)}"}), 500
+    
+# Endpoint GET /market/expired_auctions
+@db_manager.route('/market/expired_auctions', methods=['GET'])
+def get_expired_auctions():
+    # Recupera tutte le aste scadute e attive rispetto a una data specificata.
+    current_time = datetime.utcnow()
+
+    try:
+        # Recupera aste scadute e attive
+        expired_auctions = Auctions.query.filter(
+            Auctions.auction_end <= current_time,
+            Auctions.status == 'active'
+        ).all()
+
+        # Prepara i dati per la risposta
+        result = [
+            {
+                "id": auction.id,
+                "gacha_id": auction.gacha_id,
+                "seller_id": auction.seller_id,
+                "auction_end": auction.auction_end,
+                "current_price": auction.current_price,
+                "starting_price": auction.starting_price,
+                "status": auction.status
+            }
+            for auction in expired_auctions
+        ]
+
+        return jsonify({"expired_auctions": result}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error retrieving expired auctions: {str(e)}"}), 500
+    
+@db_manager.route("/market/losing_bids/<int:auction_id>", methods=["GET"])
+def get_losing_bids(auction_id):
+    try:
+        # Trova l'offerta più alta per l'asta
+        highest_bid = (
+            db.session.query(Bids)
+            .filter_by(auction_id=auction_id)
+            .order_by(Bids.bid_amount.desc())
+            .first()
+        )
+
+        # Trova tutte le offerte perdenti non ancora rimborsate
+        losing_bids = (
+            db.session.query(Bids)
+            .filter(
+                Bids.auction_id == auction_id,
+                Bids.id != (highest_bid.id if highest_bid else None),  # Ignora l'offerta vincente
+                Bids.refunded == False  # Solo offerte non ancora rimborsate
+            )
+            .all()
+        )
+
+        # Trasforma le offerte perdenti in un formato JSON serializzabile
+        losing_bids_json = [
+            {
+                "id": bid.id,
+                "auction_id": bid.auction_id,
+                "bidder_id": bid.bidder_id,
+                "bid_amount": bid.bid_amount
+            }
+            for bid in losing_bids
+        ]
+
+        return jsonify({"losing_bids": losing_bids_json}), 200
+
+    except Exception as e:
+        return jsonify({
+            "error": "Error fetching losing bids for auction",
+            "auction_id": auction_id,
+            "details": str(e)
+        }), 500
+    
+@db_manager.route('/admin/market/update_auction_status/<int:auction_id>', methods=['PATCH'])
+def update_auction_status(auction_id):
+    # Recupera il nuovo stato dall'input JSON
+    data = request.get_json()
+    new_status = data.get("status")
+
+    if not new_status:
+        return jsonify({"error": "New status is required"}), 400
+
+    try:
+        # Trova l'asta specifica
+        auction = db.session.query(Auctions).filter_by(id=auction_id).first()
+
+        if not auction:
+            return jsonify({"error": "Auction not found"}), 404
+
+        # Aggiorna lo stato dell'asta
+        auction.status = new_status
+        db.session.commit()
+
+        return jsonify({"message": "Auction status updated successfully"}), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()  # Annulla la transazione in caso di errore
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+    
+@db_manager.route('/market/update_bid_status/<int:bid_id>', methods=['PATCH'])
+def update_bid_status(bid_id):
+    try:
+        # Recupera lo stato aggiornato dall'input JSON
+        data = request.get_json()
+        new_status = data.get("refunded")
+
+        if new_status is None:
+            return jsonify({"error": "Refunded status is required"}), 400
+
+        # Trova l'offerta specifica
+        bid = db.session.query(Bids).filter_by(id=bid_id).first()
+
+        if not bid:
+            return jsonify({"error": "Bid not found"}), 404
+
+        # Aggiorna lo stato del rimborso
+        bid.refunded = new_status
+        db.session.commit()
+
+        return jsonify({"message": "Bid status updated successfully"}), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+
+
 
 
 

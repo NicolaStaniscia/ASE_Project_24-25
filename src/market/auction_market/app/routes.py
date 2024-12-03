@@ -1,10 +1,28 @@
 import requests
 from flask import Blueprint, jsonify, request, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
-from .models import Auctions
 from datetime import datetime
 
 auction_market = Blueprint('auction_market', __name__)
+
+# Mock functions
+mock_dbm_get_market = None
+mock_dbm_get_auction = None
+mock_dbm_patch_auction = None
+mock_dbm_delete_auction = None
+mock_dbm_market_history = None
+mock_dbm_post_market = None
+mock_collection_post_market = None
+mock_dbm_post_market_create = None
+mock_users_market_bid = None
+mock_dbm_market_bid = None
+mock_users_bid_update = None
+mock_dbm_auction_win = None
+mock_collection_auction_win = None
+mock_dbm_auction_complete = None
+mock_trading_auction_complete = None
+mock_dbm_auction_find = None
+mock_dbm_auction_refund = None
 
 # Funzione d'appoggio per il path del db_manager
 def dbm_url(path):
@@ -22,7 +40,10 @@ def is_user_authenticated(user_id):
 # Funzione per recuperare le aste attive, condivisa tra user e admin
 def fetch_active_auctions():
     try:
-        response = requests.get(dbm_url("/market"), timeout=5, verify=False)
+        if mock_dbm_get_market:
+            response = mock_dbm_get_market()
+        else: 
+            response = requests.get(dbm_url("/market"), timeout=5, verify=False)
         if response.status_code != 200:
             return jsonify({'error': 'Failed to fetch active auctions'}), response.status_code
 
@@ -55,11 +76,14 @@ def get_specific_auction():
     auction_id = request.args.get("auctionID")
 
     # Verifica che l'ID dell'asta sia stato fornito
-    if not auction_id or not auction_id.isdigit():
+    if not auction_id:
         return jsonify({"error": "ID dell'asta non fornito"}), 400
 
     try:
-        response = requests.get(dbm_url("/admin/market/specific_auction"), json={"auction_id":auction_id},timeout=5, verify=False)
+        if mock_dbm_get_auction:
+            response = mock_dbm_get_auction(int(auction_id))
+        else:
+            response = requests.get(dbm_url("/admin/market/specific_auction"), json={"auction_id":auction_id},timeout=5, verify=False)
         if response.status_code == 404:
             return jsonify({"error": "Auction not found"}), 404
         if response.status_code != 200:
@@ -79,7 +103,7 @@ def modify_auction_status():
     # Ottieni l'ID dell'asta dai parametri della query
     auction_id = request.args.get('auctionID')
 
-    if not auction_id or not auction_id.isdigit():
+    if not auction_id:
         return jsonify({"error": "Valid auctionID is required"}), 400
 
     # Ottieni il nuovo stato dell'asta dal corpo della richiesta
@@ -89,7 +113,10 @@ def modify_auction_status():
         return jsonify({"error": "Valid 'status' is required in request body"}), 400
 
     try:
-        response = requests.patch(dbm_url("/admin/market/specific_auction"), 
+        if mock_dbm_patch_auction:
+            response = mock_dbm_patch_auction(int(auction_id))
+        else:
+            response = requests.patch(dbm_url("/admin/market/specific_auction"), 
                                   json={"auction_id":auction_id, "new_status": new_status}, timeout=5, verify=False)
         if response.status_code == 404:
             return jsonify({"error": "Auction not found"}), 404
@@ -110,11 +137,14 @@ def delete_auction():
     # Ottieni l'ID dell'asta dai parametri della query
     auction_id = request.args.get('auctionID')
 
-    if not auction_id or not auction_id.isdigit():
+    if not auction_id:
         return jsonify({"error": "Valid auctionID is required"}), 400
     
     try:
-        response = requests.delete(dbm_url("/admin/market/specific_auction"), json={"auction_id":auction_id}, timeout=5, verify=False)
+        if mock_dbm_delete_auction:
+            response = mock_dbm_delete_auction(int(auction_id))
+        else:
+            response = requests.delete(dbm_url("/admin/market/specific_auction"), json={"auction_id":auction_id}, timeout=5, verify=False)
         if response.status_code == 404:
             return jsonify({"error": "Auction not found"}), 404
         if response.status_code != 200:
@@ -132,7 +162,10 @@ def get_market_history():
         return jsonify({"error": "Admin privileges required"}), 403
 
     try:
-        response = requests.get(dbm_url("/admin/market/history"), timeout=5, verify=False)
+        if mock_dbm_market_history:
+            response = mock_dbm_market_history()
+        else:
+            response = requests.get(dbm_url("/admin/market/history"), timeout=5, verify=False)
         if response.status_code != 200:
             return jsonify({'error': 'Failed to fetch market history'}), response.status_code
 
@@ -172,12 +205,15 @@ def create_auction():
     # Verifica che il gacha non sia già in asta attiva
     try:
         # Chiamata al DBM per verificare se esiste un'asta attiva per il gacha_id
-        dbm_response = requests.get(
-            dbm_url("/admin/market/specific_gacha_auction"),
-            json={"gacha_id": gacha_id},
-            timeout=5,
-            verify=False
-        )
+        if mock_dbm_post_market:
+            dbm_response = mock_dbm_post_market(gacha_id=gacha_id)
+        else:
+            dbm_response = requests.get(
+                dbm_url("/admin/market/specific_gacha_auction"),
+                json={"gacha_id": gacha_id},
+                timeout=5,
+                verify=False
+            )
 
         if dbm_response.status_code != 200:
             return jsonify({'error': 'Failed to check active auction status'}), dbm_response.status_code
@@ -193,12 +229,15 @@ def create_auction():
     # Verifica che il gacha appartenga all'user, prendo la collezione intera
     # Header per la richiesta con il token JWT
     try:
-        collection_response = requests.get(
-            f"{current_app.config['COLLECTION_SEE_URL']}/collection",
-            headers=new_header,
-            timeout=5,
-            verify=False
-        )
+        if mock_collection_post_market:
+            collection_response = mock_collection_post_market(user_id=seller_id)
+        else:
+            collection_response = requests.get(
+                f"{current_app.config['COLLECTION_SEE_URL']}/collection",
+                headers=new_header,
+                timeout=5,
+                verify=False
+            )
         if collection_response.status_code != 200:
             return jsonify({'error': 'Error retrieving user collection'}), collection_response.status_code
         
@@ -212,12 +251,15 @@ def create_auction():
 
     # Chiamata al db-manager per creare l'asta
     try:
-        response = requests.post(dbm_url("/market"), json={
-            "gacha_id": gacha_id,
-            "seller_id": seller_id,
-            "starting_price": starting_price,
-            "auction_end": auction_end_str
-        }, timeout=5, verify=False)
+        if mock_dbm_post_market_create:
+            response = mock_dbm_post_market_create(gacha_id=gacha_id)
+        else:    
+            response = requests.post(dbm_url("/market"), json={
+                "gacha_id": gacha_id,
+                "seller_id": seller_id,
+                "starting_price": starting_price,
+                "auction_end": auction_end_str
+            }, timeout=5, verify=False)
 
         if response.status_code != 201:
             return jsonify({"error": "Failed to create auction"}), response.status_code
@@ -256,31 +298,42 @@ def place_bid():
     if bid_amount <= 0:
         return jsonify({"error": "Bid amount must be greater than zero"}), 400
     
-    # Verifica del credito disponibile per il bidder (CONTROLLA SE SERVE L'USERD ID NELL'HEADER)
-    
-    response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=new_header,verify=False)
-    if response.status_code == 404:
-        return jsonify({"error": "Not found"}), 404
-    user_credit = response.json()['points'][0]
-    # Controllo se l'utente ha abbastanza credito per l'offerta
-    if user_credit < bid_amount:
-        return jsonify({"error": "Insufficient credit for this bid"}), 400
+    # Verifica del credito disponibile per il bidder
+    try:
+        if mock_users_market_bid:
+            response = mock_users_market_bid(user_id=bidder_id)
+        else:
+            response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=new_header,verify=False)
+        if response.status_code == 404:
+            return jsonify({"error": "Not found"}), 404
+        user_credit = response.json()['points'][0]
+        # Controllo se l'utente ha abbastanza credito per l'offerta
+        if user_credit < bid_amount:
+            return jsonify({"error": "Insufficient credit for this bid"}), 400
+    except requests.RequestException as e:
+        return jsonify({'error': f"Error communicating with USERS module: {str(e)}"}), 500
 
     try:
-        response = requests.post(dbm_url("/market/bid"), json={
-            "auction_id": auction_id,
-            "bidder_id": bidder_id,
-            "bid_amount": bid_amount
-        }, verify=False)
+        if mock_dbm_market_bid:
+            response = mock_dbm_market_bid(int(auction_id), bid_amount)
+        else:
+            response = requests.post(dbm_url("/market/bid"), json={
+                "auction_id": auction_id,
+                "bidder_id": bidder_id,
+                "bid_amount": bid_amount
+            }, verify=False)
 
         if response.status_code != 201:
             return jsonify({"error": response.json().get("error", "Unknown error")}), response.status_code
         
         # Fai chiamata al servizio di account_management per scalare la currency
         new_balance = user_credit - bid_amount
-        response = requests.patch('https://account_management:5000/account_management/currency', json={
-            "currency": new_balance
-        }, headers=new_header,verify=False)
+        if mock_users_bid_update:
+            response = mock_users_bid_update(currency=new_balance)
+        else:
+            response = requests.patch('https://account_management:5000/account_management/currency', json={
+                "currency": new_balance
+            }, headers=new_header,verify=False)
 
         if response.status_code != 200:
             return jsonify({"error": response.json().get("error", "Failed to update user balance")}), response.status_code
@@ -295,12 +348,15 @@ def receive_gacha():
     data = request.get_json()
     auction_id = data.get("auction_id")
 
-    if not auction_id or not auction_id.isdigit():
+    if not auction_id:
        return jsonify({"error": "Valid auction_id is required"}), 400 
 
     try:
         # Chiamata al db-manager per verificare l'asta e il vincitore
-        response = requests.post(dbm_url("/market/auction_win"), json={"auction_id":auction_id},timeout=5, verify=False)
+        if mock_dbm_auction_win:
+            response = mock_dbm_auction_win(auction_id=auction_id)
+        else:
+            response = requests.post(dbm_url("/market/auction_win"), json={"auction_id":auction_id},timeout=5, verify=False)
 
         if response.status_code != 200:
             return jsonify({"error": response.json().get("error", "Unknown error")}), response.status_code
@@ -312,12 +368,16 @@ def receive_gacha():
         if not result["highest_bid_found"]:
             return jsonify({"error": "Winner does not match highest bid"}), 400
 
+    # DA CONTROLLARE
     # Trasferimento del gacha al vincitore tramite il servizio COLLECTION
         collection_url = f"{current_app.config['COLLECTION_EDIT_URL']}/edit/collection"
-        response = requests.post(collection_url, json={
-            "gacha_id": result["gacha_id"],
-            "user_id": result["highest_bid"]["bidder_id"]
-        }, timeout=5, verify=False)
+        if mock_collection_auction_win:
+            response = mock_collection_auction_win(gacha_id=result["gacha_id"],user_id=result["highest_bid"]["bidder_id"])
+        else:
+            response = requests.post(collection_url, json={
+                "gacha_id": result["gacha_id"],
+                "user_id": result["highest_bid"]["bidder_id"]
+            }, timeout=5, verify=False)
 
         if response.status_code != 200:
             return jsonify({"error": "Failed to transfer gacha ownership"}), 500
@@ -336,12 +396,15 @@ def complete_auction():
     data = request.get_json()
     auction_id = data.get("auction_id")
 
-    if not auction_id or not auction_id.isdigit():
+    if not auction_id:
        return jsonify({"error": "Valid auction_id is required"}), 400 
 
     try:
         # Chiamata al db-manager per recuperare i dettagli dell'asta e del vincitore
-        response = requests.post(dbm_url("/market/auction_complete"), json={"auction_id":auction_id},timeout=5, verify=False)
+        if mock_dbm_auction_complete:
+            response = mock_dbm_auction_complete(auction_id=auction_id)
+        else:
+            response = requests.post(dbm_url("/market/auction_complete"), json={"auction_id":auction_id},timeout=5, verify=False)
 
         if response.status_code != 200:
             return jsonify({"error": response.json().get("error", "Unknown error")}), response.status_code
@@ -359,12 +422,15 @@ def complete_auction():
 
         # Chiamata al microservizio TRADING_HISTORY per registrare la vendita
         trading_url = current_app.config['TRADING_HISTORY_URL'] + "/market/transaction"
-        response = requests.post(trading_url, json={
-            "auction_id": auction_id,
-            "buyer_id": buyer_id,
-            "seller_id": seller_id,
-            "final_price": final_price
-        }, verify=False)
+        if mock_trading_auction_complete:
+            response = mock_trading_auction_complete(auction_id,buyer_id,seller_id,final_price)
+        else: 
+            response = requests.post(trading_url, json={
+                "auction_id": auction_id,
+                "buyer_id": buyer_id,
+                "seller_id": seller_id,
+                "final_price": final_price
+            }, verify=False)
 
         if response.status_code != 200:
             return jsonify({"error": "Failed to record transaction in trading history"}), 500
@@ -385,7 +451,10 @@ def refund_bid():
 
     # Trovare l'asta specifica
     try:
-        response = requests.get(dbm_url("/admin/market/specific_auction"), json={"auction_id":auction_id},timeout=5, verify=False)
+        if mock_dbm_auction_find:
+            response = mock_dbm_auction_find(auction_id)
+        else:
+            response = requests.get(dbm_url("/admin/market/specific_auction"), json={"auction_id":auction_id},timeout=5, verify=False)
         response_data = response.json()
         if response_data["auction"]["status"] != "closed" or response.status_code == 404:
             return jsonify({"error": "Auction not found or not closed"}), 404
@@ -395,7 +464,10 @@ def refund_bid():
         return jsonify({"error": f"Error communicating with DBM: {str(e)}"}), 500
 
     # Chiama il db-manager per processare i rimborsi
-    response = requests.post(dbm_url("/market/auction_refund"), json={"auction_id":auction_id},timeout=5, verify=False)
+    if mock_dbm_auction_refund:
+        response = mock_dbm_auction_refund(auction_id=auction_id)
+    else:
+        response = requests.post(dbm_url("/market/auction_refund"), json={"auction_id":auction_id},timeout=5, verify=False)
 
     if response.status_code != 200:
         return jsonify({"error": response.json().get("error", "Unknown error")}), response.status_code
