@@ -166,6 +166,7 @@ services:
       - ./init_db/data_collection.csv:/var/lib/mysql-files/data_collection.csv
       - ./init_db/owned_collection.csv:/var/lib/mysql-files/owned_collection.csv
       - ./init_db/init_collection.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init_db/my.cnf:/etc/mysql/my.cnf:ro
     environment:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/collection_mysql_root_password
       MYSQL_DATABASE: collection_db
@@ -193,6 +194,7 @@ services:
       - ./users/db_data:/var/lib/mysql
       - ./init_db/users.csv:/var/lib/mysql-files/users.csv
       - ./init_db/init_users.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init_db/my.cnf:/etc/mysql/my.cnf:ro
     networks:
       - backend
     secrets:

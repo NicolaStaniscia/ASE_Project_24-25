@@ -22,7 +22,10 @@ db_config = {
     'host': 'users_db',
     'user': 'user',          # Nome utente MySQL
     'password': get_secret('/run/secrets/account_mysql_password'),  # Password MySQL
-    'database': 'account_management'    # Nome del database
+    'database': 'account_management',    # Nome del database
+    'ssl_disabled': False,  # SSL enabled
+    'ssl_verify_cert': False,  # Disable cert verification
+    'ssl_verify_identity': False
 }
 # Connessione al database
 def get_db_connection():

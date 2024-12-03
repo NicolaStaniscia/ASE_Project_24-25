@@ -43,7 +43,11 @@ class MyApp(Flask):
             'host': getenv('MYSQL_HOST'),
             'user': getenv('MYSQL_USER'),
             'password': self.get_secret('/run/secrets/collection_mysql_password'),
-            'database': getenv('MYSQL_DATABASE')
+            'database': getenv('MYSQL_DATABASE'),
+            'ssl': {  # SSL configs
+                'check_hostname': False,  # Disable hostname verification
+                'verify_mode': False     # Disable cert verification
+            }
         }
 
         try:
@@ -51,7 +55,7 @@ class MyApp(Flask):
             conn = pymysql.connect(**config)
             return conn
         except pymysql.MySQLError as e:
-            raise Exception(f'Error during DB connection: {str(e)}')
+            raise ConnectionError(f'Error during DB connection: {str(e)}')
         
 
     # * Serialize json to send as response
