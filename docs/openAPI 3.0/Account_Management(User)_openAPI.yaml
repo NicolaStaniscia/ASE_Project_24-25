@@ -1,0 +1,439 @@
+openapi: 3.0.0
+info:
+  title: User Account Management API
+  description: API for user-related operations, including account creation, login, and management.
+  version: 1.0.0
+servers:
+  - url: https://localhost:8080
+    description: Account Management Service
+
+paths:
+  /account_management/create_user_account:
+    post:
+      summary: Create a new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the new user.
+                  example: user123
+                password:
+                  type: string
+                  description: The password for the new user account.
+                  example: secure_password_123
+      responses:
+        '201':
+          description: User account successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: object
+                    description: Response from the DB Manager confirming account creation.
+                    example: { "message": "User user123 created successfully" }
+        '400':
+          description: Missing parameters in the request body.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "username and password are required"
+        '409':
+          description: User already exists in the database.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User already exists"
+        '500':
+          description: Server or DB Manager error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to connect to DB Manager"
+                  details:
+                    type: string
+                    description: Additional information about the failure.
+                    example: "Connection refused"
+
+  /account_management/login:
+    post:
+      summary: Login a user and get an access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the user.
+                  example: user123
+                password:
+                  type: string
+                  description: The user's password.
+                  example: secure_password_123
+      responses:
+        '200':
+          description: Login successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: The JWT access token for the user.
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  status:
+                    type: string
+                    description: A message indicating successful login.
+                    example: "Login completed successfully"
+        '400':
+          description: Missing parameters in the request body.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "username and password are required"
+        '401':
+          description: Invalid credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid credentials"
+        '500':
+          description: Server or DB Manager error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to connect to DB Manager"
+                  details:
+                    type: string
+                    description: Additional information about the failure.
+                    example: "Connection refused"
+
+  /account_management/logout:
+    post:
+      summary: User logout
+      description: Logs out a user by revoking their JWT access token, ensuring it can no longer be used.
+      security:
+        - BearerAuth: []  # Requires a valid JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the user who wants to log out.
+                  example: user123
+      responses:
+        '200':
+          description: Logout successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Confirmation of successful logout and token revocation.
+                    example: "user123 logged out, token revoked."
+        '400':
+          description: Missing parameters in the request body.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "username is required"
+        '401':
+          description: Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing or invalid token"
+        '403':
+          description: Unauthorized logout attempt.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+        
+  /account_management/modify_user_account:
+      patch:
+        summary: Modify user account details
+        description: Allows users to modify their password.
+        security:
+          - BearerAuth: []
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    description: The username of the account to modify.
+                    example: user123
+                  new_password:
+                    type: string
+                    description: The new password for the account.
+                    example: new_secure_password_123
+        responses:
+        '200':
+          description: Password successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: object
+                    description: Response from the DB Manager confirming the update.
+                    example: { "message": "User:user123. Password modified successfully, you need to log in again." }
+        '400':
+          description: Missing required parameters in the request body.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "username and new_password are required"
+        '401':
+          description: Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing or invalid token"
+        '403':
+          description: Unauthorized modification attempt.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+        '500':
+          description: Server or DB Manager error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to connect to DB Manager"
+                  details:
+                    type: string
+                    description: Additional information about the failure.
+                    example: "Connection refused"
+
+  /account_management/delete_user_account/{username}:
+    delete:
+      summary: Delete user account
+      description: Only the authenticated user can delete their account, and the JWT token is revoked upon success.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+            example: user123
+      responses:
+        '200':
+          description: Account successfully deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: object
+                    description: Response from the DB Manager confirming the deletion.
+                    example: { "message": "User:user123 eliminated successfully." }
+        '400':
+          description: Missing required parameters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "username is required"
+        '401':
+          description: Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing or invalid token"
+        '403':
+          description: Unauthorized deletion attempt.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+        '500':
+          description: Server or DB Manager error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to connect to DB Manager"
+                  details:
+                    type: string
+                    description: Additional information about the failure.
+                    example: "Connection refused"
+
+  /account_management/buy_in_game_currency:
+    post:
+      summary: Buy in-game currency
+      description: Allows an authenticated user to buy in-game currency by selecting a predefined pack (1,2 o 3).
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - pack
+              properties:
+                username:
+                  type: string
+                  exmple: user123
+                pack:
+                  type: integer
+                  description: The currency pack to purchase. Valid values are 1, 2, or 3.
+                  enum: [1, 2, 3]
+                  example: 2
+      responses:
+        '201':
+          description: In-game currency successfully added.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: object
+                    description: Confirmation message from the DB Manager.
+                    example: { "message": "Transaction successful, currency updated." }
+        '400':
+          description: Missing required parameters or invalid pack selection.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "username and pack are required"
+        '401':
+          description: Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing or invalid token"
+        '403':
+          description: Unauthorized access. The username does not match the authenticated user or the role is not authorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+        '500':
+          description: Server or DB Manager error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to connect to DB Manager"
+                  details:
+                    type: string
+                    description: Additional information about the failure.
+                    example: "Connection refused"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http  # Usare 'http' per il tipo di schema
+      scheme: bearer  # Specifica che il tipo di schema è 'bearer'
+      bearerFormat: JWT  # Specifica che il formato del token è JWT
