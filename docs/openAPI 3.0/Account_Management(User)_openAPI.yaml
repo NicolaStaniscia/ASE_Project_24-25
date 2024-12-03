@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 servers:
   - url: https://localhost:8080
-    description: Account Management Service
+    description: Account Management User Service
 
 paths:
   /account_management/create_user_account:
@@ -203,27 +203,27 @@ paths:
                     example: "Unauthorized"
         
   /account_management/modify_user_account:
-      patch:
-        summary: Modify user account details
-        description: Allows users to modify their password.
-        security:
-          - BearerAuth: []
-        requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  username:
-                    type: string
-                    description: The username of the account to modify.
-                    example: user123
-                  new_password:
-                    type: string
-                    description: The new password for the account.
-                    example: new_secure_password_123
-        responses:
+    patch:
+      summary: Modify user account details
+      description: Allows users to modify their password.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the account to modify.
+                  example: user123
+                new_password:
+                  type: string
+                  description: The new password for the account.
+                  example: new_secure_password_123
+      responses:
         '200':
           description: Password successfully updated.
           content:
@@ -368,7 +368,7 @@ paths:
               properties:
                 username:
                   type: string
-                  exmple: user123
+                  example: user123
                 pack:
                   type: integer
                   description: The currency pack to purchase. Valid values are 1, 2, or 3.

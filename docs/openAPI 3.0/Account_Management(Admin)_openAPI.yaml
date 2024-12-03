@@ -1,0 +1,350 @@
+openapi: 3.0.0
+info:
+  title: Admin Account Management API
+  description: API for admin operations such as managing users and viewing payments history.
+  version: 1.0.0
+servers:
+  - url: https://localhost:8081
+    description: Account Management Admin Service
+
+paths:
+  /account_management/admin/login:
+    post:
+      summary: Admin login
+      description: Allows admin users to log in and obtain a JWT token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the admin user.
+                  example: admin1
+                password:
+                  type: string
+                  description: The password of the admin user.
+                  example: admin1
+      responses:
+        '200':
+          description: Login successful. Returns a JWT token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: JWT token for the admin user.
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  status:
+                    type: string
+                    description: Login status message.
+                    example: "Login completed successfully"
+        '400':
+          description: Missing username or password in the request body.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "username and password are required"
+        '401':
+          description: Invalid credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid credentials"
+        '500':
+          description: Failed to connect to the DB Manager or database error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to connect to DB Manager"
+                  details:
+                    type: string
+                    description: Additional information about the failure.
+                    example: "Connection refused"
+
+  /account_management/admin/view_users:
+    get:
+      summary: View information of a specific user or of all users.
+      description: Allows admin users to view information about all users or a specific user based on the 'username' query parameter.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: username
+          in: query
+          description: Username of the specific user to view. If omitted, information for all users will be returned.
+          required: false
+          schema:
+            type: string
+            example: user1
+      responses:
+        '200':
+          description: User(s) information retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: object
+                    description: Information about the requested user(s).
+                    example:
+                      - id: 1
+                        username: "user1"
+                        salt: "4af79f16b117297d10e75e3ce76fe6bb"
+                        password: "703056994df0c5cbe3c3c4d030092260850e8f8f9d6c357a8a27e44919e248d0"
+                        in_game_currency: 1050
+                        last_access: "Tue, 03 Dec 2024 15:20:39 GMT"
+                      - id: 2
+                        username: user2
+                        salt: "b6da0fe797c9cd5c0936fb8b12c11aa3"
+                        password: "5775f528a5bed1562ed5c7d40ba9e3c59dd31f148c5f58cff3dffebec07d1ede"
+                        in_game_currency: 440
+                        last_access: "Tue, 03 Dec 2024 15:20:39 GMT"
+        '401':
+          description: Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing or invalid token"
+        '403':
+          description: Unauthorized access attempt.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+        '404':
+          description: User not found (when querying a specific user).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found!"
+        '500':
+          description: Failed to connect to the DB Manager or database error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to connect to DB Manager"
+                  details:
+                    type: string
+                    description: Additional information about the failure.
+                    example: "Connection refused"
+
+  /account_management/admin/modify_user:
+    patch:
+      summary: Modify a user's in-game currency
+      description: Allows admin to modify a user's in-game currency.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The username of the user whose in-game currency will be modified.
+                  example: user1
+                new_currency:
+                  type: integer
+                  description: The new amount of in-game currency to set for the user.
+                  example: 1000
+      responses:
+        '200':
+          description: Currency successfully updated for the user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: object
+                    description: Response from the DB Manager confirming the update.
+                    example: { "message": "User:user1. Currency modified successfully, new currency: 1000." }
+        '400':
+          description: Missing or invalid parameters in the request body.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "username and new_currency are required or 'new_currency' must be an integer"
+        '401':
+          description: Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing or invalid token"
+        '403':
+          description: Unauthorized access attempt.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+        '500':
+          description: Server or DB Manager error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to connect to DB Manager"
+                  details:
+                    type: string
+                    description: Additional information about the failure.
+                    example: "Connection refused"
+
+  /account_management/admin/check_payments_history/{username}:
+    get:
+      summary: Check a user's payments history
+      description: Allows an admin to view the payment history of a specified user.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: username 
+          in: path
+          required: true
+          description: The username of the user whose payment history is to be retrieved.
+          schema:
+            type: string
+            example: user123
+      responses:
+        '200':
+          description: Payment history retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    transaction_id:
+                      type: integer
+                      description: The unique ID of the payment transaction.
+                      example: 123
+                    user_id:
+                      type: integer
+                      description: The unique ID of the user who made the payment.
+                      example: 1
+                    amount_spent:
+                      type: integer
+                      description: The amount spent in the transaction.
+                      example: 20
+                    in_game_currency_purchased:
+                      type: integer
+                      description: The amount of in-game currency purchased in the transaction.
+                      example: 450
+                    timestamp:
+                      type: string
+                      format: date-time
+                      description: The timestamp of the transaction.
+                      example: "Tue, 03 Dec 2024 15:20:39 GMT"
+        '400':
+          description: Username is missing in the request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Username is required"
+        '401':
+          description: Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing or invalid token"
+        '403':
+          description: Unauthorized access attempt.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+        '404':
+          description: User not found or no transactions found for the user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User user123 not found."
+                  message:
+                    type: string
+                    example: "No transactions found for user user123. or User user123 not found."
+        '500':
+          description: Server or DB Manager error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to connect to DB Manager"
+                  details:
+                    type: string
+                    description: Additional information about the failure.
+                    example: "Connection refused"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http  # Usare 'http' per il tipo di schema
+      scheme: bearer  # Specifica che il tipo di schema è 'bearer'
+      bearerFormat: JWT  # Specifica che il formato del token è JWT
