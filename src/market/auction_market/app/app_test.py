@@ -157,14 +157,7 @@ def mock_collection_post_market(user_id):
 
 
 # Mock per simulare il comportamento del dbm alla creazione in POST /market
-def mock_dbm_post_market_create(gacha_id):
-    # Caso: errore simulato durante la creazione dell'asta
-    # Valore da implementare in POSTMAN come stringa
-    if gacha_id == "simulate_error":
-        return MockResponse(
-            status_code=500,
-            json_data={"error": "Failed to create auction", "message": "Simulated database error"}
-        )
+def mock_dbm_post_market_create():
     # Risposta di successo
     return MockResponse(
         status_code=201,
@@ -176,7 +169,7 @@ def mock_dbm_post_market_create(gacha_id):
 
 # Mock per simulare il comportamento del servizio users in POST /market/bid
 def mock_users_market_bid(user_id):
-    if not user_id:
+    if user_id == 403:
         return MockResponse(
             status_code=403,
             json_data={"error": "Forbidden"}
@@ -214,18 +207,11 @@ def mock_dbm_market_bid(auction_id,bid_amount):
 
 
 # Mock per simulare il comportamento del servizio users che aggiorna il saldo in POST /market/bid
-def mock_users_bid_update(currency):
-    if not currency:
-        return MockResponse(
-            status_code=400,
-            json_data={"error": "Bad request"}
-        )
-    else:
-        # Simula una risposta di successo
-        return MockResponse(
-            status_code=200,
-            json_data={"message": "Currency updated"}
-        )
+def mock_users_bid_update():
+    return MockResponse(
+        status_code=200,
+        json_data={"message": "Currency updated"}
+    )
 
 # Mock per simulare il comportamento del dbm in POST /market/auction_win
 def mock_dbm_auction_win(auction_id):
