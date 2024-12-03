@@ -252,7 +252,7 @@ def create_auction():
     # Chiamata al db-manager per creare l'asta
     try:
         if mock_dbm_post_market_create:
-            response = mock_dbm_post_market_create(gacha_id=gacha_id)
+            response = mock_dbm_post_market_create()
         else:    
             response = requests.post(dbm_url("/market"), json={
                 "gacha_id": gacha_id,
@@ -301,11 +301,13 @@ def place_bid():
     # Verifica del credito disponibile per il bidder
     try:
         if mock_users_market_bid:
-            response = mock_users_market_bid(user_id=bidder_id)
+            response = mock_users_market_bid(bidder_id)
         else:
             response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=new_header,verify=False)
         if response.status_code == 404:
             return jsonify({"error": "Not found"}), 404
+        if response.status_code == 403:
+            return jsonify({"error": "Forbidden"}), 403
         user_credit = response.json()['points'][0]
         # Controllo se l'utente ha abbastanza credito per l'offerta
         if user_credit < bid_amount:
@@ -329,7 +331,7 @@ def place_bid():
         # Fai chiamata al servizio di account_management per scalare la currency
         new_balance = user_credit - bid_amount
         if mock_users_bid_update:
-            response = mock_users_bid_update(currency=new_balance)
+            response = mock_users_bid_update()
         else:
             response = requests.patch('https://account_management:5000/account_management/currency', json={
                 "currency": new_balance
