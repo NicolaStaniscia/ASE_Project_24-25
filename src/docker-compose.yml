@@ -156,8 +156,6 @@ services:
       - backend
     secrets:
       - market_mysql_root_password
-      - market_db_cert
-      - market_db_key
 
   collection_db:
     image: mysql:latest
@@ -180,8 +178,6 @@ services:
     secrets:
       - collection_mysql_root_password
       - collection_mysql_password
-      - collection_db_cert
-      - collection_db_key
 
   users_db:
     image: mysql:latest  
@@ -202,8 +198,6 @@ services:
     secrets:
       - account_mysql_root_password
       - account_mysql_password
-      - users_db_cert
-      - users_db_key
 
   api_gateway:
     image: nginx:latest
@@ -310,17 +304,3 @@ secrets:
     file: ./secrets/https/admin_api/cert.pem
   admin_api_key:
     file: ./secrets/https/admin_api/key.pem
-
-  # DB TLS
-  collection_db_cert:
-    file: ./secrets/https/collection_db/cert.pem
-  collection_db_key:
-    file: ./secrets/https/collection_db/key.pem
-  users_db_cert:
-    file: ./secrets/https/users_db/cert.pem
-  users_db_key:
-    file: ./secrets/https/users_db/key.pem
-  market_db_cert:
-    file: ./secrets/https/market_db/cert.pem
-  market_db_key:
-    file: ./secrets/https/market_db/key.pem
