@@ -29,4 +29,4 @@ jobs:
 
       - name: Analyze Docker Image with Docker Scout
         run: |
-          docker scout analyze nicolastaniscia/ase_project_24-25:latest --output table
+          docker scout analyze nicolastaniscia/ase_project_24-25:latest
