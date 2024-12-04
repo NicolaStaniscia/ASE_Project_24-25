@@ -23,7 +23,7 @@ jobs:
 
       # Bandit installation
       - name: Install Bandit
-        run: pip install bandit
+        run: apt install -y bandit
 
       # Bandit execution
       - name: Run Bandit
@@ -53,7 +53,7 @@ jobs:
 
       # Bandit installation
       - name: Install Bandit
-        run: pip install bandit
+        run: apt install -y bandit
 
       # Bandit execution
       - name: Run Bandit
@@ -83,7 +83,7 @@ jobs:
 
       # Bandit installation
       - name: Install Bandit
-        run: pip install bandit
+        run: apt install bandit
 
       # Bandit execution
       - name: Run Bandit
