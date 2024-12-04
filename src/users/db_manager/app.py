@@ -341,7 +341,8 @@ def usernames():
             cursor.execute(query, (user_id,))
             result = cursor.fetchone()
             if result is None:
-                return make_response(jsonify(error=f'User (id: {user_id}) not found'), 404)
+                continue
+                # return make_response(jsonify(error=f'User (id: {user_id}) not found'), 404)
             
             usernames.append(
                 {"id": user_id, "username": result[0]}
