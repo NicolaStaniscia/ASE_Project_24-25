@@ -33,14 +33,14 @@ jobs:
 
       # Bandit execution
       - name: Run Bandit
-        run: bandit -r ./src/users/ -f txt -o bandit-report.txt --exit-zero --skip B501
+        run: bandit -r ./src/users/ -f html -o bandit-report.html --exit-zero --skip B501
 
       # Report upload
       - name: Upload Bandit report
         uses: actions/upload-artifact@v3
         with:
           name: account-management-bandit
-          path: bandit-report.txt
+          path: bandit-report.html
 
   bandit-collection:
     name: Collection Analysis
@@ -70,14 +70,14 @@ jobs:
 
       # Bandit execution
       - name: Run Bandit
-        run: bandit -r ./src/collection/ -f txt -o bandit-report.txt --exit-zero --skip B501
+        run: bandit -r ./src/collection/ -f html -o bandit-report.html --exit-zero --skip B501
 
       # Report upload
       - name: Upload Bandit report
         uses: actions/upload-artifact@v3
         with:
           name: collection-bandit
-          path: bandit-report.txt
+          path: bandit-report.html
           
   bandit-market:
     name: Market Analysis
@@ -107,11 +107,11 @@ jobs:
 
       # Bandit execution
       - name: Run Bandit
-        run: bandit -r ./src/market/ -f txt -o bandit-report.txt --exit-zero --skip B501
+        run: bandit -r ./src/market/ -f html -o bandit-report.html --exit-zero --skip B501
 
       # Report upload
       - name: Upload Bandit report
         uses: actions/upload-artifact@v3
         with:
           name: market-bandit
-          path: bandit-report.txt
+          path: bandit-report.html
