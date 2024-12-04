@@ -32,7 +32,7 @@ jobs:
           docker scout cves nicolastaniscia/ase_project_24-25:latest --format markdown > report.html
 
       - name: Save Docker Scout report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: docker-scout-analysis
           path: report.html

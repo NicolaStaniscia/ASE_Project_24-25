@@ -37,7 +37,7 @@ jobs:
 
       # Report upload
       - name: Upload Bandit report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: account-management-bandit
           path: bandit-report.html
@@ -74,7 +74,7 @@ jobs:
 
       # Report upload
       - name: Upload Bandit report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: collection-bandit
           path: bandit-report.html
@@ -111,7 +111,7 @@ jobs:
 
       # Report upload
       - name: Upload Bandit report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: market-bandit
           path: bandit-report.html
