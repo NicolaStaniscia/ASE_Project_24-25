@@ -14,6 +14,7 @@ mock_users_market_currency = None
 mock_users_market_refund = None
 mock_users_refund_currency = None
 mock_dbm_market_refund = None
+mock_dbm_refund_transaction = None
 
 def dbm_url(path):
     return current_app.config['DBM_URL'] + path
@@ -103,6 +104,8 @@ def record_transaction():
             response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=headers,verify=False)
         if response.status_code == 404:
             return jsonify({"error": "Not found"}), 404
+        if response.status_code == 403:
+            return jsonify({"error": "Unauthorized"}), 403
         
         user_credit = response.json()['points'][0]
 
@@ -110,7 +113,7 @@ def record_transaction():
         new_balance = user_credit + final_price
         # Aggiorna il saldo
         if mock_users_market_currency:
-            response = mock_users_market_currency(data={"currency": new_balance})
+            response = mock_users_market_currency()
         else:
             response = requests.patch('https://account_management:5000/account_management/currency', json={
             "currency": new_balance
@@ -188,7 +191,7 @@ def process_refund():
         new_balance = user_credit + amount
         # Aggiorna il saldo dell'utente
         if mock_users_refund_currency:
-            response = mock_users_refund_currency(data={"currency": new_balance}, user_id=user_id)
+            response = mock_users_refund_currency()
         else:
             response = requests.patch(f"{current_app.config['USERS_URL']}/account_management/currency", json={
                 "currency": new_balance
@@ -197,21 +200,26 @@ def process_refund():
         if response.status_code != 200:
             return jsonify({"error": response.json().get("error", "Unknown error")}), response.status_code
 
-        result = response.json()
-        if not result["success"]:
-            return jsonify({"error": result["message"]}), 500
+        # Invia la richiesta al DBM per registrare la transazione
+        refund_data = {
+            "user_id": user_id,
+            "auction_id": auction_id,
+            "transaction_type": "refund",
+            "amount": amount
+        }
+        if mock_dbm_refund_transaction:
+            dbm_add_response = mock_dbm_refund_transaction()
+        else:
+            dbm_add_response = requests.post(
+                dbm_url("/market/add_refund"),
+                json=refund_data,
+                timeout=5,
+                verify=False
+            )
 
-
-        refund_transaction = UserTransactionHistory(
-            user_id=user_id,
-            auction_id=auction_id,
-            transaction_type="refund",
-            amount=amount
-        )
-        db.session.add(refund_transaction)
-        db.session.commit()
+        if dbm_add_response.status_code != 201:
+            return jsonify({"error": "Failed to record transaction in DBM"}), dbm_add_response.status_code
 
         return jsonify({"message": "Refund processed successfully"}), 200
     except Exception as e:
-        db.session.rollback()
         return jsonify({"error": f"Refund failed: {str(e)}"}), 500
