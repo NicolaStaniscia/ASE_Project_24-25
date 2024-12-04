@@ -1,0 +1,36 @@
+name: Static Analysis
+
+on:
+  push:
+    branches:
+      - main
+      
+jobs:
+  bandit:
+    runs-on: ubuntu-latest 
+
+    steps:
+      # Repo checkout
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Configurazione di Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'  # Versione di Python da usare
+
+      # 3. Installazione di Bandit
+      - name: Install Bandit
+        run: pip install bandit
+
+      # 4. Esecuzione di Bandit
+      - name: Run Bandit
+        run: bandit -r . -f txt -o bandit-report.txt
+
+      # 5. Caricamento del report di Bandit come artefatto
+      - name: Upload Bandit report
+        uses: actions/upload-artifact@v3
+        with:
+          name: bandit-report
+          path: bandit-report.txt
