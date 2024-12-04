@@ -159,7 +159,7 @@ def check_all_user_collections():
         users_ids = {"ids": users}
 
         # Retrieve all usernames
-        users_response = requests.get('https://account_management:5000/account_management/get_username', json=users_ids, headers=new_header, verify=False, timeout=5)
+        users_response = requests.get('https://account_management:5000/account_management/admin/get_username', json=users_ids, headers=new_header, verify=False, timeout=5)
         if users_response.status_code != 200:
             return make_response(jsonify(users_response.json()), users_response.status_code)
 
@@ -211,7 +211,7 @@ def check_specific_user_collection(user_id: int):
         
         # Check username
         id = {"ids": [user_id]}
-        username = requests.get("https://account_management:5000/account_management/get_username", json=id, headers=new_header, verify=False, timeout=5)
+        username = requests.get("https://account_management:5000/account_management/admin/get_username", json=id, headers=new_header, verify=False, timeout=5)
         if username.status_code != 200:
             return make_response(jsonify(username.json()), username.status_code)
         

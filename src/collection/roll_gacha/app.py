@@ -133,7 +133,7 @@ def roll_standard():
         # Edit currency 
         updated_currency = bullet_p - standard_price
         data_update = {'currency': updated_currency}
-        update_resp = requests.patch('https://account_management:5000/account_management/currency', json=data_update, headers=new_header, verify=False, timeout=5)
+        update_resp = requests.patch('https://account_management:5000/currency', json=data_update, headers=new_header, verify=False, timeout=5)
         if update_resp.status_code != 200:
             return make_response(jsonify(update_resp.json()), update_resp.status_code)
         
@@ -155,7 +155,7 @@ def roll_standard():
     finally:
         rollback = {'currency': bullet_p}
         if updated_currency != 0 and assigned == False:
-            requests.patch('https://account_management:5000/account_management/currency', json=rollback, headers=new_header, verify=False, timeout=5)
+            requests.patch('https://account_management:5000/currency', json=rollback, headers=new_header, verify=False, timeout=5)
     
     
 @app.route('/roll/gold', methods=['POST'])
@@ -212,7 +212,7 @@ def roll_gold():
         # Edit currency 
         updated_currency = bullet_p - gold_price
         data_update = {'currency': updated_currency}
-        update_resp = requests.patch('https://account_management:5000/account_management/currency', json=data_update, headers=new_header, verify=False, timeout=5)
+        update_resp = requests.patch('https://account_management:5000/currency', json=data_update, headers=new_header, verify=False, timeout=5)
         if update_resp.status_code != 200:
             return make_response(jsonify(update_resp.json()), update_resp.status_code)
         
@@ -234,7 +234,7 @@ def roll_gold():
     finally:
         rollback = {'currency': bullet_p}
         if updated_currency != 0 and assigned == False:
-            requests.patch('https://account_management:5000/account_management/currency', json=rollback, headers=new_header, verify=False, timeout=5)
+            requests.patch('https://account_management:5000/currency', json=rollback, headers=new_header, verify=False, timeout=5)
 
 
 @app.route('/roll/platinum', methods=['POST'])
@@ -291,7 +291,7 @@ def roll_platinum():
         # Edit currency 
         updated_currency = bullet_p - platinum_price
         data_update = {'currency': updated_currency}
-        update_resp = requests.patch('https://account_management:5000/account_management/currency', json=data_update, headers=new_header, verify=False, timeout=5)
+        update_resp = requests.patch('https://account_management:5000/currency', json=data_update, headers=new_header, verify=False, timeout=5)
         if update_resp.status_code != 200:
             return make_response(jsonify(update_resp.json()), update_resp.status_code)
         
@@ -314,7 +314,7 @@ def roll_platinum():
     finally:
         rollback = {'currency': bullet_p}
         if updated_currency != 0 and assigned == False:
-            requests.patch('https://account_management:5000/account_management/currency', json=rollback, headers=new_header, verify=False, timeout=5)
+            requests.patch('https://account_management:5000/currency', json=rollback, headers=new_header, verify=False, timeout=5)
 
 
 if __name__ == '__main__':
