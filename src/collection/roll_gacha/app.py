@@ -100,7 +100,7 @@ def roll_standard():
             return make_response(jsonify(error='Only users can roll a gacha'), 403)
         
         # Retrieve bullet points
-        bullet_response = requests.get('https://account_management:5000/account_management/get_currency', headers=new_header, verify=False)
+        bullet_response = requests.get('https://account_management:5000/account_management/get_currency', headers=new_header, verify=False, timeout=5)
         if bullet_response.status_code != 200:
             raise requests.exceptions.RequestException('Something gone wrong')
         
@@ -109,7 +109,7 @@ def roll_standard():
         if bullet_p < standard_price:
             return make_response(jsonify(error='You don\'t have enough points'), 400)
         
-        gacha_response = requests.get('https://collection_db_manager:5010/gacha', verify=False)
+        gacha_response = requests.get('https://collection_db_manager:5010/gacha', verify=False, timeout=5)
         if gacha_response.status_code != 200:
             return make_response(jsonify(error='Request failed'), gacha_response.status_code)
         
@@ -133,12 +133,12 @@ def roll_standard():
         # Edit currency 
         updated_currency = bullet_p - standard_price
         data_update = {'currency': updated_currency}
-        update_resp = requests.patch('https://account_management:5000/account_management/currency', json=data_update, headers=new_header, verify=False)
+        update_resp = requests.patch('https://account_management:5000/account_management/currency', json=data_update, headers=new_header, verify=False, timeout=5)
         if update_resp.status_code != 200:
             return make_response(jsonify(update_resp.json()), update_resp.status_code)
         
         # Send assignment request
-        assign_response = requests.post('https://collection_db_manager:5010/edit/user_collection', json=assign, verify=False)
+        assign_response = requests.post('https://collection_db_manager:5010/edit/user_collection', json=assign, verify=False, timeout=5)
         if assign_response.status_code == 200:
             assigned = True
             return make_response(jsonify(success=assign_response.json()['result']), 200)
@@ -155,7 +155,7 @@ def roll_standard():
     finally:
         rollback = {'currency': bullet_p}
         if updated_currency != 0 and assigned == False:
-            requests.patch('https://account_management:5000/account_management/currency', json=rollback, headers=new_header, verify=False)
+            requests.patch('https://account_management:5000/account_management/currency', json=rollback, headers=new_header, verify=False, timeout=5)
     
     
 @app.route('/roll/gold', methods=['POST'])
@@ -178,7 +178,7 @@ def roll_gold():
             return make_response(jsonify(error='Only users can roll a gacha'), 403)
         
         # Retrieve bullet points
-        bullet_response = requests.get('https://account_management:5000/account_management/get_currency', headers=new_header, verify=False)
+        bullet_response = requests.get('https://account_management:5000/account_management/get_currency', headers=new_header, verify=False, timeout=5)
         if bullet_response.status_code != 200:
             raise requests.exceptions.RequestException('Something gone wrong')
         
@@ -188,7 +188,7 @@ def roll_gold():
             return make_response(jsonify(error='You don\'t have enough points'), 400)
         
         # Retrieve gachas
-        gacha_response = requests.get('https://collection_db_manager:5010/gacha', verify=False)
+        gacha_response = requests.get('https://collection_db_manager:5010/gacha', verify=False, timeout=5)
         if gacha_response.status_code != 200:
             return make_response(jsonify(error=f'Request failed: {gacha_response.json()}'), gacha_response.status_code)
         
@@ -212,12 +212,12 @@ def roll_gold():
         # Edit currency 
         updated_currency = bullet_p - gold_price
         data_update = {'currency': updated_currency}
-        update_resp = requests.patch('https://account_management:5000/account_management/currency', json=data_update, headers=new_header, verify=False)
+        update_resp = requests.patch('https://account_management:5000/account_management/currency', json=data_update, headers=new_header, verify=False, timeout=5)
         if update_resp.status_code != 200:
             return make_response(jsonify(update_resp.json()), update_resp.status_code)
         
         # Send assignment request
-        assign_response = requests.post('https://collection_db_manager:5010/edit/user_collection', json=assign, verify=False)
+        assign_response = requests.post('https://collection_db_manager:5010/edit/user_collection', json=assign, verify=False, timeout=5)
         if assign_response.status_code == 200:
             assigned = True
             return make_response(jsonify(success=assign_response.json()['result']), 200)
@@ -234,7 +234,7 @@ def roll_gold():
     finally:
         rollback = {'currency': bullet_p}
         if updated_currency != 0 and assigned == False:
-            requests.patch('https://account_management:5000/account_management/currency', json=rollback, headers=new_header, verify=False)
+            requests.patch('https://account_management:5000/account_management/currency', json=rollback, headers=new_header, verify=False, timeout=5)
 
 
 @app.route('/roll/platinum', methods=['POST'])
@@ -257,7 +257,7 @@ def roll_platinum():
             return make_response(jsonify(error='Only users can roll a gacha'), 403)
         
         # Retrieve bullet points
-        bullet_response = requests.get('https://account_management:5000/account_management/get_currency', headers=new_header, verify=False)
+        bullet_response = requests.get('https://account_management:5000/account_management/get_currency', headers=new_header, verify=False, timeout=5)
         if bullet_response.status_code != 200:
             raise requests.exceptions.RequestException('Something gone wrong')
         
@@ -267,7 +267,7 @@ def roll_platinum():
             return make_response(jsonify(error='You don\'t have enough points'), 400)
 
         # Retrieve gachas
-        gacha_response = requests.get('https://collection_db_manager:5010/gacha', verify=False)
+        gacha_response = requests.get('https://collection_db_manager:5010/gacha', verify=False, timeout=5)
         if gacha_response.status_code != 200:
             return make_response(jsonify(error='Request failed'), gacha_response.status_code)
 
@@ -291,12 +291,12 @@ def roll_platinum():
         # Edit currency 
         updated_currency = bullet_p - platinum_price
         data_update = {'currency': updated_currency}
-        update_resp = requests.patch('https://account_management:5000/account_management/currency', json=data_update, headers=new_header, verify=False)
+        update_resp = requests.patch('https://account_management:5000/account_management/currency', json=data_update, headers=new_header, verify=False, timeout=5)
         if update_resp.status_code != 200:
             return make_response(jsonify(update_resp.json()), update_resp.status_code)
         
         # Send assignment request
-        assign_response = requests.post('https://collection_db_manager:5010/edit/user_collection', json=assign, verify=False)
+        assign_response = requests.post('https://collection_db_manager:5010/edit/user_collection', json=assign, verify=False, timeout=5)
         if assign_response.status_code == 200:
             assigned = True
             return make_response(jsonify(success=assign_response.json()['result']), 200)
@@ -314,9 +314,9 @@ def roll_platinum():
     finally:
         rollback = {'currency': bullet_p}
         if updated_currency != 0 and assigned == False:
-            requests.patch('https://account_management:5000/account_management/currency', json=rollback, headers=new_header, verify=False)
+            requests.patch('https://account_management:5000/account_management/currency', json=rollback, headers=new_header, verify=False, timeout=5)
 
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True)
+    app.run(threaded=True)
     

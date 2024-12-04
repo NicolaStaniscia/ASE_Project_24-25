@@ -55,7 +55,8 @@ def create_user_account():
             "username": username,
             "salt": salt,
             "password": hashed_password},
-            verify=False
+            verify=False, 
+            timeout=5
         )
         
         # Restituire la risposta del DB Manager
@@ -85,12 +86,13 @@ def login():
                 "username": username,
                 "password": password,
                 "user_type": user_type},
-                verify=False
+                verify=False, 
+                timeout=5
             )
         
         if response.status_code == 200:#credentials ok
             url = f"https://db_manager:5000/get_id/{username}/{user_type}"
-            response = requests.get(url,verify=False)
+            response = requests.get(url, verify=False, timeout=5)
             id = data.get('id')
             access_token = create_access_token(
                 identity=str(id),
@@ -156,7 +158,8 @@ def modify_user_account():
                 "username": username,
                 "salt": salt,
                 "password": hashed_password},
-                verify=False
+                verify=False, 
+                timeout=5
             )
             
             # Restituire la risposta del DB Manager, se la password dell'utente è stato modificato con successo ,allora eseguo anche il logout
@@ -189,7 +192,7 @@ def delete_user_account(username):
         
         try:
             # Inoltrare i dati al DB Manager
-            response = requests.delete(db_manager_url, verify=False)
+            response = requests.delete(db_manager_url, verify=False, timeout=5)
             
             # Restituire la risposta del DB Manager, se l'utente è stato eliminato con successo, allora eseguo anche il logout
             if response.status_code == 200:
@@ -224,7 +227,8 @@ def buy_in_game_currency():
             response = requests.post(db_manager_url, json={
                 "username": username,
                 "pack": pack},
-                verify=False
+                verify=False, 
+                timeout=5
             )
             
             # Restituire la risposta del DB Manager
@@ -246,7 +250,7 @@ def get_currency():
         if not user_id:
             return make_response(jsonify(error="Forbidden"), 403)
 
-        response = requests.get(f'https://users_db_manager:5000/get_user_currency/{user_id}', verify=False)
+        response = requests.get(f'https://users_db_manager:5000/get_user_currency/{user_id}', verify=False, timeout=5)
         if response.status_code == 200:
             return make_response(jsonify(points=response.json()), 200)
 
@@ -272,7 +276,7 @@ def set_currency():
 
     try:
         # data (user_id, currency)
-        response = requests.patch(f'https://users_db_manager:5000/edit/currency', json=new_data, verify=False)
+        response = requests.patch(f'https://users_db_manager:5000/edit/currency', json=new_data, verify=False, timeout=5)
         if response.status_code == 200:
             return make_response(jsonify(success=response.json()['message']), 200)
 
@@ -300,7 +304,7 @@ def get_username():
         if not data or ('ids' not in data):
             return make_response(jsonify(error='Data missing'), 400)
 
-        response = requests.get('https://users_db_manager:5000/usernames', json=data, verify=False)
+        response = requests.get('https://users_db_manager:5000/usernames', json=data, verify=False, timeout=5)
         if response.status_code != 200:
             return make_response(jsonify(response.json()), response.status_code)
         
@@ -329,12 +333,13 @@ def login_admin():
                 "username": username,
                 "password": password,
                 "user_type": user_type},
-                verify=False
+                verify=False, 
+                timeout=5
             )
         
         if response.status_code == 200:#credentials ok
             url = f"https://db_manager:5000/get_id/{username}/{user_type}"
-            response = requests.get(url,verify=False)
+            response = requests.get(url, verify=False, timeout=5)
             id = data.get('id')
             access_token = create_access_token(
                 identity=str(id),
@@ -370,7 +375,7 @@ def view_users():
     db_manager_url = f"https://users_db_manager:5000/get_all_users/{username}"  # URL del servizio DB Manager
     try:
         # Inoltrare i dati al DB Manager
-        response = requests.get(db_manager_url,verify=False)
+        response = requests.get(db_manager_url, verify=False, timeout=5)
 
         return jsonify({
             "status": response.json(),
@@ -405,7 +410,8 @@ def modify_user():
         response = requests.patch(db_manager_url, json={
             "username": username,
             "new_currency": new_currency},
-            verify=False
+            verify=False, 
+            timeout=5
         )
         
         # Restituire la risposta del DB Manager, se la password dell'utente è stato modificato con successo ,allora eseguo anche il logout
@@ -432,7 +438,7 @@ def check_payments_history(username):
     db_manager_url = f"https://users_db_manager:5000/check_payments/{username}"  # URL del servizio DB Manager
     try:
         # Inoltrare i dati al DB Manager
-        response = requests.get(db_manager_url,verify=False)
+        response = requests.get(db_manager_url, verify=False, timeout=5)
 
         return jsonify({
             "status": response.json(),
@@ -442,4 +448,4 @@ def check_payments_history(username):
         return jsonify({"error": "Failed to connect to DB Manager", "details": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

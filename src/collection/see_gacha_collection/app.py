@@ -24,7 +24,7 @@ jwt = JWTManager(app)
 # ! USER ENDPOINTS
 
 # * See user collection
-@app.route('/collection', methods=['GET'])  # todo: TEST
+@app.route('/collection', methods=['GET']) 
 @jwt_required()
 def get_user_collection():
     jwt_payload = get_jwt()
@@ -39,7 +39,7 @@ def get_user_collection():
         user_id = get_jwt_identity()
         
         # Send a request
-        response = requests.get(f"https://collection_db_manager:5010/user_collection/{user_id}", verify=False)
+        response = requests.get(f"https://collection_db_manager:5010/user_collection/{user_id}", verify=False, timeout=5)
         
         # If response is not null, return the body
         if response.status_code == 200:
@@ -56,7 +56,7 @@ def get_user_collection():
     
 
 # * Retrieve info about an owned gacha of the user
-@app.route('/collection/<int:gacha_id>', methods=['GET'])  # todo: TEST
+@app.route('/collection/<int:gacha_id>', methods=['GET']) 
 @jwt_required()
 def see_gacha_info(gacha_id):
     jwt_payload = get_jwt()
@@ -70,7 +70,7 @@ def see_gacha_info(gacha_id):
         user_id = get_jwt_identity()
 
         # Check if user owns the requested gacha
-        response = requests.get(f"https://collection_db_manager:5010/user_collection/{user_id}", verify=False)
+        response = requests.get(f"https://collection_db_manager:5010/user_collection/{user_id}", verify=False, timeout=5)
         if response.status_code != 200:
             return make_response(jsonify(error='Failed to retrieve user collection'), response.status_code)
         
@@ -81,7 +81,7 @@ def see_gacha_info(gacha_id):
         if gacha_id in ids: owned = True
         
         if owned:
-            info = requests.get(f'https://collection_db_manager:5010/gacha/{gacha_id}', verify=False)
+            info = requests.get(f'https://collection_db_manager:5010/gacha/{gacha_id}', verify=False, timeout=5)
             if info.status_code == 200:
                 return make_response(info.json(), 200)
             else: return make_response(jsonify(error='Failed to retrieve gacha info'), info.status_code)
@@ -99,10 +99,10 @@ def see_gacha_info(gacha_id):
 # ! COMMON ENDPOINTS
 
 # * See the system gacha collection
-@app.route('/system_collection', methods=['GET'])  # todo: TEST
+@app.route('/system_collection', methods=['GET']) 
 def get_system_collection():
     try:
-        response = requests.get('https://collection_db_manager:5010/gacha', verify=False)
+        response = requests.get('https://collection_db_manager:5010/gacha', verify=False, timeout=5)
         if response.status_code == 200:
             return make_response(response.json(), 200)
         
@@ -116,10 +116,10 @@ def get_system_collection():
     
 
 # * See the info of a system gacha
-@app.route('/system_collection/<int:gacha_id>', methods=['GET'])  # todo: TEST
+@app.route('/system_collection/<int:gacha_id>', methods=['GET']) 
 def get_info_about_system_gacha(gacha_id):
     try: 
-        response = requests.get(f'https://collection_db_manager:5010/gacha/{gacha_id}', verify=False)
+        response = requests.get(f'https://collection_db_manager:5010/gacha/{gacha_id}', verify=False, timeout=5)
         if response.status_code == 200:
             return make_response(response.json(), 200)
         
@@ -150,7 +150,7 @@ def check_all_user_collections():
             return make_response(jsonify(error='Forbidden'), 403)
         
         # Retrieve all users
-        response_users = requests.get('https://collection_db_manager:5010/users', verify=False)
+        response_users = requests.get('https://collection_db_manager:5010/users', verify=False, timeout=5)
         if response_users.status_code != 200:
             return make_response(jsonify(error='Failed to retrieve users'), response_users.status_code)
         
@@ -159,7 +159,7 @@ def check_all_user_collections():
         users_ids = {"ids": users}
 
         # Retrieve all usernames
-        users_response = requests.get('https://account_management:5000/account_management/get_username', json=users_ids, headers=new_header, verify=False)
+        users_response = requests.get('https://account_management:5000/account_management/get_username', json=users_ids, headers=new_header, verify=False, timeout=5)
         if users_response.status_code != 200:
             return make_response(jsonify(users_response.json()), users_response.status_code)
 
@@ -167,7 +167,7 @@ def check_all_user_collections():
         user_list = []
         for user in users_response.json()['success']:
             # Make a request for each user
-            response_gacha = requests.get(f'https://collection_db_manager:5010/user_collection/{user['id']}', verify=False)
+            response_gacha = requests.get(f'https://collection_db_manager:5010/user_collection/{user['id']}', verify=False, timeout=5)
             if response_gacha.status_code != 200:
                 return make_response(jsonify(error='Failed to retrieve users collection'), response_gacha.status_code)
             
@@ -211,11 +211,11 @@ def check_specific_user_collection(user_id: int):
         
         # Check username
         id = {"ids": [user_id]}
-        username = requests.get("https://account_management:5000/account_management/get_username", json=id, headers=new_header, verify=False)
+        username = requests.get("https://account_management:5000/account_management/get_username", json=id, headers=new_header, verify=False, timeout=5)
         if username.status_code != 200:
             return make_response(jsonify(username.json()), username.status_code)
         
-        response = requests.get(f'https://collection_db_manager:5010/user_collection/{user_id}', verify=False)
+        response = requests.get(f'https://collection_db_manager:5010/user_collection/{user_id}', verify=False, timeout=5)
         if response.status_code == 200:
             return make_response(response.json(), 200)
         
@@ -231,7 +231,7 @@ def check_specific_user_collection(user_id: int):
 # ! ADDITIONAL FEATURES
 
 # * Retrieve user collection grouped by quantity
-@app.route('/collection/grouped', methods=['GET'])  # todo: TEST
+@app.route('/collection/grouped', methods=['GET']) 
 @jwt_required()
 def get_grouped_collection():
     jwt_payload = get_jwt()
@@ -244,7 +244,7 @@ def get_grouped_collection():
         # Retrieve user_id from jwt token
         user_id = get_jwt_identity()
 
-        response = requests.get(f'https://collection_db_manager:5010/user_collection/{user_id}/grouped', verify=False)
+        response = requests.get(f'https://collection_db_manager:5010/user_collection/{user_id}/grouped', verify=False, timeout=5)
         if response.status_code == 200:
             return make_response(response.json(), 200)
         
@@ -259,4 +259,4 @@ def get_grouped_collection():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True)
+    app.run(threaded=True)

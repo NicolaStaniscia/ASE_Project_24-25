@@ -41,7 +41,7 @@ def add_gacha_to_collection():
             return make_response(jsonify(error='Bad request'), 400)
         
         # Send data (user_id, gacha_id)
-        response = requests.post('https://collection_db_manager:5010/edit/user_collection', json=data, verify=False)
+        response = requests.post('https://collection_db_manager:5010/edit/user_collection', json=data, verify=False, timeout=5)
         if response.status_code == 200:
             return make_response(jsonify(success=response.json()['result']), 200)
 
@@ -65,7 +65,7 @@ def add_gacha_to_collection_win():
             return make_response(jsonify(error='Bad request'), 400)
         
         # Send data (user_id, gacha_id)
-        response = requests.post('https://collection_db_manager:5010/edit/user_collection', json=data, verify=False)
+        response = requests.post('https://collection_db_manager:5010/edit/user_collection', json=data, verify=False, timeout=5)
         if response.status_code == 200:
             return make_response(jsonify(success=response.json()['result']), 200)
 
@@ -98,7 +98,7 @@ def edit_gacha_of_collection():
             return make_response(jsonify(error='Bad request'), 400)
         
         # data = (id, user_id, gacha_id)
-        response = requests.patch('https://collection_db_manager:5010/edit/user_collection', json=data, verify=False)
+        response = requests.patch('https://collection_db_manager:5010/edit/user_collection', json=data, verify=False, timeout=5)
         if response.status_code == 200:
             return make_response(jsonify(success=response.json()['result']), 200)
         
@@ -128,7 +128,7 @@ def remove_gacha_from_collection(id_own):
             return make_response(jsonify(error='Bad request'), 400)
         
         # data (id)
-        response = requests.delete(f'https://collection_db_manager:5010/edit/user_collection/{id_own}', verify=False)
+        response = requests.delete(f'https://collection_db_manager:5010/edit/user_collection/{id_own}', verify=False, timeout=5)
         if response.status_code == 200:
             return make_response(jsonify(success=response.json()['result']), 200)
         
@@ -170,7 +170,7 @@ def edit_system_gacha():
                 return make_response(jsonify(error='Bad request'), 400)
         
         # data[n] (name, extractionProb, rarity, image, damage, speed, critical, accuracy)
-        insert_response = requests.post('https://collection_db_manager:5010/edit_gacha', json=data, verify=False)
+        insert_response = requests.post('https://collection_db_manager:5010/edit_gacha', json=data, verify=False, timeout=5)
         if insert_response.status_code == 200:
             return make_response(jsonify(success=insert_response.json()['result']), 200)
         
@@ -203,7 +203,7 @@ def edit_gacha_info():
             return make_response(jsonify(error='Bad request'), 400)
         
         # data (id, name, extractionProb, image, class, damage, speed, critical, accuracy)
-        response = requests.patch('https://collection_db_manager:5010/edit_gacha', json=data, verify=False)
+        response = requests.patch('https://collection_db_manager:5010/edit_gacha', json=data, verify=False, timeout=5)
         if response.status_code == 200:
             return make_response(jsonify(success=response.json()['result']), 200)
         
@@ -233,7 +233,7 @@ def delete_system_gacha(gacha_id):
         if not gacha_id:
             return make_response(jsonify(error='Gacha ID missing'), 400)
         
-        delete_response = requests.delete(f'https://collection_db_manager:5010/edit_gacha/{gacha_id}', verify=False)
+        delete_response = requests.delete(f'https://collection_db_manager:5010/edit_gacha/{gacha_id}', verify=False, timeout=5)
         if delete_response.status_code == 200:
             return make_response(jsonify(success=delete_response.json()['result']), 200)
         
@@ -248,5 +248,5 @@ def delete_system_gacha(gacha_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True)
+    app.run(threaded=True)
     
