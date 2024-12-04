@@ -29,4 +29,10 @@ jobs:
 
       - name: Analyze Docker Image with Docker Scout
         run: |
-          docker scout analyze nicolastaniscia/ase_project_24-25:latest
+          docker scout cves nicolastaniscia/ase_project_24-25:latest --format markdown > report.html
+
+      - name: Save Docker Scout report
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-scout-analysis
+          path: report.html
