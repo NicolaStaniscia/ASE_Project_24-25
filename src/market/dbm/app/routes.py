@@ -353,7 +353,7 @@ def process_auction_refund():
                     "user_id": bid.bidder_id,
                     "auction_id": auction_id,
                     "amount": bid.bid_amount
-                }, verify=False)
+                }, timeout=5,verify=False)
                 
                 # Se la richiesta di rimborso non ha successo, segna il fallimento
                 if response.status_code != 200:

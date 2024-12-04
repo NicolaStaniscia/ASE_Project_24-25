@@ -94,14 +94,14 @@ def record_transaction():
                 "buyer_id": buyer_id,
                 "seller_id": seller_id,
                 "final_price": final_price
-            }, verify=False)
+            }, timeout=5,verify=False)
 
         # Recupera il credito del venditore
         headers = {"Authorization": f"Bearer {token}"}
         if mock_users_market_transaction:
             response = mock_users_market_transaction(user_id=seller_id)
         else:
-            response = requests.get('https://account_management:5000/account_management/get_currency', headers=headers,verify=False)
+            response = requests.get('https://account_management:5000/account_management/get_currency', headers=headers,timeout=5,verify=False)
         if response.status_code == 404:
             return jsonify({"error": "Not found"}), 404
         if response.status_code == 403:
@@ -117,7 +117,7 @@ def record_transaction():
         else:
             response = requests.patch('https://account_management:5000/currency', json={
             "currency": new_balance
-        }, headers=headers,verify=False)
+        }, headers=headers,timeout=5,verify=False)
 
         if response.status_code != 200:
             return jsonify({"error": response.json().get("error", "Unknown error")}), response.status_code
@@ -181,7 +181,7 @@ def process_refund():
         if mock_users_market_refund:
             response = mock_users_market_refund(user_id=user_id)
         else:
-            response = requests.get('https://account_management:5000/account_management/get_currency', headers=headers, verify=False)
+            response = requests.get('https://account_management:5000/account_management/get_currency', headers=headers, timeout=5,verify=False)
         if response.status_code == 404:
             return jsonify({"error": "User not found"}), 404
 
@@ -195,7 +195,7 @@ def process_refund():
         else:
             response = requests.patch('https://account_management:5000/currency', json={
                 "currency": new_balance
-            }, headers=headers, verify=False)
+            }, headers=headers, timeout=5,verify=False)
 
         if response.status_code != 200:
             return jsonify({"error": response.json().get("error", "Unknown error")}), response.status_code

@@ -303,7 +303,7 @@ def place_bid():
         if mock_users_market_bid:
             response = mock_users_market_bid(bidder_id)
         else:
-            response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=new_header,verify=False)
+            response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=new_header,timeout=5,verify=False)
         if response.status_code == 404:
             return jsonify({"error": "Not found"}), 404
         if response.status_code == 403:
@@ -323,7 +323,7 @@ def place_bid():
                 "auction_id": auction_id,
                 "bidder_id": bidder_id,
                 "bid_amount": bid_amount
-            }, verify=False)
+            }, timeout=5,verify=False)
 
         if response.status_code != 201:
             return jsonify({"error": response.json().get("error", "Unknown error")}), response.status_code
@@ -335,7 +335,7 @@ def place_bid():
         else:
             response = requests.patch('https://account_management:5000/currency', json={
                 "currency": new_balance
-            }, headers=new_header,verify=False)
+            }, headers=new_header,timeout=5,verify=False)
 
         if response.status_code != 200:
             return jsonify({"error": response.json().get("error", "Failed to update user balance")}), response.status_code
@@ -432,7 +432,7 @@ def complete_auction():
                 "buyer_id": buyer_id,
                 "seller_id": seller_id,
                 "final_price": final_price
-            }, verify=False)
+            }, timeout=5,verify=False)
 
         if response.status_code != 200:
             return jsonify({"error": "Failed to record transaction in trading history"}), 500
