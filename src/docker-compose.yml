@@ -152,6 +152,7 @@ services:
     volumes:
       - ./market/data/mysql:/var/lib/mysql
       - ./init_db/init_market.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init_db/my.cnf:/etc/mysql/my.cnf:ro
     networks:
       - backend
     secrets:
