@@ -6,31 +6,92 @@ on:
       - main
       
 jobs:
-  bandit:
+  bandit-users:
+    name: Account Management Analysis
     runs-on: ubuntu-latest 
 
     steps:
       # Repo checkout
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # 2. Configurazione di Python
+      # Set up Python
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'  # Versione di Python da usare
+          python-version: '3.12' 
 
-      # 3. Installazione di Bandit
+      # Bandit installation
       - name: Install Bandit
         run: pip install bandit
 
-      # 4. Esecuzione di Bandit
+      # Bandit execution
       - name: Run Bandit
-        run: bandit -r . -f txt -o bandit-report.txt
+        run: bandit -r ./src/users/ -f txt -o bandit-report.txt
 
-      # 5. Caricamento del report di Bandit come artefatto
+      # Report upload
       - name: Upload Bandit report
         uses: actions/upload-artifact@v3
         with:
-          name: bandit-report
+          name: account-management-bandit
+          path: bandit-report.txt
+
+  bandit-collection:
+    name: Collection Analysis
+    runs-on: ubuntu-latest 
+
+    steps:
+      # Repo checkout
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12' 
+
+      # Bandit installation
+      - name: Install Bandit
+        run: pip install bandit
+
+      # Bandit execution
+      - name: Run Bandit
+        run: bandit -r ./src/collection/ -f txt -o bandit-report.txt
+
+      # Report upload
+      - name: Upload Bandit report
+        uses: actions/upload-artifact@v3
+        with:
+          name: collection-bandit
+          path: bandit-report.txt
+          
+  bandit-market:
+    name: Market Analysis
+    runs-on: ubuntu-latest 
+
+    steps:
+      # Repo checkout
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12' 
+
+      # Bandit installation
+      - name: Install Bandit
+        run: pip install bandit
+
+      # Bandit execution
+      - name: Run Bandit
+        run: bandit -r ./src/market/ -f txt -o bandit-report.txt
+
+      # Report upload
+      - name: Upload Bandit report
+        uses: actions/upload-artifact@v3
+        with:
+          name: market-bandit
           path: bandit-report.txt
