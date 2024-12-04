@@ -7,7 +7,7 @@ flask_app = main_app.create_app()
 def mock_dbm_transaction_history(user_id):
     
     # Non ci sono transazioni
-    if user_id == "no_history":
+    if user_id == 404:
         return MockResponse(
             status_code=404,
             json_data={"transactions": [], "message": "No transactions found for this user"}
@@ -35,7 +35,7 @@ def mock_dbm_transaction_history(user_id):
 def mock_dbm_market_transaction():
     # Risposta simulata di successo
     return MockResponse(
-        status_code=201,
+        status_code=200,
         json_data={
             "message": "Transaction recorded successfully",
             "transaction_id": 12345
@@ -44,7 +44,7 @@ def mock_dbm_market_transaction():
 
 def mock_users_market_transaction(user_id):
 
-    if not user_id:
+    if user_id == 403:
         # Risposta in caso di errore di autorizzazione
         return MockResponse(
             status_code=403,
@@ -56,16 +56,7 @@ def mock_users_market_transaction(user_id):
         json_data={"points": [1000]}  # Credito corrente simulato
     )
 
-def mock_users_market_currency(data):
-    currency = data.get("currency")
-
-    if not currency:
-        # Risposta in caso di richiesta malformata
-        return MockResponse(
-            status_code=400,
-            json_data={"error": "Bad request"}
-        )
-    
+def mock_users_market_currency():
     # Risposta simulata di successo
     return MockResponse(
         status_code=200,
@@ -74,7 +65,7 @@ def mock_users_market_currency(data):
 
 def mock_dbm_market_refund(user_id):
     # Simulazione dei casi possibili   
-    if user_id == "existing_refund":
+    if user_id == 409:
         # Caso in cui un rimborso esiste già
         return MockResponse(
             status_code=409,
@@ -85,6 +76,12 @@ def mock_dbm_market_refund(user_id):
     return MockResponse(
         status_code=200,
         json_data={"message": "No existing refund found"}
+    )
+
+def mock_dbm_refund_transaction():
+    return MockResponse(
+        status_code=201,
+        json_data={"message": "Transaction added successfully"}
     )
 
 # Classe per simulare una risposta HTTP
@@ -104,3 +101,4 @@ main_app.routes.mock_users_market_currency = mock_users_market_currency
 main_app.routes.mock_users_market_refund = mock_users_market_transaction
 main_app.routes.mock_users_refund_currency = mock_users_market_currency
 main_app.routes.mock_dbm_market_refund = mock_dbm_market_refund
+main_app.routes.mock_dbm_refund_transaction = mock_dbm_refund_transaction

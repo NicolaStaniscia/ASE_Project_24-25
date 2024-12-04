@@ -542,6 +542,41 @@ def update_bid_status(bid_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+    
+@db_manager.route('/market/add_refund', methods=['POST'])
+def add_refund():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    auction_id = data.get("auction_id")
+    transaction_type = data.get("transaction_type")
+    amount = data.get("amount")
+
+    if not all([user_id, auction_id, transaction_type, amount]):
+        return jsonify({"error": "Invalid data"}), 400
+    
+    try:
+        user_id = int(user_id)
+        auction_id = int(auction_id)
+        amount = int(amount)
+        if amount <= 0 or transaction_type != "refund":
+            raise ValueError
+    except ValueError:
+        return jsonify({"error": "Invalid input format"}), 400
+
+    # Salva la transazione nel database
+    try:
+        refund_transaction = UserTransactionHistory(
+            user_id=user_id,
+            auction_id=auction_id,
+            transaction_type=transaction_type,
+            amount=amount
+        )
+        db.session.add(refund_transaction)
+        db.session.commit()
+        return jsonify({"message": "Transaction added successfully"}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Failed to add transaction: {str(e)}"}), 500
 
 
 
