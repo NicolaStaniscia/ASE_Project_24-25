@@ -333,7 +333,7 @@ def place_bid():
         if mock_users_bid_update:
             response = mock_users_bid_update()
         else:
-            response = requests.patch('https://account_management:5000/account_management/currency', json={
+            response = requests.patch('https://account_management:5000/currency', json={
                 "currency": new_balance
             }, headers=new_header,verify=False)
 
