@@ -101,7 +101,7 @@ def record_transaction():
         if mock_users_market_transaction:
             response = mock_users_market_transaction(user_id=seller_id)
         else:
-            response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=headers,verify=False)
+            response = requests.get('https://account_management:5000/account_management/get_currency', headers=headers,verify=False)
         if response.status_code == 404:
             return jsonify({"error": "Not found"}), 404
         if response.status_code == 403:
@@ -115,7 +115,7 @@ def record_transaction():
         if mock_users_market_currency:
             response = mock_users_market_currency()
         else:
-            response = requests.patch('https://account_management:5000/account_management/currency', json={
+            response = requests.patch('https://account_management:5000/currency', json={
             "currency": new_balance
         }, headers=headers,verify=False)
 
@@ -181,7 +181,7 @@ def process_refund():
         if mock_users_market_refund:
             response = mock_users_market_refund(user_id=user_id)
         else:
-            response = requests.get(f"{current_app.config['USERS_URL']}/account_management/get_currency", headers=headers, verify=False)
+            response = requests.get('https://account_management:5000/account_management/get_currency', headers=headers, verify=False)
         if response.status_code == 404:
             return jsonify({"error": "User not found"}), 404
 
@@ -193,7 +193,7 @@ def process_refund():
         if mock_users_refund_currency:
             response = mock_users_refund_currency()
         else:
-            response = requests.patch(f"{current_app.config['USERS_URL']}/account_management/currency", json={
+            response = requests.patch('https://account_management:5000/currency', json={
                 "currency": new_balance
             }, headers=headers, verify=False)
 
