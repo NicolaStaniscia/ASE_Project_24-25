@@ -262,7 +262,7 @@ def get_currency():
         return make_response(jsonify(error='Internal server error'), 500)
 
 # Use after rolled a gacha   
-@app.route('/account_management/currency', methods=['PATCH'])
+@app.route('/currency', methods=['PATCH'])
 @jwt_required()
 def set_currency():
     user_id = get_jwt_identity()
@@ -290,7 +290,7 @@ def set_currency():
 #ADMIN SERVICES
 
 # Used for admin collection operations
-@app.route('/account_management/get_username', methods=['GET'])
+@app.route('/account_management/admin/get_username', methods=['GET'])
 @jwt_required()
 def get_username():
     jwtPayload = get_jwt()
