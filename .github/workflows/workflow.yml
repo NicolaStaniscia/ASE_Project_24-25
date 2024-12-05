@@ -35,6 +35,13 @@ jobs:
         run: |
           cd src/
           docker compose up --build -d
+          
+      # Step 4: Run Newman with the Postman collection
+      - name: Run Postman tests market
+        run: |
+          newman run ./docs/postman/Integration_tests/Market_tests_Integration.postman_collection.json \
+            --reporters cli,junit \
+            --reporter-junit-export test-results.xml 
   
       # Step 4: Run Newman with the Postman collection
       - name: Run Postman tests users
