@@ -39,18 +39,18 @@ jobs:
       # Step 4: Run Newman with the Postman collection
       - name: Run Postman tests users
         run: |
-          newman run ./docs/postman/Integration_tests/Account_Management_Integration_tests_(User).postman_collection.json \
+          newman run ./docs/postman/Integration_tests/Account_Management_Integration_tests_user.postman_collection.json \
             --reporters cli,junit \
             --reporter-junit-export test-results.xml
       
-      # Step 4: Run Newman with the Postman collection
+      # Step 5: Run Newman with the Postman collection
       - name: Run Postman tests collection
         run: |
           newman run ./docs/postman/Integration_tests/Collection_Integrazione.postman_collection.json \
             --reporters cli,junit \
             --reporter-junit-export test-results.xml
 
-      # Step 5: Upload test results (opzionale, per visibilità)
+      # Step 6: Upload test results (opzionale, per visibilità)
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
