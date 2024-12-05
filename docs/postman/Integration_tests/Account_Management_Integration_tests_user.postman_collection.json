@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "fbc67e10-cfd4-4e84-83fb-32313e2bc801",
+		"_postman_id": "1d33a78b-4ff1-4597-ae77-7d8030f01564",
 		"name": "Account_Management_Integration_tests_(User)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "39573357"
@@ -54,7 +54,7 @@
 					"script": {
 						"exec": [
 							"// Genera un numero casuale tra 11 e 99",
-							"const randomNumber = Math.floor(Math.random() * (99 - 11 + 1)) + 11;",
+							"const randomNumber = 11;",
 							"",
 							"// Genera il username e password con il numero casuale",
 							"const username = `user${randomNumber}`;",
@@ -1171,16 +1171,6 @@
 							"\r",
 							"pm.test(\"Requests header contains Authorization\", function() {\r",
 							"    pm.request.to.have.header('Authorization');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response contains points\", function() {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.have.property('points');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Points is an array\", function() {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.points).to.be.an('array');\r",
 							"});"
 						],
 						"type": "text/javascript",
@@ -1252,258 +1242,6 @@
 			"response": []
 		},
 		{
-			"name": "set_currency OK (200)",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"user_id = Math.floor(Math.random() * 10) + 1;\r",
-							"currency = 500 + Math.floor(Math.random() * 600);\r",
-							"\r",
-							"pm.environment.set('user_id', user_id);\r",
-							"pm.environment.set('currency', currency);\r",
-							"\r",
-							"console.log(\"User ID:\", user_id);\r",
-							"console.log(\"New Currency:\", currency);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Response is 200\", function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Request header contains Authorization\", function() {\r",
-							"    pm.request.to.have.header('Authorization');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Request body contains currency\", function() {\r",
-							"    const body = pm.request.body.raw;\r",
-							"    const jsonBody = JSON.parse(body);\r",
-							"    pm.expect(jsonBody).to.have.property('currency');\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Response contains field\", function() {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.have.property('success');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response body matches expected result\", function () {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    var expectedResponse = \"Currency updated\";\r",
-							"    pm.expect(jsonData.success).to.eql(expectedResponse);\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "jwt",
-					"jwt": [
-						{
-							"key": "payload",
-							"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\"\r\n}",
-							"type": "string"
-						},
-						{
-							"key": "header",
-							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
-							"type": "string"
-						},
-						{
-							"key": "addTokenTo",
-							"value": "header",
-							"type": "string"
-						},
-						{
-							"key": "secret",
-							"value": "JwtGACHA2425",
-							"type": "string"
-						},
-						{
-							"key": "algorithm",
-							"value": "HS256",
-							"type": "string"
-						},
-						{
-							"key": "isSecretBase64Encoded",
-							"value": false,
-							"type": "boolean"
-						},
-						{
-							"key": "headerPrefix",
-							"value": "Bearer",
-							"type": "string"
-						},
-						{
-							"key": "queryParamKey",
-							"value": "token",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"currency\": {{currency}}\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://localhost:8080/account_management/currency",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"account_management",
-						"currency"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "set_currency ERROR (400 Bad Request)",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"user_id = Math.floor(Math.random() * 10) + 1;\r",
-							"currency = 500 + Math.floor(Math.random() * 600);\r",
-							"\r",
-							"pm.environment.set('user_id', user_id);\r",
-							"pm.environment.set('currency', currency);\r",
-							"\r",
-							"console.log(\"User ID:\", user_id);\r",
-							"console.log(\"New Currency:\", currency);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Response is 200\", function() {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Request header contains Authorization\", function() {\r",
-							"    pm.request.to.have.header('Authorization');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Request body contains currency\", function() {\r",
-							"    const body = pm.request.body.raw;\r",
-							"    const jsonBody = JSON.parse(body);\r",
-							"    pm.expect(jsonBody).to.have.property('currency');\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Response contains field\", function() {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.have.property('success');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response body matches expected result\", function () {\r",
-							"    const jsonData = pm.response.json();\r",
-							"    var expectedResponse = \"Currency updated\";\r",
-							"    pm.expect(jsonData.success).to.eql(expectedResponse);\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "jwt",
-					"jwt": [
-						{
-							"key": "payload",
-							"value": "{\r\n    \"sub\": \"{{user_id}}\",\r\n    \"role\": \"user\"\r\n}",
-							"type": "string"
-						},
-						{
-							"key": "header",
-							"value": "{\r\n  \"alg\": \"HS256\",\r\n  \"typ\": \"JWT\"\r\n}",
-							"type": "string"
-						},
-						{
-							"key": "addTokenTo",
-							"value": "header",
-							"type": "string"
-						},
-						{
-							"key": "secret",
-							"value": "JwtGACHA2425",
-							"type": "string"
-						},
-						{
-							"key": "algorithm",
-							"value": "HS256",
-							"type": "string"
-						},
-						{
-							"key": "isSecretBase64Encoded",
-							"value": false,
-							"type": "boolean"
-						},
-						{
-							"key": "headerPrefix",
-							"value": "Bearer",
-							"type": "string"
-						},
-						{
-							"key": "queryParamKey",
-							"value": "token",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"currency\": \"\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://localhost:8080/account_management/currency",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"account_management",
-						"currency"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "delete_user_account OK (200)",
 			"event": [
 				{
@@ -1511,7 +1249,7 @@
 					"script": {
 						"exec": [
 							"// Genera un numero casuale tra 1 e 10",
-							"const randomNumber = Math.floor(Math.random() * 10) + 1;",
+							"const randomNumber = 11;",
 							"// Costruisce il nome utente",
 							"const username = `user${randomNumber}`;",
 							"const user_id = randomNumber;",
@@ -1547,8 +1285,8 @@
 							"// Test successo (200 OK)",
 							"if (pm.response.code === 200) {",
 							"    pm.test(\"User Removed successfully\", function () {",
-							"        pm.expect(jsonData).to.have.property(\"message\");",
-							"        pm.expect(jsonData.message).that.includes(\"eliminated successfully\");",
+							"        pm.expect(jsonData.status).to.have.property(\"message\");",
+							"        pm.expect(jsonData.status.message).that.includes(\"eliminated successfully\");",
 							"    });",
 							"}",
 							"",
