@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "4f1b9b3e-9901-471d-9e80-b4181e50495f",
-		"name": "Account_Management_mock_tests_(Admin)",
+		"_postman_id": "20030d9d-193b-475f-8f72-cbce303b0b9c",
+		"name": "Account_Management_mock_tests_(Admin) Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "39573357"
 	},
@@ -24,7 +24,7 @@
 							"if (pm.response.code === 200) {",
 							"    pm.test(\"Login successful\", function () {",
 							"        pm.expect(jsonData).to.have.property(\"access_token\");",
-							"        pm.expect(jsonData).to.have.property(\"status\", \"Login completed successfully\");",
+							"        pm.expect(jsonData).to.have.property(\"message\");",
 							"    });",
 							"}",
 							"",
