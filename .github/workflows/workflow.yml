@@ -44,28 +44,39 @@ jobs:
 
       - name: Sleep per configurazione DB
         run: sleep 30
+
+      # Step 4: Run Newman with the Postman collection
+      - name: Run Postman tests users
+        run: |
+          newman run ./docs/postman/Integration_tests/Account_Management_Integration_tests_user.postman_collection.json \
+            --delay-request 500 \
+            --ssl-client-cert client-cert.pem \
+            --ssl-client-key client-key.pem \
+            --insecure \
+            --reporters cli,junit \
+            --reporter-junit-export test-results.xml
           
       # Step 4: Run Newman with the Postman collection
       - name: Run Postman tests market
         run: |
           newman run ./docs/postman/Integration_tests/Market_Tests_Integration.postman_collection.json \
+            --delay-request 500 \
             --ssl-client-cert client-cert.pem \
             --ssl-client-key client-key.pem \
             --insecure \
             --reporters cli,junit \
             --reporter-junit-export test-results.xml 
   
-      # Step 4: Run Newman with the Postman collection
-      - name: Run Postman tests users
-        run: |
-          newman run ./docs/postman/Integration_tests/Account_Management_Integration_tests_user.postman_collection.json \
-            --reporters cli,junit \
-            --reporter-junit-export test-results.xml
+      
       
       # Step 5: Run Newman with the Postman collection
       - name: Run Postman tests collection
         run: |
           newman run ./docs/postman/Integration_tests/Collection_Integrazione.postman_collection.json \
+            --delay-request 500 \
+            --ssl-client-cert client-cert.pem \
+            --ssl-client-key client-key.pem \
+            --insecure \
             --reporters cli,junit \
             --reporter-junit-export test-results.xml
 
