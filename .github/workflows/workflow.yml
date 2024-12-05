@@ -29,9 +29,7 @@ jobs:
 
       # Step 4: Build docker compose
       - name: Build the application
-        run: |
-          cd ./src
-          docker-compose up --build
+        run: docker-compose up -f "src/docker-compose.yml" --build -d
 
       # Step 4: Run Newman with the Postman collection
       - name: Run Postman tests
