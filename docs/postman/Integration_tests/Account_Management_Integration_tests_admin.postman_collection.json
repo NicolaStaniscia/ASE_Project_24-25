@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "9d256804-52b8-4439-ac9d-67ff7d20382b",
+		"_postman_id": "fb05f6be-ef4e-4e40-91fb-7c09a9c8694f",
 		"name": "Account_Management_Integration_tests_(Admin)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "39573357"
@@ -210,15 +210,15 @@
 							"// Test successo (200 OK)",
 							"if (pm.response.code === 200) {",
 							"    pm.test(\"User data retrieved successfully\", function () {",
-							"        pm.expect(jsonData).to.exist;",
-							"        pm.expect(jsonData).to.be.an(\"array\").that.is.not.empty; // Per \"all\"",
+							"        pm.expect(jsonData.status).to.exist;",
+							"        pm.expect(jsonData.status).to.be.an(\"array\").that.is.not.empty; // Per \"all\"",
 							"    });",
 							"}",
 							"",
 							"// Test utente non trovato (404 Not Found)",
 							"if (pm.response.code === 404) {",
 							"    pm.test(\"User not found\", function () {",
-							"        pm.expect(jsonData).to.be.null; // La risposta è `null` per un utente non trovato",
+							"        pm.expect(jsonData.status).to.have.property(\"error\", \"User not found!\");",
 							"    });",
 							"}",
 							"",
