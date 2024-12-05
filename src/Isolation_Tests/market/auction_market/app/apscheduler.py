@@ -164,13 +164,13 @@ def refund_non_winning_bids(app):
                                 "user_id": bid["bidder_id"],
                                 "auction_id": auction_id,
                                 "amount": bid["bid_amount"]
-                            }, verify=False)
+                            }, timeout=5, verify=False)
                         if response.status_code == 200:
                             update_url = dbm_url(f"/market/update_bid_status/{bid['id']}")
                             if mock_dbm_update_bid:
                                 update_response = mock_dbm_update_bid(new_status=True,bid_id=bid['id'])
                             else:
-                                update_response = requests.patch(update_url, json={"refunded": True}, verify=False)
+                                update_response = requests.patch(update_url, json={"refunded": True}, timeout=5,verify=False)
 
                             if update_response.status_code == 200:
                                 result.append({
