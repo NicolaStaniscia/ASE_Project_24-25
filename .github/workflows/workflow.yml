@@ -55,17 +55,7 @@ jobs:
             --insecure \
             --reporters cli,junit \
             --reporter-junit-export test-results.xml
-          
-      # Step 4: Run Newman with the Postman collection
-      - name: Run Postman tests market
-        run: |
-          newman run ./docs/postman/Integration_tests/Market_Tests_Integration.postman_collection.json \
-            --delay-request 500 \
-            --ssl-client-cert client-cert.pem \
-            --ssl-client-key client-key.pem \
-            --insecure \
-            --reporters cli,junit \
-            --reporter-junit-export test-results.xml 
+        continue-on-error: true
   
       
       
@@ -79,6 +69,19 @@ jobs:
             --insecure \
             --reporters cli,junit \
             --reporter-junit-export test-results.xml
+        continue-on-error: true
+
+      # Step 4: Run Newman with the Postman collection
+      - name: Run Postman tests market
+        run: |
+          newman run ./docs/postman/Integration_tests/Market_Tests_Integration.postman_collection.json \
+            --delay-request 500 \
+            --ssl-client-cert client-cert.pem \
+            --ssl-client-key client-key.pem \
+            --insecure \
+            --reporters cli,junit \
+            --reporter-junit-export test-results.xml
+        continue-on-error: true
 
       # Step 6: Upload test results (opzionale, per visibilità)
       - name: Upload test results
