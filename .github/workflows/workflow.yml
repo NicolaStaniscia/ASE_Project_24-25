@@ -21,7 +21,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18  # Usa una versione recente di Node.js
+          node-version: 18  
 
       # Step 3: Install Newman
       - name: Install Newman
@@ -36,16 +36,17 @@ jobs:
           cd src/
           docker compose up --build -d
 
-      # Step 4: Build docker compose
+      # Step 5: Build docker compose
       - name: Crea certificati TLS
         run: |
           echo "${{ secrets.TLS_CLIENT_CERT }}" > client-cert.pem
           echo "${{ secrets.TLS_CLIENT_KEY }}" > client-key.pem
 
+      # Step 6: Sleep per configurazione
       - name: Sleep per configurazione DB
         run: sleep 30
 
-      # Step 4: Run Newman with the Postman collection
+      # Step 7: Run Newman with the Postman collection
       - name: Run Postman tests users
         run: |
           newman run ./docs/postman/Integration_tests/Account_Management_Integration_tests_user.postman_collection.json \
@@ -54,12 +55,10 @@ jobs:
             --ssl-client-key client-key.pem \
             --insecure \
             --reporters cli,junit \
-            --reporter-junit-export test-results.xml
+            --reporter-junit-export users-results.html
         continue-on-error: true
   
-      
-      
-      # Step 5: Run Newman with the Postman collection
+      # Step 8: Run Newman with the Postman collection
       - name: Run Postman tests collection
         run: |
           newman run ./docs/postman/Integration_tests/Collection_Integrazione.postman_collection.json \
@@ -68,10 +67,10 @@ jobs:
             --ssl-client-key client-key.pem \
             --insecure \
             --reporters cli,junit \
-            --reporter-junit-export test-results.xml
+            --reporter-junit-export collection-results.html
         continue-on-error: true
 
-      # Step 4: Run Newman with the Postman collection
+      # Step 9: Run Newman with the Postman collection
       - name: Run Postman tests market
         run: |
           newman run ./docs/postman/Integration_tests/Market_Tests_Integration.postman_collection.json \
@@ -80,12 +79,24 @@ jobs:
             --ssl-client-key client-key.pem \
             --insecure \
             --reporters cli,junit \
-            --reporter-junit-export test-results.xml
+            --reporter-junit-export market-results.html
         continue-on-error: true
 
-      # Step 6: Upload test results (opzionale, per visibilità)
-      - name: Upload test results
+      # Step 10: Upload test results (opzionale, per visibilità)
+      - name: Upload users results
         uses: actions/upload-artifact@v4
         with:
-          name: postman-test-results
-          path: test-results.xml
+          name: users-test-results
+          path: users-results.html
+
+      - name: Upload collection results
+        uses: actions/upload-artifact@v4
+        with:
+          name: collection-test-results
+          path: collection-results.html
+        
+      - name: Upload market results
+        uses: actions/upload-artifact@v4
+        with:
+          name: market-test-results
+          path: market-results.html
