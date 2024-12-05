@@ -35,9 +35,16 @@ jobs:
         run: |
           cd src/
           docker compose up --build -d
-
+  
       # Step 4: Run Newman with the Postman collection
-      - name: Run Postman tests
+      - name: Run Postman tests users
+        run: |
+          newman run ./docs/postman/Integration_tests/Account_Management_Integration_tests_(User).postman_collection.json \
+            --reporters cli,junit \
+            --reporter-junit-export test-results.xml
+      
+      # Step 4: Run Newman with the Postman collection
+      - name: Run Postman tests collection
         run: |
           newman run ./docs/postman/Integration_tests/Collection_Integrazione.postman_collection.json \
             --reporters cli,junit \
