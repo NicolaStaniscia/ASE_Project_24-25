@@ -26,7 +26,7 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-    - name: Build the Docker image
+    - name: Build Docker images
       run: |
         docker build -t collection_db_manager src/collection/collection_db_manager
         docker build -t edit_gacha_collection src/collection/edit_gacha_collection
@@ -38,5 +38,17 @@ jobs:
         docker build -t account_management src/users/account_management
         docker build -t users_db_manager src/users/db_manager
 
-    - name: Print images
-      run: docker images
+    - name: Tag images
+      run: |
+        docker tag collection_db_manager:latest nicolastaniscia/ase_project_24-25:latest
+        docker tag edit_gacha_collection:latest nicolastaniscia/ase_project_24-25:latest
+        docker tag roll_gacha:latest nicolastaniscia/ase_project_24-25:latest
+        docker tag see_gacha_collection:latest nicolastaniscia/ase_project_24-25:latest
+        docker tag auction_market:latest nicolastaniscia/ase_project_24-25:latest
+        docker tag market_db_manager:latest nicolastaniscia/ase_project_24-25:latest
+        docker tag trading_history:latest nicolastaniscia/ase_project_24-25:latest
+        docker tag account_management:latest nicolastaniscia/ase_project_24-25:latest
+        docker tag users_db_manager:latest nicolastaniscia/ase_project_24-25:latest
+
+    - name: Push on Docker Hub
+      run: docker push nicolastaniscia/ase_project_24-25:latest
