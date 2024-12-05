@@ -70,7 +70,10 @@ jobs:
 
       # Step 8a:
       - name: Run Collection
-        run: sh src/Isolation_Tests/collection/edit_gacha_collection/run.sh
+        run: |
+          cd src/Isolation_Tests/collection/edit_gacha_collection/
+          docker build -t mocked_edit_gacha -f Dockerfile_test . 
+          docker run -p 5000:5000 --name edit_gacha_testing -d mocked_edit_gacha
 
       - name: Run mock tests collection
         run: |
@@ -85,7 +88,10 @@ jobs:
 
       # Step 8b:
       - name: Run Roll Gacha
-        run: sh src/Isolation_Tests/collection/roll_gacha/run.sh
+        run: |
+          cd src/Isolation_Tests/collection/roll_gacha/
+          docker build -t mocked_roll -f Dockerfile_test .
+          docker run -p 5000:5000 --name roll_gacha_testing -d mocked_roll
 
       - name: Run mock tests collection
         run: |
@@ -100,7 +106,10 @@ jobs:
 
       # Step 8c:
       - name: Run See Gacha Collection
-        run: sh src/Isolation_Tests/collection/see_gacha_collection/run.sh
+        run: |
+          cd src/Isolation_Tests/collection/see_gacha_collection/
+          docker build -t mocked_see_gacha -f Dockerfile_test .
+          docker run -p 5000:5000 --name see_gacha_testing -d mocked_see_gacha
 
       - name: Run mock tests collection
         run: |
@@ -115,14 +124,18 @@ jobs:
 
       # Step 9:
       - name: Run Trading history
-        run: sh src/Isolation_Tests/market/auction_market/run.sh
+        run: |
+          cd src/Isolation_Tests/market/auction_market/
+          docker build -t mocked_trading_history -f Dockerfile_test .
+          docker run -p 5000:5000 --name trading_history_testing -d mocked_trading_history
 
       - name: Run Auction Market
         run: |
-          cd ~/src/Isolation_Tests/market/trading_history/
-          ./run.sh
+          cd src/Isolation_Tests/market/trading_history/
+          docker build -t mocked_auction_market -f Dockerfile_test .
+          docker run -p 5000:5000 --name auction_market_testing -d mocked_auction_market
 
-      - name: Run mock tests collection
+      - name: Run mock tests market
         run: |
           newman run ./docs/postman/Isolation_tests/Market/Market_Tests_Isolation.postman_collection.json \
             --delay-request 500 \
