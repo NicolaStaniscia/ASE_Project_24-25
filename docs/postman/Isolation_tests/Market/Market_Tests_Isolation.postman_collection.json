@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "509f2cb1-9a23-40ee-b9e1-f388346d11e3",
-		"name": "Market Tests (Isolation)",
+		"_postman_id": "b03234c7-7185-4d5a-aede-6e703be1e863",
+		"name": "Market Tests (Isolation) Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "39569006"
 	},
@@ -2970,12 +2970,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:5000/trading_history/market/transaction_history?user_id={{user_id}}",
+							"raw": "https://localhost:5001/trading_history/market/transaction_history?user_id={{user_id}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "5000",
+							"port": "5001",
 							"path": [
 								"trading_history",
 								"market",
@@ -3075,12 +3075,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:5000/trading_history/market/transaction_history?user_id={{user_id}}",
+							"raw": "https://localhost:5001/trading_history/market/transaction_history?user_id={{user_id}}",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "5000",
+							"port": "5001",
 							"path": [
 								"trading_history",
 								"market",
