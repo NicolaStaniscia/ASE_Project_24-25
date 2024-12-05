@@ -40,7 +40,7 @@ jobs:
 
       - name: Run Account Management
         run: |
-          cd ~/src/Isolation_Tests/account_management/
+          cd src/Isolation_Tests/account_management/
           ./run.sh
 
       # Step 7a: Run mock test
