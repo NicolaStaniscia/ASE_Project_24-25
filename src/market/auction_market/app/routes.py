@@ -1,6 +1,6 @@
 import requests
 from flask import Blueprint, jsonify, request, current_app
-from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt, create_access_token
 from datetime import datetime
 
 auction_market = Blueprint('auction_market', __name__)
@@ -373,13 +373,20 @@ def receive_gacha():
     # DA CONTROLLARE
     # Trasferimento del gacha al vincitore tramite il servizio COLLECTION
         collection_url = f"{current_app.config['COLLECTION_EDIT_URL']}/edit/collection"
+        token = create_access_token(
+            identity=str(1),
+            additional_claims={
+                "role":"admin"
+            }
+        )
+        admin_header = {"Authorization": f"Bearer {token}"}
         if mock_collection_auction_win:
             response = mock_collection_auction_win(gacha_id=result["gacha_id"],user_id=result["highest_bid"]["bidder_id"])
         else:
-            response = requests.post(collection_url, json={
-                "gacha_id": result["gacha_id"],
+            response = requests.patch(collection_url, json={
+                "id": result["gacha_id"],
                 "user_id": result["highest_bid"]["bidder_id"]
-            }, timeout=5, verify=False)
+            }, header=admin_header, timeout=5, verify=False)
 
         if response.status_code != 200:
             return jsonify({"error": "Failed to transfer gacha ownership"}), 500
