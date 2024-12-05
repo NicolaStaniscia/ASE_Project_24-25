@@ -39,7 +39,9 @@ jobs:
           echo "${{ secrets.TLS_CLIENT_KEY }}" > client-key.pem
 
       - name: Run Account Management
-        run: sh src/Isolation_Tests/account_management/run.sh
+        run: |
+          cd ~/src/Isolation_Tests/account_management/
+          ./run.sh
 
       # Step 7a: Run mock test
       - name: Run mock tests Account_management_Admin
@@ -115,7 +117,9 @@ jobs:
         run: sh src/Isolation_Tests/market/auction_market/run.sh
 
       - name: Run Auction Market
-        run: sh src/Isolation_Tests/market/trading_history/run.sh
+        run: |
+          cd ~/src/Isolation_Tests/market/trading_history/
+          ./run.sh
 
       - name: Run mock tests collection
         run: |
