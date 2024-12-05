@@ -1,0 +1,48 @@
+name: Run Postman Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  postman-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18  # Usa una versione recente di Node.js
+
+      # Step 3: Install Newman
+      - name: Install Newman
+        run: npm install -g newman
+
+      # Step 4: Build docker compose
+      - name: Build the application
+        run: |
+          cd ./src
+          docker compose up --build
+
+      # Step 4: Run Newman with the Postman collection
+      - name: Run Postman tests
+        run: |
+          newman run ./docs/postman/Integration_tests/Collection_Integrazione.postman_collection.json \
+            --reporters cli,junit \
+            --reporter-junit-export test-results.xml
+
+      # Step 5: Upload test results (opzionale, per visibilità)
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: postman-test-results
+          path: test-results.xml
