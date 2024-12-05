@@ -27,6 +27,9 @@ jobs:
       - name: Install Newman
         run: npm install -g newman
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       # Step 4: Build docker compose
       - name: Build the application
         run: docker-compose up -f "src/docker-compose.yml" --build -d
