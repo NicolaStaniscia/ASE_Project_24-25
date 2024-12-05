@@ -1,4 +1,4 @@
-name: Docker Scout Analysis 2.0
+name: Docker Scout Analysis
 
 on:
   workflow_dispatch:
