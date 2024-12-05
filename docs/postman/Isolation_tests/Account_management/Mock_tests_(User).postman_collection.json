@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "6d28008f-fb2e-4467-965f-44d75b69c6d4",
+		"_postman_id": "64052761-2a17-49e4-8e98-5dbd9fddc5ea",
 		"name": "Account_Management_mock_tests_(User)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "39573357"
@@ -1362,14 +1362,13 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:5000/account_management/currency",
+					"raw": "https://localhost:5000/currency",
 					"protocol": "https",
 					"host": [
 						"localhost"
 					],
 					"port": "5000",
 					"path": [
-						"account_management",
 						"currency"
 					]
 				}
@@ -1488,14 +1487,13 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:5000/account_management/currency",
+					"raw": "https://localhost:5000/currency",
 					"protocol": "https",
 					"host": [
 						"localhost"
 					],
 					"port": "5000",
 					"path": [
-						"account_management",
 						"currency"
 					]
 				}
