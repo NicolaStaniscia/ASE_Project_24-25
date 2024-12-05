@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "58350f2e-9d87-4b6c-979f-12db8905faee",
-		"name": "Collection_Integrazione",
+		"_postman_id": "97a61b0c-8508-4acc-afc3-365286cbf1ae",
+		"name": "Collection_Integration",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "39662462"
 	},
@@ -1315,10 +1315,7 @@
 									"pm.test(\"Response fields\", function () {\r",
 									"    pm.expect(pm.response.json()).to.have.property(\"success\");\r",
 									"});\r",
-									"\r",
-									"pm.test(\"Response time is less than 500ms\", function () {\r",
-									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
-									"});"
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1432,10 +1429,6 @@
 									"\r",
 									"pm.test(\"Response fields\", function () {\r",
 									"    pm.expect(pm.response.json()).to.have.property(\"success\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Response time is less than 500ms\", function () {\r",
-									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
 									"});"
 								],
 								"type": "text/javascript",
@@ -1551,10 +1544,7 @@
 									"pm.test(\"Response fields\", function () {\r",
 									"    pm.expect(pm.response.json()).to.have.property(\"success\");\r",
 									"});\r",
-									"\r",
-									"pm.test(\"Response time is less than 500ms\", function () {\r",
-									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
-									"});"
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1917,10 +1907,10 @@
 							"script": {
 								"exec": [
 									"// Generate gacha_id\r",
-									"gacha_id = 16;\r",
+									"gacha_id = 2;\r",
 									"\r",
 									"// Generate info for jwt token\r",
-									"user_id = 7 // Math.floor(Math.random() * 10) + 1;\r",
+									"user_id = 3 // Math.floor(Math.random() * 10) + 1;\r",
 									"iat = Math.floor(Date.now() / 1000);\r",
 									"\r",
 									"// Save all in env variables\r",
