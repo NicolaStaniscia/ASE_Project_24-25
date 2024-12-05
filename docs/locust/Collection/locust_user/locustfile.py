@@ -1,12 +1,11 @@
 from locust import HttpUser, task, between, events
 import jwt, random as rnd, datetime
-from os import getenv
 
-user_host = 'http://user_gateway'
+user_host = 'https://localhost:8080'
 
 class User(HttpUser):
     wait_time = between(1, 3)
-    jwt_secret = getenv('JWT_PASSWORD')  # Chiave segreta per firmare il token
+    jwt_secret = "JwtGACHA2425"  # Chiave segreta per firmare il token
     jwt_algorithm = "HS256"  # Algoritmo di firma
     jwt_token = None  # Token JWT generato
     token_expiry = 0  # Timestamp di scadenza del token
@@ -17,12 +16,14 @@ class User(HttpUser):
         """
         current_time = datetime.datetime.now()
         expiry_time = current_time + datetime.timedelta(minutes=60)
-        user_id = rnd.randint(1, 100)
+        user_id = rnd.randint(1, 10)
+        username = "user"+str(user_id)
         payload = {
             "sub": str(user_id),
             "iat": int(current_time.timestamp()),  # Issued at
             "exp": int(expiry_time.timestamp()),  # Expiry time
-            "role": "user" 
+            "role": "user",
+            "username": username
         }
         # Firma il token con la chiave segreta e l'algoritmo scelto
         self.jwt_token = jwt.encode(payload, self.jwt_secret, algorithm=self.jwt_algorithm)
@@ -131,6 +132,7 @@ class User(HttpUser):
             with self.client.post(f'{user_host}/roll/standard', headers=headers, timeout=10, catch_response=True) as response:
                 if response.status_code != 200:
                     response.failure(f"POST request failed with status code {response.status_code}: {response.text}")
+                #IMPLEMENTARE DIZIONARIO ROLL STANDARD
 
         except Exception as e:
             self.report_failure('POST', '/roll/standard', e)
@@ -143,6 +145,7 @@ class User(HttpUser):
             with self.client.post(f'{user_host}/roll/gold', headers=headers, timeout=10, catch_response=True) as response:
                 if response.status_code != 200:
                     response.failure(f"POST request failed with status code {response.status_code}: {response.text}")
+                #IMPLEMENTARE DIZIONARIO ROLL GOLD
 
         except Exception as e:
             self.report_failure('POST', '/roll/gold', e)
@@ -155,6 +158,7 @@ class User(HttpUser):
             with self.client.post(f'{user_host}/roll/platinum', headers=headers, timeout=10, catch_response=True) as response:
                 if response.status_code != 200:
                     response.failure(f"POST request failed with status code {response.status_code}: {response.text}")
+                #IMPLEMENTARE DIZIONARIO ROLL PLATINUM
 
         except Exception as e:
             self.report_failure('POST', '/roll/platinum', e)

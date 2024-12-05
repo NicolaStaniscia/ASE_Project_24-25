@@ -2,11 +2,11 @@ from locust import HttpUser, task, between, events
 import jwt, random as rnd, datetime
 from os import getenv
 
-host = 'http://admin_gateway:81'
+host = 'https://localhost:8081'
 
 class Admin(HttpUser):
     wait_time = between(1, 3)
-    jwt_secret = getenv('JWT_PASSWORD')  # Chiave segreta per firmare il token
+    jwt_secret = "JwtGACHA2425"  # Chiave segreta per firmare il token
     jwt_algorithm = "HS256"  # Algoritmo di firma
     jwt_token = None  # Token JWT generato
     token_expiry = 0  # Timestamp di scadenza del token
@@ -17,12 +17,13 @@ class Admin(HttpUser):
         """
         current_time = datetime.datetime.now()
         expiry_time = current_time + datetime.timedelta(minutes=60)
-        user_id = rnd.randint(1, 100)
+        user_id = 1
         payload = {
             "sub": str(user_id),
             "iat": int(current_time.timestamp()),  # Issued at
             "exp": int(expiry_time.timestamp()),  # Expiry time
-            "role": "admin" 
+            "role": "admin" ,
+            "username": "admin1"
         }
         # Firma il token con la chiave segreta e l'algoritmo scelto
         self.jwt_token = jwt.encode(payload, self.jwt_secret, algorithm=self.jwt_algorithm)
