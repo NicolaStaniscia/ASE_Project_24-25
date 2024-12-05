@@ -42,7 +42,7 @@ jobs:
         run: |
           cd src/Isolation_Tests/account_management/
           docker build -t mocked_account_management -f Dockerfile_test . 
-          docker run -p 5000:5000 --name account_management_testing mocked_account_management -d 
+          docker run -p 5000:5000 --name account_management_testing -d mocked_account_management
 
       # Step 7a: Run mock test
       - name: Run mock tests Account_management_Admin
