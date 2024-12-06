@@ -483,7 +483,7 @@ def get_losing_bids(auction_id):
             "details": str(e)
         }), 500
     
-@db_manager.route('/admin/market/update_auction_status/<int:auction_id>', methods=['PATCH'])
+@db_manager.route('/market/update_auction_status/<int:auction_id>', methods=['PATCH'])
 def update_auction_status(auction_id):
     # Recupera il nuovo stato dall'input JSON
     data = request.get_json()

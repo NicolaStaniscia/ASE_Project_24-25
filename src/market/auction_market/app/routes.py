@@ -372,7 +372,7 @@ def receive_gacha():
 
     # DA CONTROLLARE
     # Trasferimento del gacha al vincitore tramite il servizio COLLECTION
-        collection_url = f"{current_app.config['COLLECTION_EDIT_URL']}/edit/collection"
+        collection_url = f"{current_app.config['COLLECTION_EDIT_URL']}/admin/edit/collection"
         token = create_access_token(
             identity=str(1),
             additional_claims={
@@ -386,7 +386,7 @@ def receive_gacha():
             response = requests.patch(collection_url, json={
                 "id": result["gacha_id"],
                 "user_id": result["highest_bid"]["bidder_id"]
-            }, header=admin_header, timeout=5, verify=False)
+            }, headers=admin_header, timeout=5, verify=False)
 
         if response.status_code != 200:
             return jsonify({"error": "Failed to transfer gacha ownership"}), 500
