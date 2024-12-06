@@ -356,7 +356,7 @@ def process_auction_refund():
                 }, timeout=5,verify=False)
                 
                 # Se la richiesta di rimborso non ha successo, segna il fallimento
-                if response.status_code != 200:
+                if response.status_code not in [200,409]:
                     refund_failed = True
             except Exception as e:
                 refund_failed = True
