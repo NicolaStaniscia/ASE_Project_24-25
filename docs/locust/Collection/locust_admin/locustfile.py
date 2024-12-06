@@ -1,5 +1,6 @@
 from locust import HttpUser, task, between, events
 import jwt, random as rnd, datetime
+from flask import jsonify
 from os import getenv
 
 host = 'https://localhost:8081'
@@ -58,8 +59,8 @@ class Admin(HttpUser):
         headers = self.get_headers()
 
         try:
-            with self.client.get(f'{host}/admin/collections', headers=headers, catch_response=True) as response:
-                if response.status_code != 200:
+            with self.client.get(f'{host}/admin/collections', headers=headers, verify=False,catch_response=True) as response:
+                if response.status_code != 200 or response.status_code != 404:
                     response.failure(f"GET request failed with status code {response.status_code}: {response.text}")
         except Exception as e:
             self.report_failure('GET', '/system_collection', e)
@@ -70,8 +71,8 @@ class Admin(HttpUser):
         n_users = 20
         try:
             for n in range(1, n_users + 1):
-                with self.client.get(f'{host}/admin/collections/{n}', headers=headers, catch_response=True) as response:
-                    if response.status_code != 200:
+                with self.client.get(f'{host}/admin/collections/{n}', headers=headers, verify=False,catch_response=True) as response:
+                    if response.status_code != 200 or response.status_code != 404:
                         response.failure(f"GET request failed with status code {response.status_code}: {response.text}")
         
         except Exception as e:
@@ -80,7 +81,7 @@ class Admin(HttpUser):
     @task(1)
     def get_system_collection(self):
         try:
-            with self.client.get(f'{host}/system_collection', catch_response=True) as response:
+            with self.client.get(f'{host}/system_collection', verify=False,catch_response=True) as response:
                 if response.status_code != 200:
                         response.failure(f"GET request failed with status code {response.status_code}: {response.text}")
 
@@ -93,7 +94,7 @@ class Admin(HttpUser):
 
         try:
             for gacha in gacha_id:
-                with self.client.get(f'{host}/system_collection/{gacha}', catch_response=True) as response:
+                with self.client.get(f'{host}/system_collection/{gacha}', verify=False,catch_response=True) as response:
                     if response.status_code != 200:
                         response.failure(f"GET request failed with status code {response.status_code}: {response.text}")
 
@@ -109,7 +110,7 @@ class Admin(HttpUser):
         }
         
         try:
-            with self.client.post(f'{host}/admin/edit/collection', json=body, headers=headers, catch_response=True) as response:
+            with self.client.post(f'{host}/admin/edit/collection', json=body, headers=headers, verify=False,catch_response=True) as response:
                 if response.status_code != 200:
                     response.failure(f"POST request failed with status code {response.status_code}: {response.text}")
 
@@ -127,7 +128,7 @@ class Admin(HttpUser):
         }
         
         try:
-            with self.client.patch(f'{host}/admin/edit/collection', json=body, headers=headers, catch_response=True) as response:
+            with self.client.patch(f'{host}/admin/edit/collection', json=body, headers=headers, verify=False,catch_response=True) as response:
                 if response.status_code != 200:
                     response.failure(f"PATCH request failed with status code {response.status_code}: {response.text}")
 
@@ -140,7 +141,7 @@ class Admin(HttpUser):
         id_own = rnd.randint(100, 200)
         
         try:
-            with self.client.delete(f'{host}/admin/edit/collection/{id_own}', headers=headers, catch_response=True) as response:
+            with self.client.delete(f'{host}/admin/edit/collection/{id_own}', headers=headers, verify=False,catch_response=True) as response:
                 if response.status_code != 200:
                     response.failure(f"DELETE request failed with status code {response.status_code}: {response.text}")
 
@@ -162,7 +163,7 @@ class Admin(HttpUser):
         }
         
         try:
-            with self.client.post(f'{host}/admin/edit/gacha', json=body, headers=headers, catch_response=True) as response:
+            with self.client.post(f'{host}/admin/edit/gacha', json=body, headers=headers, verify=False,catch_response=True) as response:
                 if response.status_code != 200:
                     response.failure(f"POST request failed with status code {response.status_code}: {response.text}")
 
@@ -180,7 +181,7 @@ class Admin(HttpUser):
         }
         
         try:
-            with self.client.patch(f'{host}/admin/edit/gacha', json=body, headers=headers, catch_response=True) as response:
+            with self.client.patch(f'{host}/admin/edit/gacha', json=body, headers=headers, verify=False,catch_response=True) as response:
                 if response.status_code != 200:
                     response.failure(f"PATCH request failed with status code {response.status_code}: {response.text}")
 
@@ -194,9 +195,68 @@ class Admin(HttpUser):
         gacha_id = rnd.randint(39, 200) 
         
         try:
-            with self.client.delete(f'{host}/admin/edit/gacha/{gacha_id}', headers=headers, catch_response=True) as response:
+            with self.client.delete(f'{host}/admin/edit/gacha/{gacha_id}', headers=headers, verify=False,catch_response=True) as response:
                 if response.status_code != 200:
                     response.failure(f"DELETE request failed with status code {response.status_code}: {response.text}")
 
         except Exception as e:
             self.report_failure('DELETE', '/admin/edit/gacha', e)
+
+    @task(1)
+    def get_market(self):  
+        headers = self.get_headers()
+        try:
+            with self.client.get(f'{host}/auction_market/admin/market', headers=headers, timeout=5, verify=False,catch_response=True) as response:
+                if response.status_code != 200:
+                    response.failure(f"GET request failed with status code {response.status_code}: {response.text}")
+
+        except Exception as e:
+            self.report_failure('GET', '/auction_market/admin/market', e)
+    
+    @task(1)
+    def get_specific_auction(self):  
+        headers = self.get_headers()
+        try:
+            with self.client.get(f'{host}/auction_market/admin/market/specific_auction?<>', headers=headers, timeout=5, verify=False,catch_response=True) as response:
+                if response.status_code != 200:
+                    response.failure(f"GET request failed with status code {response.status_code}: {response.text}")
+
+        except Exception as e:
+            self.report_failure('GET', '/auction_market/admin/market/specific_auction', e)
+
+    @task(1)
+    def modify_auction_status(self):  
+        headers = self.get_headers()
+        body = {
+            "status": "suspended"
+        }
+        try:
+            with self.client.patch(f'{host}/auction_market/admin/market/specific_auction?<>', json=body,
+                                   headers=headers, timeout=5, verify=False,catch_response=True) as response:
+                if response.status_code != 200:
+                    response.failure(f"PATCH request failed with status code {response.status_code}: {response.text}")
+
+        except Exception as e:
+            self.report_failure('PATCH', '/auction_market/admin/market/specific_auction', e)
+    
+    @task(1)
+    def delete_auction(self):  
+        headers = self.get_headers()
+        try:
+            with self.client.delete(f'{host}/auction_market/admin/market/specific_auction?<>', headers=headers, timeout=5, verify=False,catch_response=True) as response:
+                if response.status_code != 200:
+                    response.failure(f"GET request failed with status code {response.status_code}: {response.text}")
+
+        except Exception as e:
+            self.report_failure('DELETE', '/auction_market/admin/market/specific_auction', e)
+    
+    @task(1)
+    def get_market_history(self):  
+        headers = self.get_headers()
+        try:
+            with self.client.get(f'{host}/auction_market/admin/market/history', headers=headers, timeout=5, verify=False,catch_response=True) as response:
+                if response.status_code != 200:
+                    response.failure(f"GET request failed with status code {response.status_code}: {response.text}")
+
+        except Exception as e:
+            self.report_failure('GET', '/auction_market/admin/market/history', e)
