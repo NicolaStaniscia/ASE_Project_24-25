@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS Owned(
         user INTEGER NOT NULL,
         gacha INTEGER NOT NULL,
         FOREIGN KEY (gacha) REFERENCES Gacha(id)
+        ON DELETE CASCADE
 );
 
 -- Data load
