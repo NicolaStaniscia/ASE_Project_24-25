@@ -1,5 +1,5 @@
 tosca_definitions_version: micro_tosca_yaml_1.1
-description: micro.tosca
+description: micro-gacha
 imports:
 - micro: https://di-unipi-socc.github.io/microTOSCA/1.1/microTOSCA.yaml
 topology_template:
@@ -58,6 +58,9 @@ topology_template:
       - interaction: edit-gacha-collection
       - interaction:
           node: user-account-management
+          relationship: c
+      - interaction:
+          node: trading-history
           relationship: c
     trading-history:
       type: micro.nodes.Service
