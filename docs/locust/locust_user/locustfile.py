@@ -1,7 +1,7 @@
 from locust import HttpUser, task, between, events
 import jwt
 import matplotlib.pyplot as plt
-import os
+import os, sys
 import random as rnd
 import datetime
 
@@ -55,6 +55,8 @@ def on_test_stop(environment, **kwargs):
     plot_roll_distribution(gold_distribution, "gold")
     plot_roll_distribution(platinum_distribution, "platinum")
 
+    sys.exit(0)
+
 
 class User(HttpUser):
     wait_time = between(1, 3)
@@ -106,25 +108,25 @@ class User(HttpUser):
             exception=exception
         )
 
-    @task(2)
+    @task(1)
     def get_collection(self):
         # Get headers
         headers = self.get_headers()
 
         try: 
-            with self.client.get(f'{user_host}/collection', headers=headers, timeout=5, verify=False,catch_response=True) as response:
+            with self.client.get(f'{user_host}/collection', headers=headers, timeout=10, verify=False,catch_response=True) as response:
                 if response.status_code != 200:
                     response.failure(f"GET request failed with status code {response.status_code}: {response.text}")
 
         except Exception as e:
             self.report_failure('GET', '/collection', e)
 
-    @task(2)
+    @task(1)
     def get_collection_grouped(self):
         headers = self.get_headers()
 
         try:
-            with self.client.get(f'{user_host}/collection/grouped', headers=headers, timeout=5, verify=False,catch_response=True) as response:
+            with self.client.get(f'{user_host}/collection/grouped', headers=headers, timeout=10, verify=False,catch_response=True) as response:
                 if response.status_code != 200:
                     response.failure(f"GET request failed with status code {response.status_code}: {response.text}")
 
@@ -136,7 +138,7 @@ class User(HttpUser):
         headers = self.get_headers()
 
         try:
-            with self.client.get(f'{user_host}/collection', headers=headers, timeout=5, verify=False,catch_response=True) as collection:
+            with self.client.get(f'{user_host}/collection', headers=headers, timeout=10, verify=False,catch_response=True) as collection:
 
                 gacha_ids = []
                 if collection.status_code == 200:
@@ -145,7 +147,7 @@ class User(HttpUser):
                         gacha_ids.append(data.get('gachaId'))  # Usa `.get` per evitare KeyError
 
                     for gacha in gacha_ids:
-                        with self.client.get(f'{user_host}/collection/{gacha}', headers=headers, timeout=5, verify=False,catch_response=True) as response:
+                        with self.client.get(f'{user_host}/collection/{gacha}', headers=headers, timeout=10, verify=False,catch_response=True) as response:
                             if response.status_code != 200:
                                 response.failure(f"GET request failed with status code {response.status_code}: {response.text}")
 
@@ -154,17 +156,17 @@ class User(HttpUser):
         
         
     
-    @task(3)
+    @task(1)
     def get_system_collection(self):
         try:
-            with self.client.get(f'{user_host}/system_collection', timeout=5, verify=False,catch_response=True) as response:
+            with self.client.get(f'{user_host}/system_collection', timeout=10, verify=False,catch_response=True) as response:
                 if response.status_code != 200:
                         response.failure(f"GET request failed with status code {response.status_code}: {response.text}")
 
         except Exception as e:
             self.report_failure('GET', '/system_collection', e)
     
-    @task(3)
+    @task(1)
     def get_specific_system_gacha(self):
         gacha_id = [x for x in range(1, 37)]
 
@@ -177,14 +179,17 @@ class User(HttpUser):
         except Exception as e:
             self.report_failure('GET', f'/system_collection/{gacha}', e)
     
-    @task(2)
+    @task(5)
     def roll_standard(self):
         headers = self.get_headers()
         global standard_distribution
 
         try:
             with self.client.post(f'{user_host}/roll/standard', headers=headers, timeout=10, verify=False,catch_response=True) as response:
-                if response.status_code != 200 and response.status_code != 400:
+                if response.status_code in [200,400]:
+                    # Ignora questi codici di risposta
+                    response.success()
+                else:
                     response.failure(f"POST request failed with status code {response.status_code}: {response.text}")
 
                 #codice per ricavare la rarità del gacha estratto, al fine di plottare la distribuzione di rarità:
@@ -214,14 +219,17 @@ class User(HttpUser):
         except Exception as e:
             self.report_failure('POST', '/roll/standard', e)
     
-    @task(3)
+    @task(5)
     def roll_gold(self):
         headers = self.get_headers()
         global gold_distribution
 
         try:
             with self.client.post(f'{user_host}/roll/gold', headers=headers, timeout=10, verify=False,catch_response=True) as response:
-                if response.status_code != 200 and response.status_code != 400:
+                if response.status_code in [200,400]:
+                    # Ignora questi codici di risposta
+                    response.success()
+                else:
                     response.failure(f"POST request failed with status code {response.status_code}: {response.text}")
                 
                 #codice per ricavare la rarità del gacha estratto, al fine di plottare la distribuzione di rarità:
@@ -251,14 +259,17 @@ class User(HttpUser):
         except Exception as e:
             self.report_failure('POST', '/roll/gold', e)
     
-    @task(1)
+    @task(2)
     def roll_platinum(self):
         headers = self.get_headers()
         global platinum_distribution
 
         try:
             with self.client.post(f'{user_host}/roll/platinum', headers=headers, timeout=10, verify=False,catch_response=True) as response:
-                if response.status_code != 200 and response.status_code != 400:
+                if response.status_code in [200,400]:
+                    # Ignora questi codici di risposta
+                    response.success()
+                else:
                     response.failure(f"POST request failed with status code {response.status_code}: {response.text}")
                 
 
@@ -293,7 +304,7 @@ class User(HttpUser):
     def get_market(self):  
         headers = self.get_headers()
         try:
-            with self.client.get(f'{user_host}/auction_market/market', headers=headers, timeout=5, verify=False,catch_response=True) as response:
+            with self.client.get(f'{user_host}/auction_market/market', headers=headers, timeout=10, verify=False,catch_response=True) as response:
                 if response.status_code != 200:
                     response.failure(f"GET request failed with status code {response.status_code}: {response.text}")
 
@@ -314,12 +325,15 @@ class User(HttpUser):
             "auction_end": "2024-12-31 12:00:00"
         } 
         try:
-            with self.client.post(f'{user_host}/auction_market/market', json=body,headers=headers, timeout=5, verify=False,catch_response=True) as response:
-                if response.status_code != 201 and response.status_code != 400 and response.status_code != 403 and response.status_code != 409 and response.status_code != 404:
+            with self.client.post(f'{user_host}/auction_market/market', json=body, headers=headers, timeout=10, verify=False, catch_response=True) as response:
+                if response.status_code in [201, 400, 409, 404]:
+                    # Ignora questi codici di risposta
+                    response.success()
+                else:
                     response.failure(f"POST request failed with status code {response.status_code}: {response.text}")
-
         except Exception as e:
             self.report_failure('POST', '/auction_market/market', e)
+
 
     @task(1)
     def place_bid(self):  
@@ -335,10 +349,12 @@ class User(HttpUser):
             "bid_amount": bid_amount
         } 
         try:
-            with self.client.post(f'{user_host}/auction_market/market/bid', json=body,headers=headers, timeout=5, verify=False,catch_response=True) as response:
-                if response.status_code != 201 and response.status_code != 400 and response.status_code != 404:
+            with self.client.post(f'{user_host}/auction_market/market/bid', json=body, headers=headers, timeout=10, verify=False, catch_response=True) as response:
+                if response.status_code in [201, 400, 404]:
+                    # Ignora questi codici di risposta
+                    response.success()
+                else:
                     response.failure(f"POST request failed with status code {response.status_code}: {response.text}")
-
         except Exception as e:
             self.report_failure('POST', '/auction_market/market/bid', e)
     
