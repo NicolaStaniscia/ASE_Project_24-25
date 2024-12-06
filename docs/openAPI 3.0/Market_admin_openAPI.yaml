@@ -1,0 +1,418 @@
+openapi: 3.0.0
+info:
+  title: Market Admin API
+  description: API per la gestione del mercato delle aste, incluse operazioni per utenti e amministratori.
+  version: "1.0.0"
+servers:
+  - url: https://localhost:8081
+    description: Server di sviluppo
+
+paths:
+  # AUCTION_MARKET
+  /auction_market/admin/market:
+    get:
+      summary: Recupera le aste attive (admin)
+      description: Ottiene l'elenco delle aste attualmente attive. Accessibile solo agli amministratori.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Elenco delle aste attive recuperato con successo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: ID dell'asta
+                    gacha_id:
+                      type: integer
+                      description: ID del gacha associato
+                    seller_id:
+                      type: integer
+                      description: ID del venditore
+                    starting_price:
+                      type: integer
+                      description: Prezzo iniziale dell'asta
+                    current_price:
+                      type: integer
+                      description: Prezzo corrente dell'asta
+                    auction_end:
+                      type: string
+                      format: date-time
+                      description: Data e ora di fine dell'asta
+                    status:
+                      type: string
+                      enum: [active, closed, canceled, suspended]
+                      description: Stato dell'asta
+        403:
+          description: Privilegi amministrativi richiesti
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Admin privileges required
+        401:
+          description: Utente non autenticato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: Missing Authorization Header
+        500:
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Errore durante la comunicazione con il DBM."
+  
+  /auction_market/admin/market/specific_auction:
+    get:
+      summary: Recupera i dettagli di un'asta specifica (admin)
+      description: Ottiene i dettagli di un'asta specifica identificata dal suo ID. Accessibile solo agli amministratori.
+      parameters:
+        - name: auctionID
+          in: query
+          required: true
+          description: L'ID dell'asta da recuperare.
+          schema:
+            type: integer
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Dettagli dell'asta recuperati con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID dell'asta
+                  gacha_id:
+                    type: integer
+                    description: ID del gacha associato
+                  seller_id:
+                    type: integer
+                    description: ID del venditore
+                  starting_price:
+                    type: integer
+                    description: Prezzo iniziale dell'asta
+                  current_price:
+                    type: integer
+                    description: Prezzo corrente dell'asta
+                  auction_end:
+                    type: string
+                    format: date-time
+                    description: Data e ora di fine dell'asta
+                  status:
+                    type: string
+                    enum: [active, closed, canceled, suspended]
+                    description: Stato dell'asta
+        400:
+          description: Richiesta malformata (ID dell'asta non fornito)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "ID dell'asta non fornito"
+        401:
+          description: Utente non autenticato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing Authorization Header"
+        403:
+          description: Privilegi amministrativi richiesti
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Admin privileges required"
+        404:
+          description: Asta non trovata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Auction not found"
+        500:
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error communicating with DBM: [dettagli errore]"
+
+    patch:
+      summary: Modifica lo stato di un'asta specifica (admin)
+      description: Consente agli amministratori di aggiornare lo stato di un'asta specifica.
+      parameters:
+        - name: auctionID
+          in: query
+          required: true
+          description: L'ID dell'asta da modificare.
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [canceled, closed, active, suspended]
+                  description: Nuovo stato dell'asta.
+              required:
+                - status
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Stato dell'asta aggiornato con successo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Auction status updated successfully"
+        400:
+          description: Richiesta malformata (ID o stato non valido)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Valid auctionID is required"
+        401:
+          description: Utente non autenticato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing Authorization Header"
+        403:
+          description: Privilegi amministrativi richiesti
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Admin privileges required"
+        404:
+          description: Asta non trovata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Auction not found"
+        500:
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error communicating with DBM: [dettagli errore]"
+
+    delete:
+      summary: Elimina un'asta specifica (admin)
+      description: Consente agli amministratori di eliminare un'asta specifica.
+      parameters:
+        - name: auctionID
+          in: query
+          required: true
+          description: L'ID dell'asta da eliminare.
+          schema:
+            type: integer
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Asta eliminata con successo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Auction deleted successfully"
+        400:
+          description: Richiesta malformata (ID non valido).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Valid auctionID is required"
+        401:
+          description: Utente non autenticato.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing Authorization Header"
+        403:
+          description: Privilegi amministrativi richiesti.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Admin privileges required"
+        404:
+          description: Asta non trovata.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Auction not found"
+        500:
+          description: Errore interno del server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error communicating with DBM: [dettagli errore]"
+            
+  /auction_market/admin/market/history:
+    get:
+      summary: Recupera lo storico delle aste (admin)
+      description: Consente agli amministratori di visualizzare lo storico delle aste.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Storico delle aste recuperato con successo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  market_history:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 123
+                        gacha_id:
+                          type: integer
+                          example: 456
+                        seller_id:
+                          type: integer
+                          example: 789
+                        starting_price:
+                          type: integer
+                          example: 100
+                        current_price:
+                          type: integer
+                          example: 200
+                        auction_end:
+                          type: string
+                          format: date-time
+                          example: "2024-01-01T12:00:00Z"
+                        status:
+                          type: string
+                          enum: ["active", "closed", "canceled", "suspended"]
+                          example: "closed"
+        401:
+          description: Utente non autenticato.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Missing Authorization Header"
+        403:
+          description: Privilegi amministrativi richiesti.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Admin privileges required"
+        500:
+          description: Errore interno del server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error communicating with DBM: [dettagli errore]"
+
+
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

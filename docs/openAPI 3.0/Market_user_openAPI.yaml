@@ -1,0 +1,664 @@
+openapi: 3.0.0
+info:
+  title: Market User API
+  description: API per la gestione del mercato delle aste, incluse operazioni per utenti e amministratori.
+  version: "1.0.0"
+servers:
+  - url: https://localhost:8080
+    description: Server di sviluppo
+  
+paths:
+  # AUCTION_MARKET
+  /auction_market/market:
+    get:
+      summary: Recupera le aste attive
+      description: Ottiene l'elenco delle aste attualmente attive dal sistema.
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Elenco delle aste attive recuperato con successo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: ID dell'asta
+                    gacha_id:
+                      type: integer
+                      description: ID del gacha associato
+                    seller_id:
+                      type: integer
+                      description: ID del venditore
+                    starting_price:
+                      type: integer
+                      description: Prezzo iniziale dell'asta
+                    current_price:
+                      type: integer
+                      description: Prezzo corrente dell'asta
+                    auction_end:
+                      type: string
+                      format: date-time
+                      description: Data e ora di fine dell'asta
+                    status:
+                      type: string
+                      enum: [active, closed, canceled, suspended]
+                      description: Stato dell'asta
+        401:
+          description: Utente non autenticato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: Missing Authorization Header
+        500:
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error communicating with DBM: [dettagli errore]"
+
+    post:
+      summary: Crea una nuova asta
+      description: Crea una nuova asta per un oggetto Gacha specifico. Richiede autenticazione e verifica che il Gacha appartenga all'utente.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - gacha_id
+                - seller_id
+                - starting_price
+                - auction_end
+              properties:
+                gacha_id:
+                  type: integer
+                  description: ID del Gacha da mettere all'asta.
+                  example: 123
+                seller_id:
+                  type: integer
+                  description: ID dell'utente venditore.
+                  example: 456
+                starting_price:
+                  type: integer
+                  description: Prezzo di partenza dell'asta.
+                  example: 100
+                auction_end:
+                  type: string
+                  format: date-time
+                  description: Data e ora di fine asta.
+                  example: "2024-12-10 15:00:00"
+      responses:
+        201:
+          description: Asta creata con successo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Auction created successfully"
+                  auction_id:
+                    type: integer
+                    example: 789
+        400:
+          description: Richiesta non valida (campi mancanti o formato errato).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing required fields"
+        403:
+          description: Utente non autorizzato a creare l'asta per il venditore specificato.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not authorized to create auction for this seller"
+        404:
+          description: Gacha non trovato nella collezione dell'utente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Gacha not found in user collection"
+        409:
+          description: Gacha già presente in un'asta attiva.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Gacha is already listed in an active auction"
+        500:
+          description: Errore interno del server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error communicating with DBM: [dettagli errore]"
+
+  /auction_market/market/bid:
+    post:
+      summary: Effettua un'offerta su un'asta
+      description: Consente a un utente autenticato di fare un'offerta per un'asta specifica, verificando il credito disponibile e aggiornandolo.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auction_id
+                - bidder_id
+                - bid_amount
+              properties:
+                auction_id:
+                  type: integer
+                  description: ID dell'asta su cui fare l'offerta.
+                  example: 123
+                bidder_id:
+                  type: integer
+                  description: ID dell'utente che effettua l'offerta.
+                  example: 456
+                bid_amount:
+                  type: integer
+                  description: Importo dell'offerta in crediti.
+                  example: 150
+      responses:
+        201:
+          description: Offerta effettuata con successo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+                    description: Messaggio di successo dell'offerta
+                    example: Currency updated
+        400:
+          description: Richiesta non valida (campi mancanti o condizioni non soddisfatte).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Bid amount must be greater than zero"
+        403:
+          description: Utente non autorizzato a fare un'offerta.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not authorized to place bid on behalf of this bidder"
+        404:
+          description: Risorsa non trovata (utente o asta inesistente).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Auction not found"
+        500:
+          description: Errore interno del server o fallimento nella comunicazione con i moduli esterni.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to communicate with db_manager: [dettagli errore]"
+
+  /auction_market/market/auction_win:
+    post:
+      summary: Completa il processo di trasferimento del gacha al vincitore dell'asta
+      description: Endpoint che gestisce il trasferimento del gacha al vincitore di un'asta completata. Verifica l'asta e il vincitore, quindi trasferisce la proprietà del gacha tramite il modulo COLLECTION.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auction_id
+              properties:
+                auction_id:
+                  type: integer
+                  description: ID dell'asta per cui completare il trasferimento.
+                  example: 123
+      responses:
+        200:
+          description: Trasferimento del gacha completato con successo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Gacha successfully transferred to winner 456"
+        400:
+          description: Errore di validazione o mancanza di corrispondenza tra vincitore e offerta più alta.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Winner does not match highest bid"
+        404:
+          description: L'asta non è stata trovata o non è stata chiusa.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Auction not found or not closed"
+        500:
+          description: Errore interno o problemi con la comunicazione ai moduli esterni.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to transfer gacha ownership"
+
+  /auction_market/market/auction_complete:
+    post:
+      summary: Completa un'asta e trasferisce la valuta al venditore
+      description: Endpoint per completare un'asta, trasferendo la valuta al venditore e registrando la transazione nella cronologia degli scambi.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auction_id
+              properties:
+                auction_id:
+                  type: integer
+                  description: ID dell'asta da completare.
+                  example: 123
+      responses:
+        200:
+          description: Transazione completata con successo e valuta trasferita al venditore.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Currency transferred to seller successfully"
+        400:
+          description: Errore nella validazione dei dati o se l'asta non ha un'offerta valida.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Bid not found"
+        404:
+          description: L'asta specificata non è stata trovata o non è stata chiusa.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Auction not found or not closed"
+        500:
+          description: Errore interno o problemi di comunicazione con i moduli esterni.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to record transaction in trading history"
+  
+  /auction_market/market/auction_refund:
+    post:
+      summary: Rimborso per i partecipanti all'asta non vincitori
+      description: Endpoint per elaborare il rimborso per tutti i partecipanti a un'asta chiusa che non sono riusciti a vincere.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - auction_id
+              properties:
+                auction_id:
+                  type: integer
+                  description: ID dell'asta per la quale processare i rimborsi.
+                  example: 123
+      responses:
+        200:
+          description: Rimborso elaborato con successo per tutti i partecipanti non vincenti.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Refund processed for all losing bidders"
+        404:
+          description: L'asta specificata non è stata trovata.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Auction not found or not closed"
+        500:
+          description: Errore interno o problema nella comunicazione con i moduli esterni.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to fetch auction details"
+
+# TRADING_HISTORY
+  /trading_history/market/transaction_history:
+    get:
+      summary: Recupera la cronologia delle transazioni di un utente
+      description: Endpoint per ottenere la cronologia delle transazioni di un utente specifico.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          description: ID dell'utente di cui recuperare la cronologia delle transazioni.
+          schema:
+            type: integer
+            example: 123
+      responses:
+        200:
+          description: Cronologia delle transazioni recuperata con successo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        transaction_id:
+                          type: integer
+                          example: 456
+                        seller_id:
+                          type: integer
+                          example: 123
+                        buyer_id:
+                          type: integer
+                          example: 789
+                        gacha_id:
+                          type: integer
+                          example: 101
+                        price:
+                          type: integer
+                          example: 500
+                        date:
+                          type: string
+                          format: date-time
+                          example: "2023-12-04T15:00:00Z"
+        400:
+          description: Errore di validazione o formato non valido per user_id.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid User ID format"
+        403:
+          description: L'utente non è autorizzato ad accedere alla cronologia delle transazioni di un altro utente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "You are not authorized to access this user's transactions"
+        404:
+          description: Nessuna transazione trovata per l'utente specificato.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactions:
+                    type: array
+                    items: {}
+                  message:
+                    type: string
+                    example: "No transactions found for this user"
+        500:
+          description: Errore interno durante la comunicazione con il DBM.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error communicating with DBM: <error details>"
+
+  /trading_history/market/transaction:
+    post:
+      summary: Registra una transazione di mercato
+      description: Endpoint per registrare una transazione di mercato, chiamato solo dal processo di completamento dell'asta.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                auction_id:
+                  type: integer
+                  description: ID dell'asta per cui si sta registrando la transazione.
+                  example: 123
+                buyer_id:
+                  type: integer
+                  description: ID dell'acquirente della transazione.
+                  example: 456
+                seller_id:
+                  type: integer
+                  description: ID del venditore della transazione.
+                  example: 789
+                final_price:
+                  type: integer
+                  description: Prezzo finale della transazione.
+                  example: 1000
+      responses:
+        200:
+          description: Transazione registrata con successo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Transaction recorded successfully"
+        400:
+          description: Errore nella validazione dei campi richiesti o formato non valido.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "All fields are required"
+        404:
+          description: Risorsa non trovata. Potrebbe riferirsi al fallimento nel recuperare informazioni o dati.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Not found"
+        500:
+          description: Errore interno del server durante il processo di registrazione della transazione.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Transaction failed: <error details>"
+  
+  /trading_history/market/refund:
+    post:
+      summary: Processa un rimborso per un'asta
+      description: Endpoint per elaborare i rimborsi per aste attive e per quelle scadute, aggiornando il saldo dell'utente e registrando la transazione di rimborso.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: ID dell'utente a cui deve essere effettuato il rimborso.
+                  example: 123
+                auction_id:
+                  type: integer
+                  description: ID dell'asta associata al rimborso.
+                  example: 456
+                amount:
+                  type: integer
+                  description: L'importo del rimborso.
+                  example: 100
+              required:
+                - user_id
+                - auction_id
+                - amount
+      responses:
+        200:
+          description: Rimborso processato con successo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Refund processed successfully"
+        400:
+          description: Dati di input non validi o campi mancanti.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid data"
+        404:
+          description: Utente non trovato o asta non esistente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found"
+        409:
+          description: Il rimborso è già stato processato.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Refund already processed"
+        500:
+          description: Errore interno del server durante il processo di rimborso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Refund failed: <details of the error>"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
