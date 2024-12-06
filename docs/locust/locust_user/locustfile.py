@@ -7,22 +7,22 @@ import datetime
 
 user_host = 'https://localhost:8080'
 
-common_rare = 0
-rare = 0
-super_rare = 0
-ultra_rare = 0
-super_ultra_rare = 0
-
+#liste per conteggiare le occorrenze dei gacha per ogni rarità nei vari roll es: standard_distribution[0]= common, standard_distribution[1]= rare ecc...
+standard_distribution = [0,0,0,0,0]
+gold_distribution = [0,0,0,0,0]
+platinum_distribution = [0,0,0,0,0]
 #evento alla fine delle richieste per generare i plot delle distribuzioni di rarità delle estrazioni
-@events.test_stop.add_listener
-def on_test_stop(environment, **kwargs):
-    # Calcolo del numero totale di richieste
-    global common_rare, rare, super_rare, ultra_rare, super_ultra_rare
-    total_requests = common_rare + rare + super_rare + ultra_rare + super_ultra_rare
 
+def plot_roll_distribution(distribution, distribution_type):
+
+    total_requests = 0    
+    for i in range (5):
+        total_requests = total_requests + distribution[i]
+
+    
     # Etichette e dati per l'istogramma
     rarity_labels = ['Common Rare', 'Rare', 'Super Rare', 'Ultra Rare', 'Super Ultra Rare']
-    occurrences = [common_rare, rare, super_rare, ultra_rare, super_ultra_rare]
+    occurrences = [distribution[0], distribution[1], distribution[2], distribution[3], distribution[4]]
     # Creazione dell'istogramma
     plt.figure(figsize=(10, 6))
     # Normalizza le occorrenze in base al totale delle richieste
@@ -31,7 +31,7 @@ def on_test_stop(environment, **kwargs):
     # Aggiunta di titolo e label
     plt.title(f"Distribuzione delle Rarità (Totale richieste: {total_requests})", fontsize=16)
     plt.xlabel("Rarità", fontsize=14)
-    plt.ylabel("Percentuale estrazioni roll standard", fontsize=14)
+    plt.ylabel(f"Percentuale estrazioni roll {distribution_type}", fontsize=14)
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
     # Mostra i valori sopra ogni barra (in percentuale) con un offset per evitare sovrapposizioni
@@ -42,7 +42,19 @@ def on_test_stop(environment, **kwargs):
     # Aggiusta gli spazi per evitare che i valori percentuali si sovrappongano al bordo
     plt.tight_layout()
     # Salvataggio del grafico in formato JPEG
-    plt.savefig(os.getcwd() + "/roll_standard_distribution_percentage.jpeg", format='jpeg')
+    plt.savefig(os.getcwd() + "/roll_" + distribution_type + "_distribution.jpeg", format='jpeg')
+
+@events.test_stop.add_listener
+def on_test_stop(environment, **kwargs):
+    # Calcolo del numero totale di richieste
+    global standard_distribution
+    global gold_distribution
+    global platinum_distribution
+
+    plot_roll_distribution(standard_distribution, "standard")
+    plot_roll_distribution(gold_distribution, "gold")
+    plot_roll_distribution(platinum_distribution, "platinum")
+
 
 class User(HttpUser):
     wait_time = between(1, 3)
@@ -165,51 +177,76 @@ class User(HttpUser):
         except Exception as e:
             self.report_failure('GET', f'/system_collection/{gacha}', e)
     
-    @task(5)
+    @task(2)
     def roll_standard(self):
         headers = self.get_headers()
-        global common_rare, rare, super_rare, ultra_rare, super_ultra_rare
+        global standard_distribution
 
         try:
             with self.client.post(f'{user_host}/roll/standard', headers=headers, timeout=10, verify=False,catch_response=True) as response:
                 if response.status_code != 200 and response.status_code != 400:
                     response.failure(f"POST request failed with status code {response.status_code}: {response.text}")
+
                 #codice per ricavare la rarità del gacha estratto, al fine di plottare la distribuzione di rarità:
-                log = response.json().get("success", "")
+                try:
+                    log = response.json().get("success", "")
+                except Exception as e:
+                    return str(e)
                 if "Gacha" in log:
 
                     gacha_id = int(log.split("Gacha ")[1].split(" ")[0])
                     if gacha_id <= 18:
-                        common_rare+= 1
+                        standard_distribution[0] += 1
                     elif 18 < gacha_id <=30:
-                        rare +=1
+                        standard_distribution[1] +=1
                     elif 30 < gacha_id <=33:
-                        super_rare += 1
+                        standard_distribution[2] += 1
                     elif 33 < gacha_id <= 35:
-                        ultra_rare += 1
+                        standard_distribution[3] += 1
                     elif gacha_id == 36:
-                        super_ultra_rare += 1
+                        standard_distribution[4] += 1
                     else:
                         print("Error, Invalid Gacha ID!!!!")
                 
-                
                 else:
                     print("no gacha in log ERROR!!!")
-                
-                #IMPLEMENTARE DIZIONARIO ROLL STANDARD
 
         except Exception as e:
             self.report_failure('POST', '/roll/standard', e)
     
-    @task(1)
+    @task(3)
     def roll_gold(self):
         headers = self.get_headers()
+        global gold_distribution
 
         try:
             with self.client.post(f'{user_host}/roll/gold', headers=headers, timeout=10, verify=False,catch_response=True) as response:
                 if response.status_code != 200 and response.status_code != 400:
                     response.failure(f"POST request failed with status code {response.status_code}: {response.text}")
-                #IMPLEMENTARE DIZIONARIO ROLL GOLD
+                
+                #codice per ricavare la rarità del gacha estratto, al fine di plottare la distribuzione di rarità:
+                try:
+                    log = response.json().get("success", "")
+                except Exception as e:
+                    return str(e)
+                if "Gacha" in log:
+
+                    gacha_id = int(log.split("Gacha ")[1].split(" ")[0])
+                    if gacha_id <= 18:
+                        gold_distribution[0] += 1
+                    elif 18 < gacha_id <=30:
+                        gold_distribution[1] +=1
+                    elif 30 < gacha_id <=33:
+                        gold_distribution[2] += 1
+                    elif 33 < gacha_id <= 35:
+                        gold_distribution[3] += 1
+                    elif gacha_id == 36:
+                        gold_distribution[4] += 1
+                    else:
+                        print("Error, Invalid Gacha ID!!!!")
+                
+                else:
+                    print("no gacha in log ERROR!!!")
 
         except Exception as e:
             self.report_failure('POST', '/roll/gold', e)
@@ -217,12 +254,37 @@ class User(HttpUser):
     @task(1)
     def roll_platinum(self):
         headers = self.get_headers()
+        global platinum_distribution
 
         try:
             with self.client.post(f'{user_host}/roll/platinum', headers=headers, timeout=10, verify=False,catch_response=True) as response:
                 if response.status_code != 200 and response.status_code != 400:
                     response.failure(f"POST request failed with status code {response.status_code}: {response.text}")
-                #IMPLEMENTARE DIZIONARIO ROLL PLATINUM
+                
+
+                #codice per ricavare la rarità del gacha estratto, al fine di plottare la distribuzione di rarità:
+                try:
+                    log = response.json().get("success", "")
+                except Exception as e:
+                    return str(e)
+                if "Gacha" in log:
+
+                    gacha_id = int(log.split("Gacha ")[1].split(" ")[0])
+                    if gacha_id <= 18:
+                        platinum_distribution[0] += 1
+                    elif 18 < gacha_id <=30:
+                        platinum_distribution[1] +=1
+                    elif 30 < gacha_id <=33:
+                        platinum_distribution[2] += 1
+                    elif 33 < gacha_id <= 35:
+                        platinum_distribution[3] += 1
+                    elif gacha_id == 36:
+                        platinum_distribution[4] += 1
+                    else:
+                        print("Error, Invalid Gacha ID!!!!")
+                
+                else:
+                    print("no gacha in log ERROR!!!")
 
         except Exception as e:
             self.report_failure('POST', '/roll/platinum', e)
@@ -253,7 +315,7 @@ class User(HttpUser):
         } 
         try:
             with self.client.post(f'{user_host}/auction_market/market', json=body,headers=headers, timeout=5, verify=False,catch_response=True) as response:
-                if response.status_code != 201:
+                if response.status_code != 201 and response.status_code != 400 and response.status_code != 403 and response.status_code != 409 and response.status_code != 404:
                     response.failure(f"POST request failed with status code {response.status_code}: {response.text}")
 
         except Exception as e:
@@ -274,7 +336,7 @@ class User(HttpUser):
         } 
         try:
             with self.client.post(f'{user_host}/auction_market/market/bid', json=body,headers=headers, timeout=5, verify=False,catch_response=True) as response:
-                if response.status_code != 201:
+                if response.status_code != 201 and response.status_code != 400 and response.status_code != 404:
                     response.failure(f"POST request failed with status code {response.status_code}: {response.text}")
 
         except Exception as e:
