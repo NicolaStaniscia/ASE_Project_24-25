@@ -1,0 +1,288 @@
+name: Run Postman Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+
+  isolation-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18  
+
+      # Step 3: Install Newman
+      - name: Install Newman
+        run: npm install -g newman
+
+      # Step 4: Setup Docker
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Step 5: Crea certificati
+      - name: Crea certificati TLS
+        run: |
+          echo "${{ secrets.TLS_CLIENT_CERT }}" > client-cert.pem
+          echo "${{ secrets.TLS_CLIENT_KEY }}" > client-key.pem
+
+      - name: Run Account Management
+        run: |
+          cd src/Isolation_Tests/account_management/
+          docker build -t mocked_account_management -f Dockerfile_test . 
+          docker run -p 5000:5000 --name account_management_testing -d mocked_account_management
+
+      # Step 7a: Run mock test
+      - name: Run mock tests Account_management_Admin
+        run: |
+          newman run ./docs/postman/Isolation_tests/account_management/Mock_tests_Admin.postman_collection.json \
+            --delay-request 500 \
+            --ssl-client-cert client-cert.pem \
+            --ssl-client-key client-key.pem \
+            --insecure \
+            --reporters cli,junit \
+            --reporter-junit-export account_management_admin-mock-results.xml
+        continue-on-error: true
+      
+      # Step 7b: Run mock test
+      - name: Run mock tests Account_management_User
+        run: |
+          newman run ./docs/postman/Isolation_tests/account_management/Mock_tests_User.postman_collection.json \
+            --delay-request 500 \
+            --ssl-client-cert client-cert.pem \
+            --ssl-client-key client-key.pem \
+            --insecure \
+            --reporters cli,junit \
+            --reporter-junit-export account_management_user-mock-results.xml
+        continue-on-error: true
+
+      - name: Close Account Management
+        run: |
+          docker stop $(docker container ls -q)
+          docker rm $(docker container ls -aq)
+          docker rmi $(docker images -q)
+
+      # Step 8a:
+      - name: Run Collection
+        run: |
+          cd src/Isolation_Tests/collection/edit_gacha_collection/
+          docker build -t mocked_edit_gacha -f Dockerfile_test . 
+          docker run -p 5000:5000 --name edit_gacha_testing -d mocked_edit_gacha
+
+      - name: Run mock tests collection
+        run: |
+          newman run ./docs/postman/Isolation_tests/Collection/edit_gacha_collection.postman_collection.json \
+            --delay-request 500 \
+            --ssl-client-cert client-cert.pem \
+            --ssl-client-key client-key.pem \
+            --insecure \
+            --reporters cli,junit \
+            --reporter-junit-export edit_gacha_collection-mock-results.xml
+        continue-on-error: true
+
+      - name: Close Edit Gacha
+        run: |
+          docker stop $(docker container ls -q)
+          docker rm $(docker container ls -aq)
+          docker rmi $(docker images -q)
+
+      # Step 8b:
+      - name: Run Roll Gacha
+        run: |
+          cd src/Isolation_Tests/collection/roll_gacha/
+          docker build -t mocked_roll -f Dockerfile_test .
+          docker run -p 5000:5000 --name roll_gacha_testing -d mocked_roll
+
+      - name: Run mock tests collection
+        run: |
+          newman run ./docs/postman/Isolation_tests/Collection/roll_gacha.postman_collection.json \
+            --delay-request 500 \
+            --ssl-client-cert client-cert.pem \
+            --ssl-client-key client-key.pem \
+            --insecure \
+            --reporters cli,junit \
+            --reporter-junit-export roll_gacha-mock-results.xml
+        continue-on-error: true
+
+      - name: Close Roll Gacha
+        run: |
+          docker stop $(docker container ls -q)
+          docker rm $(docker container ls -aq)
+          docker rmi $(docker images -q)
+
+      # Step 8c:
+      - name: Run See Gacha Collection
+        run: |
+          cd src/Isolation_Tests/collection/see_gacha_collection/
+          docker build -t mocked_see_gacha -f Dockerfile_test .
+          docker run -p 5000:5000 --name see_gacha_testing -d mocked_see_gacha
+
+      - name: Run mock tests collection
+        run: |
+          newman run ./docs/postman/Isolation_tests/Collection/see_gacha_collection.postman_collection.json \
+            --delay-request 500 \
+            --ssl-client-cert client-cert.pem \
+            --ssl-client-key client-key.pem \
+            --insecure \
+            --reporters cli,junit \
+            --reporter-junit-export see_gacha_collection-mock-results.xml
+        continue-on-error: true
+
+      - name: Close See Gacha
+        run: |
+          docker stop $(docker container ls -q)
+          docker rm $(docker container ls -aq)
+          docker rmi $(docker images -q)
+
+      # Step 9:
+      - name: Run Trading history
+        run: |
+          cd src/Isolation_Tests/market/auction_market/
+          docker build -t mocked_trading_history -f Dockerfile_test .
+          docker run -p 5000:5000 --name trading_history_testing -d mocked_trading_history
+
+      - name: Run Auction Market
+        run: |
+          cd src/Isolation_Tests/market/trading_history/
+          docker build -t mocked_auction_market -f Dockerfile_test .
+          docker run -p 5001:5000 --name auction_market_testing -d mocked_auction_market
+
+      - name: Run mock tests market
+        run: |
+          newman run ./docs/postman/Isolation_tests/Market/Market_Tests_Isolation.postman_collection.json \
+            --delay-request 500 \
+            --ssl-client-cert client-cert.pem \
+            --ssl-client-key client-key.pem \
+            --insecure \
+            --reporters cli,junit \
+            --reporter-junit-export market-mock-results.xml
+        continue-on-error: true
+      
+      - name: Close Market
+        run: |
+          docker stop $(docker container ls -q)
+          docker rm $(docker container ls -aq)
+          docker rmi $(docker images -q)
+
+
+  integration-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18  
+
+      # Step 3: Install Newman
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Step 4: Build docker compose
+      - name: Build the application
+        run: |
+          cd src/
+          docker compose up --build -d
+
+      # Step 5: Crea certificati
+      - name: Crea certificati TLS
+        run: |
+          echo "${{ secrets.TLS_CLIENT_CERT }}" > client-cert.pem
+          echo "${{ secrets.TLS_CLIENT_KEY }}" > client-key.pem
+
+      # Step 6: Sleep per configurazione
+      - name: Sleep per configurazione DB
+        run: sleep 30
+
+      # Step 7a: Run Newman with the Postman collection
+      - name: Run Postman tests account admin
+        run: |
+          newman run ./docs/postman/Integration_tests/Account_Management_Integration_tests_admin.postman_collection.json \
+            --delay-request 500 \
+            --ssl-client-cert client-cert.pem \
+            --ssl-client-key client-key.pem \
+            --insecure \
+            --reporters cli,junit \
+            --reporter-junit-export account_admin-results.xml
+        continue-on-error: true
+
+      # Step 7b: Run Newman with the Postman collection
+      - name: Run Postman tests account users
+        run: |
+          newman run ./docs/postman/Integration_tests/Account_Management_Integration_tests_user.postman_collection.json \
+            --delay-request 500 \
+            --ssl-client-cert client-cert.pem \
+            --ssl-client-key client-key.pem \
+            --insecure \
+            --reporters cli,junit \
+            --reporter-junit-export account_user-results.xml
+        continue-on-error: true
+  
+      # Step 8: Run Newman with the Postman collection
+      - name: Run Postman tests collection
+        run: |
+          newman run ./docs/postman/Integration_tests/Collection_Integrazione.postman_collection.json \
+            --delay-request 500 \
+            --ssl-client-cert client-cert.pem \
+            --ssl-client-key client-key.pem \
+            --insecure \
+            --reporters cli,junit \
+            --reporter-junit-export collection-results.xml
+        continue-on-error: true
+
+      # Step 9: Run Newman with the Postman collection
+      - name: Run Postman tests market
+        run: |
+          newman run ./docs/postman/Integration_tests/Market_Tests_Integration.postman_collection.json \
+            --delay-request 500 \
+            --ssl-client-cert client-cert.pem \
+            --ssl-client-key client-key.pem \
+            --insecure \
+            --reporters cli,junit \
+            --reporter-junit-export market-results.xml
+        continue-on-error: true
+
+      # Step 10: Upload test results (opzionale, per visibilità)
+      - name: Upload account user results
+        uses: actions/upload-artifact@v4
+        with:
+          name: account_user-test-results
+          path: account_user-results.xml
+
+      - name: Upload account admin results
+        uses: actions/upload-artifact@v4
+        with:
+          name: account_admin-test-results
+          path: account_admin-results.xml
+
+      - name: Upload collection results
+        uses: actions/upload-artifact@v4
+        with:
+          name: collection-test-results
+          path: collection-results.xml
+        
+      - name: Upload market results
+        uses: actions/upload-artifact@v4
+        with:
+          name: market-test-results
+          path: market-results.xml
