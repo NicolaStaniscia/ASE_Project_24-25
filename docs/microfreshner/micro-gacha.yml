@@ -1,5 +1,5 @@
 tosca_definitions_version: micro_tosca_yaml_1.1
-description: micro-gacha
+description: micro.tosca
 imports:
 - micro: https://di-unipi-socc.github.io/microTOSCA/1.1/microTOSCA.yaml
 topology_template:
@@ -22,6 +22,9 @@ topology_template:
       - interaction:
           node: gacha-DB-manager
           relationship: c
+      - interaction:
+          node: user-account-management
+          relationship: c
     edit-gacha-collection:
       type: micro.nodes.Service
       requirements:
@@ -40,17 +43,30 @@ topology_template:
       - interaction:
           node: gacha-DB-manager
           relationship: c
+      - interaction:
+          node: user-account-management
+          relationship: c
     auction-market:
       type: micro.nodes.Service
       requirements:
       - interaction:
           node: market-DB-manager
           relationship: c
+      - interaction:
+          node: see-gacha-collection
+          relationship: c
+      - interaction: edit-gacha-collection
+      - interaction:
+          node: user-account-management
+          relationship: c
     trading-history:
       type: micro.nodes.Service
       requirements:
       - interaction:
           node: market-DB-manager
+          relationship: c
+      - interaction:
+          node: user-account-management
           relationship: c
     market-db:
       type: micro.nodes.Datastore
