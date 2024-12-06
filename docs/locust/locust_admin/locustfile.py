@@ -1,7 +1,5 @@
 from locust import HttpUser, task, between, events
 import jwt, random as rnd, datetime
-from flask import jsonify
-from os import getenv
 
 host = 'https://localhost:8081'
 
