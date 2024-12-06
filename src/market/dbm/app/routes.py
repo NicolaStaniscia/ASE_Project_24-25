@@ -164,6 +164,8 @@ def place_bid_dbm():
         return jsonify({"error": "Auction not found"}), 404
     if auction.status != 'active':
         return jsonify({"error": "Auction is not active"}), 400
+    if auction.seller_id == bidder_id:
+        return jsonify({"error": "Bidding on your own auction"}), 400
 
     # Controllo che l'importo dell'offerta sia valido
     if bid_amount <= auction.current_price:
