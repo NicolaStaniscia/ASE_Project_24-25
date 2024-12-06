@@ -43,6 +43,7 @@ def plot_roll_distribution(distribution, distribution_type):
     plt.tight_layout()
     # Salvataggio del grafico in formato JPEG
     plt.savefig(os.getcwd() + "/roll_" + distribution_type + "_distribution.jpeg", format='jpeg')
+    plt.close('all')
 
 @events.test_stop.add_listener
 def on_test_stop(environment, **kwargs):
@@ -54,8 +55,6 @@ def on_test_stop(environment, **kwargs):
     plot_roll_distribution(standard_distribution, "standard")
     plot_roll_distribution(gold_distribution, "gold")
     plot_roll_distribution(platinum_distribution, "platinum")
-
-    sys.exit(0)
 
 
 class User(HttpUser):
